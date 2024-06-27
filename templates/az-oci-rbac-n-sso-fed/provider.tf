@@ -1,5 +1,4 @@
 terraform {
-  #required_version = ">= 1.3.0"
   required_providers {
     # https://registry.terraform.io/providers/hashicorp/azuread/latest/docs
     azuread = {
@@ -17,4 +16,30 @@ terraform {
       version = ">= 5.0.0"
     }
   }
+}
+
+
+
+provider "oci" {
+  alias               = "oci-st"
+  auth                = "SecurityToken"
+  config_file_profile = var.config_file_profile
+  region              = var.region
+}
+
+provider "oci" {
+  alias  = "oci-ip"
+  auth   = "InstancePrincipal"
+  region = var.region
+}
+
+
+provider "azuread" {
+  alias = "az-ad"
+}
+
+
+provider "azurerm" {
+  alias = "az-rm"
+  features {}
 }

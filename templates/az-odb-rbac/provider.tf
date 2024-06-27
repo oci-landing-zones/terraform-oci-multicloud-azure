@@ -1,5 +1,4 @@
 terraform {
-  #required_version = ">= 1.3.0"
   required_providers {
     # https://registry.terraform.io/providers/hashicorp/azuread/latest/docs
     azuread = {
@@ -11,10 +10,15 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~>3.0.0"
     }
-    # https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/terraformspecifyingversions.htm#terraformspecifyingversions_ociprovider
-    oci = {
-      source  = "hashicorp/oci"
-      version = ">= 5.0.0"
-    }
   }
+}
+
+provider "azuread" {
+  alias = "az-ad"
+}
+
+
+provider "azurerm" {
+  alias = "az-rm"
+  features {}
 }
