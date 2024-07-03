@@ -8,17 +8,9 @@ The oci-quickstart-template repository contains the template that can be used fo
 This repo is under active development.  Building open source software is a community effort.  We're excited to engage with the community building this.
 
 ## Resource Manager Deployment
-
 This Quick Start uses [OCI Resource Manager](https://docs.cloud.oracle.com/iaas/Content/ResourceManager/Concepts/resourcemanager.htm) to make deployment easy, sign up for an [OCI account](https://cloud.oracle.com/en_US/tryit) if you don't have one, and just click the button below:
 
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?region=home&zipUrl=https://github.com/oracle-quickstart/oci-quickstart-template/archive/master.zip)
-
-After logging into the console you'll be taken through the same steps described
-in the [Deploy](#deploy) section below.
-
-
 Note, if you use this template to create another repo you'll need to change the link for the button to point at your repo.
-
 
 ## Overview
 A collection of [terraform modules](https://developer.hashicorp.com/terraform/language/modules)
@@ -43,14 +35,22 @@ The following software must be installed on the machine you run the terraform pl
     - create a token auth profile in your oci config with `<MY_PROFILE_NAME>`
 
 Dependent which cloud resources a module manages, it will use some subset of the terraform cloud providers:
-- [OCI Terraform Provider](https://registry.terraform.io/providers/oracle/oci/latest/docs)
-  - In this  template example use OCI provider `SecurityToken` auth method, other acceptable provider implementation are described in  [OCI terraform provider configuration doc](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/terraformproviderconfiguration.htm)
-- [azuread Terraform Provider](https://registry.terraform.io/providers/hashicorp/azuread/latest)
-- [azurerm Terraform Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest)
+- [OCI terraform provider](https://registry.terraform.io/providers/oracle/oci/latest/docs)
+  - In this template example use OCI provider `SecurityToken` auth method, other acceptable provider implementation are described in  [OCI terraform provider configuration doc](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/terraformproviderconfiguration.htm)
+- [azuread terraform provider](https://registry.terraform.io/providers/hashicorp/azuread/latest)
+- [azurerm terraform provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest)
 
-``` 
-*** This is an alpha implementation, expect changes in future iterations and releases. ***
-```
+
+## Provided Templates 
+These module automates the provisioning of components for running Oracle.Database @ Azure. Each template can run independently and default input values are configured which can be overridden per customer's preferences.
+
+- ```templates/az-oci-sso-federation```: Sets up SSO Between OCI and Microsoft Azure with identity federation
+- ```templates/az-oci-rbac-n-sso-fed```: Sets up SSO Between OCI and Microsoft Azure with identity federation And role, groups required for Oracle.Database @ Azure
+- ```templates/az-odb-rbac```: Sets up role, groups required for for Oracle.Database @ Azure.
+- ```templates/az-oci-exa-pdb```: Sets up Oracle.database infrastructure including networks, Exadata Infrastructure, VM Cluster, and database
+
+<sub>*Please read individual template documentation for more details</sub>
+
 
 ## Authentication
 ### OCI authentation 
@@ -67,7 +67,6 @@ Official Microsoft documentation to [authenticate to Azure using Azure CLI](http
 ```
 az login --tenant <azure-tenant-id>
 ```
-
 
 
 ## Execution 
@@ -109,21 +108,9 @@ To remove all resources created in above steps, run destroy
 terraform destory
 ```
 
-## Provided Templates 
-These module automates the provisioning of components for running Oracle.Database @ Azure. Each template can run independently and default input values are configured which can be overridden per customer's preferences.
-
-- ```templates/az-oci-sso-federation```: Sets up SSO Between OCI and Microsoft Azure with identity federation
-- ```templates/az-oci-rbac-n-sso-fed```: Sets up SSO Between OCI and Microsoft Azure with identity federation And role, groups required for Oracle.Database @ Azure
-- ```templates/az-odb-rbac```: Sets up role, groups required for for Oracle.Database @ Azure.
-- ```templates/az-oci-exa-pdb```: Sets up Oracle.database infrastructure including networks, Exadata Infrastructure, VM Cluster, and database
-
-<sub>*Please read individual template documentation for more details</sub>
-
 ## Further Documentation
 
 - [Terraform OCI Provider](https://www.terraform.io/docs/providers/oci/index.html)
-
-Official provider docs  
 - [Oracle Cloud Infrastructure Provider](https://registry.terraform.io/providers/oracle/oci/latest/docs)
 - [Azure Active Directory Provider](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs)
 - [Azure Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
@@ -132,7 +119,6 @@ Official provider docs
 ## Acknowledgement
 
 Code derived and adapted from [Terraform OKE Sample](https://github.com/terraform-providers/terraform-provider-oci/tree/master/examples/container_engine) and Hashicorp’s [Terraform 0.12 examples](https://github.com/hashicorp/terraform-guides/tree/master/infrastructure-as-code/terraform-0.12-examples).
-
 
 
 ## Contributing

@@ -21,10 +21,10 @@ Terraform Template to step up [SSO Between OCI and Microsoft Azure](https://docs
 
 # Permissions
 ### OCI permissions 
-1. Identity domain administrator role for the OCI IAM identity domain. See [Understanding Administrator Roles.](https://docs.oracle.com/en-us/iaas/Content/Identity/roles/understand-administrator-roles.htm#understand-administrator-roles)
+Identity domain administrator role for the OCI IAM identity domain. See [Understanding Administrator Roles.](https://docs.oracle.com/en-us/iaas/Content/Identity/roles/understand-administrator-roles.htm#understand-administrator-roles)
 
 ### Azure Permissions
-1. The Customer's Azure AD account with one of the following Azure AD roles is available :
+The Customer's Azure AD account with one of the following Azure AD roles is available :
     * Global Administrator OR
     * Cloud Application Administrator OR
     * Application Administrator 
@@ -73,8 +73,7 @@ az login --tenant <azure-tenant-id>
 ```
  
 ### Set Azure MS graph api token as env variable 
-#### Required to run identity lifecycle 
-Additional identity provisioning user mapping attributes setup needs ms-graph access token 
+**Required to run identity lifecycle:** Additional identity provisioning user mapping attributes setup needs ms-graph access token 
 ```
 # Set env AZ_TOKEN
 export AZ_TOKEN=$(az account get-access-token --resource-type ms-graph | jq -r .accessToken)
@@ -82,25 +81,10 @@ export AZ_TOKEN=$(az account get-access-token --resource-type ms-graph | jq -r .
 
 # If you dont have 'jq', either install it or run below, and set  `accessToken` as  AZ_TOKEN env var
 az account get-access-token --resource-type ms-graph 
+export AZ_TOKEN=<access_token_value>
 ```
-doc:[get-azaccesstoken](https://learn.microsoft.com/en-us/powershell/module/az.accounts/get-azaccesstoken) 
+**doc:**[get-azaccesstoken](https://learn.microsoft.com/en-us/powershell/module/az.accounts/get-azaccesstoken) 
 
-### Execution 
-Assuming authentication is successful, and parameters tfvars are in same directory.
-Initialize Terraform from ```templates/az-oci-sso-federation```
-```
-terraform init
-```
-
-Run Terraform Plan from ```templates/az-oci-sso-federation``` to check the resources that will be created
-```
-terraform plan
-```
-
-Run Terraform Apply from ```templates/az-oci-sso-federation```
-```
-terraform apply
-```
 
 ## Troubleshooting
 ### Known Issues:

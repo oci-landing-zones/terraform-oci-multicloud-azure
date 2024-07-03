@@ -52,8 +52,7 @@ az login --tenant <azure-tenant-id>
 
 
 ### Set Azure MS graph api token as env variable 
-#### Required to run identity lifecycle 
-Additional identity provisioning user mapping attributes setup needs ms-graph access token 
+**Required to run identity lifecycle:** Additional identity provisioning user mapping attributes setup needs ms-graph access token 
 ```
 # Set env AZ_TOKEN
 export AZ_TOKEN=$(az account get-access-token --resource-type ms-graph | jq -r .accessToken)
@@ -61,8 +60,10 @@ export AZ_TOKEN=$(az account get-access-token --resource-type ms-graph | jq -r .
 
 # If you dont have 'jq', either install it or run below, and set  `accessToken` as  AZ_TOKEN env var
 az account get-access-token --resource-type ms-graph 
+export AZ_TOKEN=<access_token_value>
 ```
-doc:[get-azaccesstoken](https://learn.microsoft.com/en-us/powershell/module/az.accounts/get-azaccesstoken) 
+**doc:**[get-azaccesstoken](https://learn.microsoft.com/en-us/powershell/module/az.accounts/get-azaccesstoken) 
+
 
 ## Troubleshooting
 
