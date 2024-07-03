@@ -1,5 +1,5 @@
 terraform {
-  #required_version = ">= 1.3.0"
+  required_version = ">=1.2.9"
   required_providers {
     # https://registry.terraform.io/providers/hashicorp/azuread/latest/docs
     azuread = {
