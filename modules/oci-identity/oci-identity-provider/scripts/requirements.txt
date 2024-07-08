@@ -1,0 +1,9 @@
+certifi
+pytz>=2016.10
+python-dateutil>=2.5.3,<3.0.0
+requests==2.21.0; python_version == '3.6'
+requests==2.31.0; python_version > '3.6'
+oci>=2.127.0
+#refer 
+#https://github.com/oracle/oci-cli/blob/master/requirements.txt
+#https://github.com/oracle/oci-python-sdk/blob/master/requirements.txt

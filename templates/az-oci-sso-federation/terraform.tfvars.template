@@ -1,0 +1,3 @@
+config_file_profile = "...tst.."
+compartment_ocid = "ocid1.tenancy.oc..."
+region           = "us-ashburn-1"
