@@ -37,11 +37,7 @@ Setting up RBAC for Exa and ADB-S in Azure using default group names:
 # authenticate AZ cli
 az login --tenant <azure-tenant-id>
 ```
-### Initialize
-```
-~/workspace/Indigo/oci-indigo-terraform-landingzone/modules/azure-identity/azure-ad
-$ terraform init
-```
+
 ### Apply
 
 ```

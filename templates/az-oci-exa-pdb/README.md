@@ -135,13 +135,7 @@ terraform apply -var='region=us-ashburn-1' .....
 | delegated_subnet_name                | The name of the delegated subnet                                                                                                                                                                                                                                                                                    | `string` | n/a     |   yes    |
 
 ## Provision the resources
-Automate Steps for Provisioning Exa on Azure and Validation. Customer with Permission noted in [Indigo Customer Onboarding White Glove Document [Oracle Internal Only] ](https://confluence.oci.oraclecorp.com/pages/viewpage.action?pageId=3578232776#) Group 2 - All Customers Initially Provisioning ExaDB-D Must Complete These Steps
-. 
-
-```
-$ terraform init
-$ terraform apply
-```
+Automate Steps for Provisioning Exa on Azure and Validation. Customer with Permission noted in [Indigo Customer Onboarding White Glove Document [Oracle Internal Only] ](https://confluence.oci.oraclecorp.com/pages/viewpage.action?pageId=3578232776#) Group 2 - All Customers Initially Provisioning ExaDB-D Must Complete These Steps.
 
 
 

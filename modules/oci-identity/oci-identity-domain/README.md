@@ -19,19 +19,19 @@ Terraform module to fetch service provider metadata url and enable global access
 | VARIABLE                |                     DESCRIPTION                     | REQUIRED | DEFAULT_VALUE |                       SAMPLE VALUE |
 | :---------------------- | :-------------------------------------------------: | :------: | ------------: | ---------------------------------: |
 | `config_file_profile`   |                OCI CLI profile name                 |   Yes    |               |                       "ONBOARDING" |
-| `compartment_ocid`      |                    Tenancy OCID                     |   Yes    |               | "ocid1.tenancy.oc1..xxxxxxxxxxxxx" |
+| `compartment_ocid`      |  Tenancy OCID of root comparment, unless default domain is in different compartment |   Yes    |               | "ocid1.tenancy.oc1..xxxxxxxxxxxxx" |
 | `region`                |                OCI region Identifier                |   Yes    |               |                     "us-ashburn-1" |
 | `domain_display_name`   |              OCI Identify Domain Name               |    No    |     "Default" |                                    |
 | `confidential_app_name` | OCI confidential application of identity federation |    No    |  "AzureEntra" |                                    |
 
 ## Output Values
 
-| VARIABLE                            |                        DESCRIPTION                         |                             SAMPLE VALUE                              |
-| :---------------------------------- | :--------------------------------------------------------: | :-------------------------------------------------------------------: | -------------------------------------------------------------- |
+| VARIABLE | DESCRIPTION |                             SAMPLE VALUE                              |
+| :---------------------- | :-------------------------------------------------: | :------: | 
 | `domain_url`                         |                    Identity domains url                    |          https://idcs-xxxxxxxxx.identity.pint.oracle.com:443          |
 | `domain_metadata_xml_url`             |             Identity domains metadata xml url              | https://idcs-xxxxxxxxx.identity.pint.oc9qadev.com:443/fed/v1/metadata |
 | `oci_confidential_app_secret_token` | base64Encode of confidential app's client-id:client-secret |                              <unique_id>                              |
-| `oci_domain_identity_admin_url`     |                    Identity domain admin url                    |                                                                       | https://idcs-<unique-id>.identity.oraclecloud.com:443/admin/v1 |
+| `oci_domain_identity_admin_url`     |                    Identity domain admin url                   | https://idcs-<unique-id>.identity.oraclecloud.com:443/admin/v1 |
 
 ### Setting param value
 
@@ -58,29 +58,7 @@ terraform apply -var="config_file_profile=ONBOARDING"  -var='compartment_ocid=oc
 oci session authenticate --region=<region-identifier>
 ```
 
-### Execution
-
-Assuming authentication is successful, and parameters tfvars are in same directory.
-Initialize Terraform from `templates/az-oci-sso-federation`
-
-```
-terraform init
-```
-
-Run Terraform Plan from `templates/az-oci-sso-federation` to check the resources that will be created
-
-```
-terraform plan
-```
-
-Run Terraform Apply from `templates/az-oci-sso-federation`
-
-```
-terraform apply
-```
-
 ## Troubleshooting
 
 ### Known Issues:
-
 NA
