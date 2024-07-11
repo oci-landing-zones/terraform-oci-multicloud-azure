@@ -78,7 +78,7 @@ Navigate into the `templates` directory.
 
 ### Setting up your environment with Terraform
 
-Input variable can be set either in the `terraform.tfvars` file or through the command line:
+Input variable can be set in the [Variable Definitions file](https://developer.hashicorp.com/terraform/language/values/variables#variable-definitions-tfvars-files) (e.g. `terraform.tfvars`) or through the command line or environment variables:
 
 ``` terraform
 config_file_profile="<MY_PROFILE_NAME>"
@@ -86,10 +86,18 @@ compartment_ocid="<MY_OCI_TENANCY_ID>"
 region="<MY_REGION_IDENTIFIER>"
 ```
 
-or
+or via [Command Line](https://developer.hashicorp.com/terraform/language/values/variables#variables-on-the-command-line)
 
 ``` shell
 terraform plan -var="config_file_profile=<MY_PROFILE_NAME>" -var="compartment_ocid=<MY_OCI_TENANCY_ID>" -var="region=<MY_REGION_IDENTIFIER>"
+```
+
+or via [Environment Variables](https://developer.hashicorp.com/terraform/cli/config/environment-variables#tf_var_name) 
+
+``` shell
+export TF_VAR_config_file_profile="<MY_PROFILE_NAME>"
+export TF_VAR_compartment_ocid="<MY_OCI_TENANCY_ID>"
+export TF_VAR_region="<MY_REGION_IDENTIFIER>"
 ```
 
 ### Initialization
