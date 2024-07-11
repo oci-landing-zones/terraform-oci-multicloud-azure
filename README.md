@@ -1,30 +1,24 @@
 # OCI Multicloud Landing Zone for Azure
+
 ![Landing Zone logo](./images/landing_zone_300.png)
 
-The [Oracle Cloud Infrastructure (OCI) Quick Start](https://github.com/oracle-quickstart?q=oci-quickstart) is a collection of examples that allow Oracle Cloud Infrastructure users to get a quick start deploying advanced infrastructure on OCI.
+The [Oracle Cloud Infrastructure (OCI) Quick Start](https://github.com/oracle-quickstart?q=oci-quickstart) is a collection of examples that allow Oracle Cloud Infrastructure users to get a quick start deploying advanced infrastructure on OCI. This repository contains Terraform scripts specific to the [Oracle Database@Azure](https://www.oracle.com/cloud/azure/oracle-database-at-azure/) service.
 
-The oci-quickstart-template repository contains the template that can be used for accelerating the construction of quickstarts that runs from local Terraform CLI, [OCI Resource Manager](https://docs.cloud.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/resourcemanager.htm) and [OCI Cloud Shell](https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/cloudshellintro.htm).
 
-This repo is under active development.  Building open source software is a community effort.  We're excited to engage with the community building this.
-
-## Resource Manager Deployment
-This Quick Start uses [OCI Resource Manager](https://docs.cloud.oracle.com/iaas/Content/ResourceManager/Concepts/resourcemanager.htm) to make deployment easy, sign up for an [OCI account](https://cloud.oracle.com/en_US/tryit) if you don't have one, and just click the button below:
-
-Note, if you use this template to create another repo you'll need to change the link for the button to point at your repo.
+This repository is under active development. Building open source software is a community effort. We're excited to engage with the community building this.
 
 ## Overview
-A collection of [terraform modules](https://developer.hashicorp.com/terraform/language/modules)
-and templates to create standard setups between Azure and OCI to onboard to ODB@A.
 
-These are pre-release versions designed to be used as a starting point for customers to 
-use or borrow examples from when managing their own cloud infrastructure according to their
-security best practices.
+A repository contains a collection of [terraform modules](https://developer.hashicorp.com/terraform/language/modules) and templates that helps an Azure administrator configure an Azure environment for Oracle Database@Azure and provision database related components (Exadata hardware, Virtual Machine (VM) Clusters, and databases) in Azure.
 
 A user can apply the terraform plans from any computer that has connectivity to both Azure and OCI.
 
 ## Prerequisites
-The following software must be installed on the machine you run the terraform plans from.
+
+To use the Terraform modules and templates in your environment, you must install the following software on the system from which you execute the terraform plans:
+
 - [Terraform](https://developer.hashicorp.com/terraform/install)
+  - Alternate [OpenTofu](https://opentofu.org/docs/intro/)
 - [Python 3.x](https://www.python.org/?downloads) (min version 3.4) with packages
   - [pip](https://pypi.org/project/pip/)
   - [venv](https://docs.python.org/3/library/venv.html) 
@@ -32,80 +26,140 @@ The following software must be installed on the machine you run the terraform pl
 - Azure CLI - [How to install the Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
 - OCI CLI - [Quickstart](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm)
     - Setup OCI-CLI to [authenticate to your tenancy](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.43.1/oci_cli_docs/cmdref/session/authenticate.html) 
-    - create a token auth profile in your oci config with `<MY_PROFILE_NAME>`
+    - Create a token auth profile in your oci config with `<MY_PROFILE_NAME>`
 
 Dependent which cloud resources a module manages, it will use some subset of the terraform cloud providers:
+
 - [OCI terraform provider](https://registry.terraform.io/providers/oracle/oci/latest/docs)
-  - In this template example use OCI provider `SecurityToken` auth method, other acceptable provider implementation are described in  [OCI terraform provider configuration doc](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/terraformproviderconfiguration.htm)
+  - In this template example use OCI provider `SecurityToken` auth method, other acceptable provider implementation are described in [OCI terraform provider configuration doc](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/terraformproviderconfiguration.htm)
 - [azuread terraform provider](https://registry.terraform.io/providers/hashicorp/azuread/latest)
 - [azurerm terraform provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest)
 
-
 ## Provided Templates 
-These module automates the provisioning of components for running Oracle.Database @ Azure. Each template can run independently and default input values are configured which can be overridden per customer's preferences.
 
-- ```templates/az-oci-sso-federation```: Sets up SSO Between OCI and Microsoft Azure with identity federation
-- ```templates/az-oci-rbac-n-sso-fed```: Sets up SSO Between OCI and Microsoft Azure with identity federation And role, groups required for Oracle.Database @ Azure
-- ```templates/az-odb-rbac```: Sets up role, groups required for for Oracle.Database @ Azure.
-- ```templates/az-oci-exa-pdb```: Sets up Oracle.database infrastructure including networks, Exadata Infrastructure, VM Cluster, and database
+These module automates the provisioning of components for running Oracle Database@Azure. Each template can run independently and default input values are configured which can be overridden per customer's preferences.
 
-<sub>*Please read individual template documentation for more details</sub>
+- `templates/az-oci-sso-federation`: Configures Single Sign-on (SSO) Between OCI and Microsoft Azure with identity federation.
+- `templates/az-oci-rbac-n-sso-fed`: Configures SSO Between OCI and Microsoft Azure with identity federation And role, groups required for Oracle Database@Azure.
+- `templates/az-odb-rbac`: Creates Roles and Groups required for for Oracle Database@Azure.
+- `templates/az-oci-exa-pdb`: Provisions Oracle database infrastructure including networks, Exadata Infrastructure, VM Cluster, and database.
 
+*Please read the individual template documentation for more details*.
 
 ## Authentication
-### OCI authentation 
-Must [authenticate to your oci tenancy](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.43.1/oci_cli_docs/cmdref/session/authenticate.html)  with config auth profile as `<MY_PROFILE_NAME>`.  All available OCI regions are defined in [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm#top) 
 
-```
+### OCI Authentication 
+
+You must [authenticate to your oci tenancy](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.43.1/oci_cli_docs/cmdref/session/authenticate.html) with config auth profile as `<MY_PROFILE_NAME>`. All available OCI regions are defined in [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm#top).
+
+``` shell
 oci session authenticate --region=<MY_REGION_IDENTIFIERr> --profile_name=<MY_PROFILE_NAME>
-
-# e.g. oci session authenticate --region=us-ashburn-1 --profile_name=ONBOARDING
 ```
 
-### AZ authentation
+Example:
+
+``` shell
+oci session authenticate --region=us-ashburn-1 --profile_name=ONBOARDING
+```
+
+### AZ Authentication
+
 Official Microsoft documentation to [authenticate to Azure using Azure CLI](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli)
-```
+
+``` shell
 az login --tenant <azure-tenant-id>
 ```
 
-
 ## Execution 
-Change directories into the template directory.
-Note that the terraform state file will be written to the directory you run from. You should keep this file in case you want to use terraform to modify the setup. Read terraform documentation for more persistent and shareable ways to save your state. 
+
+Navigate into the `templates` directory.
+
+**Note:** The Terraform state file writes to the directory from where you execute plans. You should keep this file in case you want to use Terraform to modify the environment configuration later. Refer to the Terraform documentation for more persistent and shareable ways to save state. 
 
 ### Setting up your environment with Terraform
-Input variable can be set either in  `terraform.tfvars` or command line e.g.
-```
+
+Input variable can be set in the [Variable Definitions file](https://developer.hashicorp.com/terraform/language/values/variables#variable-definitions-tfvars-files) (e.g. `terraform.tfvars`) or through the command line or environment variables:
+
+``` terraform
 config_file_profile="<MY_PROFILE_NAME>"
 compartment_ocid="<MY_OCI_TENANCY_ID>"
 region="<MY_REGION_IDENTIFIER>"
 ```
-or
-```
+
+or via [Command Line](https://developer.hashicorp.com/terraform/language/values/variables#variables-on-the-command-line)
+
+``` shell
 terraform plan -var="config_file_profile=<MY_PROFILE_NAME>" -var="compartment_ocid=<MY_OCI_TENANCY_ID>" -var="region=<MY_REGION_IDENTIFIER>"
 ```
 
-### Initialization
-When running for first time, in workspace directory initialize 
+or via [Environment Variables](https://developer.hashicorp.com/terraform/cli/config/environment-variables#tf_var_name) 
+
+``` shell
+export TF_VAR_config_file_profile="<MY_PROFILE_NAME>"
+export TF_VAR_compartment_ocid="<MY_OCI_TENANCY_ID>"
+export TF_VAR_region="<MY_REGION_IDENTIFIER>"
 ```
+
+### Initialization
+
+When running for first time, initialize the workspace directory using:
+
+Terraform: 
+
+``` shell
 terraform init
 ```
 
-### Application
-To validate changes described without applying
+OpenTofu: 
+
+``` shell
+tofu init
 ```
+
+### Application
+
+To validate changes described without applying
+
+Terraform: 
+
+``` shell
 terraform plan
 ```
 
-To apply changes and create resources
+OpenTofu:
+
+``` shell
+tofu plan
 ```
+
+To apply changes and create resources
+
+Terraform: 
+
+``` shell
 terraform apply
 ```
 
-### Destruction 
-To remove all resources created in above steps, run destroy
+OpenTofu:
+
+``` shell
+tofu apply
 ```
-terraform destory
+
+### Destruction 
+
+To remove all resources created in above steps, run destroy:
+
+Terraform: 
+
+``` shell
+terraform destroy
+```
+
+OpenTofu:
+
+``` shell
+tofu destroy
 ```
 
 ## Further Documentation
@@ -115,15 +169,12 @@ terraform destory
 - [Azure Active Directory Provider](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs)
 - [Azure Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
 
-
-## Acknowledgement
-
-Code derived and adapted from [Terraform OKE Sample](https://github.com/terraform-providers/terraform-provider-oci/tree/master/examples/container_engine) and Hashicorp’s [Terraform 0.12 examples](https://github.com/hashicorp/terraform-guides/tree/master/infrastructure-as-code/terraform-0.12-examples).
-
+**Acknowledgement:** Code derived adapted from samples, examples and documentations provided by above mentioned providers.
 
 ## Contributing
 
 Learn how to [contribute](./CONTRIBUTING.md).
 
 ## License
+
 Copyright (c) 2017, 2024 Oracle Corporation and/or its affiliates. Licensed under the [Universal Permissive License 1.0](./LICENSE) as shown at [https://oss.oracle.com/licenses/upl](https://oss.oracle.com/licenses/upl/).

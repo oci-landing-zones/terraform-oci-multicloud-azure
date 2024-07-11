@@ -35,7 +35,7 @@ The Customer's Azure AD account with one of the following Azure AD roles is avai
 | VARIABLE | DESCRIPTION | REQUIRED |  DEFAULT_VALUE | SAMPLE VALUE |
 |:---------|:--------:|:--------:|------:|------:|
 |`config_file_profile`| OCI CLI profile name| Yes |  | "ONBOARDING" |
-|`compartment_ocid` | Tenancy OCID  | Yes |  | "ocid1.tenancy.oc1..xxxxxxxxxxxxx" |
+|`compartment_ocid` | Tenancy OCID of root comparment, unless default domain is in different compartment   | Yes |  | "ocid1.tenancy.oc1..xxxxxxxxxxxxx" |
 |`region` |OCI region Identifier | Yes |  | "us-ashburn-1" |
 |`domain_display_name`| OCI Identify Domain Name | No | "Default" |   |
 |`az_application_name`| Display name for the Azure Entra ID Application | No |  "ORACLE IAM" |   |

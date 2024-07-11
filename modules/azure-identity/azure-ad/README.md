@@ -38,16 +38,9 @@ Note: Limitation on step 4. Edit Attribute and Claims:
 az login --tenant <azure-tenant-id>
 ```
 
-# Execution
-## Initialize
-```
-~/workspace/Indigo/oci-indigo-terraform-landingzone/modules/azure-identity/azure-ad
-$ terraform init
-```
-## Apply
+## Execution
 To create the odbaa_app OCI application with claim settings in step 4 for [SSO Between OCI and Microsoft Azure](https://docs.oracle.com/en-us/iaas/Content/Identity/tutorials/azure_ad/sso_azure/azure_sso.htm).
 ```
-~/workspace/Indigo/oci-indigo-terraform-landingzone/modules/azure-identity/azure-ad 
 $ terraform apply -var="oci_domain_uri=<your OCI Domain URL>"
 ```
 

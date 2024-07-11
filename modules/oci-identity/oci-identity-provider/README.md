@@ -63,22 +63,6 @@ az login --tenant <azure-tenant-id>
 ```
  
 
-### Execution 
-Assuming authentication is successful, and parameters tfvars are in same directory.
-Initialize Terraform from ```templates/az-oci-sso-federation```
-```
-terraform init
-```
-
-Run Terraform Plan from ```templates/az-oci-sso-federation``` to check the resources that will be created
-```
-terraform plan
-```
-
-Run Terraform Apply from ```templates/az-oci-sso-federation```
-```
-terraform apply
-```
 
 ## Troubleshooting
 ### Known Issues:
