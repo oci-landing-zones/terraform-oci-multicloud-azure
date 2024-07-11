@@ -46,17 +46,14 @@ $ terraform apply -var="oci_domain_uri=<your OCI Domain URL>"
 
 To customize the application's name.
 ```
-~/workspace/Indigo/oci-indigo-terraform-landingzone/modules/azure-identity/azure-ad 
 $ terraform apply -var="oci_domain_uri=<your OCI Domain URL>" -var="application_name=<your application name>"
 ```
 To disable claim creation. 
 ```
-~/workspace/Indigo/oci-indigo-terraform-landingzone/modules/azure-identity/azure-ad 
 $ terraform apply -var="oci_domain_uri=<your OCI Domain URL>" -var="claim=false"
 ```
 
 To add a user and group to the application. 
 ```
-~/workspace/Indigo/oci-indigo-terraform-landingzone/modules/azure-identity/azure-ad 
 $ terraform apply -var="oci_domain_uri=<your OCI Domain URL>" -var="application_group_name=<group name>" -var="user_email=<email>" 
 ```

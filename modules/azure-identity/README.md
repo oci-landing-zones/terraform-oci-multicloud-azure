@@ -41,16 +41,13 @@ az login --tenant <azure-tenant-id>
 ### Apply
 
 ```
-~/workspace/Indigo/oci-indigo-terraform-landingzone/templates/phase3 
 $ terraform apply -var="adbs_rbac=true" -var="exa_rbac=true"
 ```
 To only execute exa or adbs RBAC setup set `adbs_rbac` to `true` and `exa_rbac` to `false`
 ```
-~/workspace/Indigo/oci-indigo-terraform-landingzone/templates/phase3 
 $ terraform apply -var="adbs_rbac=true" -var="exa_rbac=false" # exa_rbac set to true and adbs_rbac to false for only EXA RBAC setup in Azure.
 ```
 Setting up RBAC for Exa and ADB-S in Azure customize group names
 ```
-~/workspace/Indigo/oci-indigo-terraform-landingzone/templates/phase3 
 $ terraform apply -var="adbs_rbac=true" -var="exa_rbac=true" -var="odbaa_exa_infra_administrator_group=<put your exa_infra group name>" -var="<more group var>=<your group name>"
 ```

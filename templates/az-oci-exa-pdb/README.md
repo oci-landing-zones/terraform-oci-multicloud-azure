@@ -133,9 +133,3 @@ terraform apply -var='region=us-ashburn-1' .....
 | virtual_network_address_space                | The address space of the virtual network. e.g. 10.2.0.0/16                                                                                                                                                                                                                                                          | `string` | n/a     |   yes    |
 | delegated_subnet_address_prefix                | The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.1.0/24                                                                                                                                                                                                 | `string` | n/a     |   yes    || exadata_infrastructure_storage_count                |The display name of the DB Home | `string` | n/a     |   yes    |
 | delegated_subnet_name                | The name of the delegated subnet                                                                                                                                                                                                                                                                                    | `string` | n/a     |   yes    |
-
-## Provision the resources
-Automate Steps for Provisioning Exa on Azure and Validation. Customer with Permission noted in [Indigo Customer Onboarding White Glove Document [Oracle Internal Only] ](https://confluence.oci.oraclecorp.com/pages/viewpage.action?pageId=3578232776#) Group 2 - All Customers Initially Provisioning ExaDB-D Must Complete These Steps.
-
-
-
