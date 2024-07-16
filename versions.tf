@@ -7,9 +7,10 @@ terraform {
       version = "~> 2.48.0"
     }
     # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
+    # https://github.com/hashicorp/terraform-provider-azurerm/blob/main/CHANGELOG.md#3990-april-11-2024
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~>3.0.0"
+      version = "~> 3.99.0"
     }
     # https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/terraformspecifyingversions.htm#terraformspecifyingversions_ociprovider
     oci = {

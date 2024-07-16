@@ -7,7 +7,7 @@ terraform {
 }
 
 resource "azapi_resource" "cloudExadataInfrastructure" {
-  type      = "Oracle.Database/cloudExadataInfrastructures@2023-09-01-preview"
+  type      = "Oracle.Database/cloudExadataInfrastructures@2023-09-01"
   parent_id = var.resource_group_id
   name      = var.exadata_infrastructure_resource_name
   timeouts {
@@ -35,13 +35,13 @@ resource "azapi_resource" "cloudExadataInfrastructure" {
 }
 
 data "azapi_resource_list" "listDbServersByCloudExadataInfrastructure" {
-  type                   = "Oracle.Database/cloudExadataInfrastructures/dbServers@2023-09-01-preview"
+  type                   = "Oracle.Database/cloudExadataInfrastructures/dbServers@2023-09-01"
   parent_id              = azapi_resource.cloudExadataInfrastructure.id
   response_export_values = ["*"]
 }
 
 resource "azapi_resource" "cloudVmCluster" {
-  type                      = "Oracle.Database/cloudVmClusters@2023-09-01-preview"
+  type                      = "Oracle.Database/cloudVmClusters@2023-09-01"
   parent_id                 = var.resource_group_id
   name                      = var.vm_cluster_resource_name
   schema_validation_enabled = false
