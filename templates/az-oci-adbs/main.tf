@@ -7,10 +7,11 @@ resource "azurerm_resource_group" "resource_group" {
 
 # Delete comment before merge
 # Reference code : https://github.com/Azure/terraform-azurerm-avm-res-network-virtualnetwork/blob/5b60a9a29fa471d3298427f706645e80f09de9da/examples/legacy_address_prefix/README.md 
-module "avm-vnet-subnet" {
+module "avm_odbas_network" {
   source = "Azure/avm-res-network-virtualnetwork/azurerm"
+  version = "0.2.4"
 
-  address_space       = var.virtual_network_address_space
+  address_space       = [var.virtual_network_address_space]
   location            = var.location
   name                = var.virtual_network_name
   resource_group_name = azurerm_resource_group.resource_group.name
@@ -18,7 +19,7 @@ module "avm-vnet-subnet" {
   subnets = {
     delegated = {
       name             = var.delegated_subnet_name
-      address_prefixes = var.delegated_subnet_address_prefix
+      address_prefixes = [var.delegated_subnet_address_prefix]
 
       delegation = [{
         name = "Oracle.Database/networkAttachments"
@@ -39,7 +40,7 @@ module "odbas_database" {
     azapi   = azapi
     azurerm = azurerm
   }
-  depends_on = [module.adbs_network]
+  depends_on = [module.avm_odbas_network]
 
   location                      = var.location
   nw_resource_group             = var.resource_group

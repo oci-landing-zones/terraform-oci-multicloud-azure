@@ -5,8 +5,9 @@ resource "azurerm_resource_group" "resource_group" {
 
 # Delete comment before merge
 # Reference code : https://github.com/Azure/terraform-azurerm-avm-res-network-virtualnetwork/blob/5b60a9a29fa471d3298427f706645e80f09de9da/examples/legacy_address_prefix/README.md 
-module "avm-vnet-subnet" {
+module "avm_vmc_network" {
   source = "Azure/avm-res-network-virtualnetwork/azurerm"
+  version = "0.2.4"
 
   address_space       = var.virtual_network_address_space
   location            = var.location
@@ -35,15 +36,17 @@ module "exa_infra_and_vm_cluster" {
   providers = {
     azapi = azapi
   }
+  depends_on = [module.avm_vmc_network]
+
   exadata_infrastructure_resource_display_name                     = var.exadata_infrastructure_resource_display_name
   exadata_infrastructure_resource_name                             = var.exadata_infrastructure_resource_name
   location                                                         = var.location
-  oracle_database_delegated_subnet_id                              = module.vm_cluster_network.delegated_subnet_id
+  oracle_database_delegated_subnet_id                              = module.avm_vmc_network.subnets[0].id
   resource_group_id                                                = azurerm_resource_group.resource_group.id
   ssh_public_key                                                   = var.ssh_public_key
   vm_cluster_display_name                                          = var.vm_cluster_display_name
   vm_cluster_resource_name                                         = var.vm_cluster_resource_name
-  vnet_id                                                          = module.vm_cluster_network.virtual_network_id
+  vnet_id                                                          = module.avm_vmc_network.resource_id
   zones                                                            = var.zones
   exadata_infrastructure_compute_cpu_count                         = var.exadata_infrastructure_compute_cpu_count
   exadata_infrastructure_maintenance_window_lead_time_in_weeks     = var.exadata_infrastructure_maintenance_window_lead_time_in_weeks
