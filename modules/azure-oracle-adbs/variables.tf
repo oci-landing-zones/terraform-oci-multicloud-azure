@@ -43,10 +43,12 @@ variable "db_compute_model" {
 variable "db_ecpu_count" {
   type        = number
   description = "Number of CPU cores to be made available to the database"
+  default     = 2
 }
 variable "db_storage_in_gb" {
   type        = number
   description = "Size, in gigabytes, of the data volume that will be created and attached to the database"
+  default     = 20
 }
 variable "db_version" {
   type        = string

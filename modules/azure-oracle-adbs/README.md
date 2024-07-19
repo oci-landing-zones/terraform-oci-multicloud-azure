@@ -2,7 +2,7 @@
 
 ## Summary
 
-Terraform module for **Oracle Autonomous Database Service (ADBS)** , Creates a new Autonomous Database resource in Oracle Database @ Azure.
+Terraform module for **Oracle Autonomous Database Serverless (ADB-S)** , Creates a new Autonomous Database resource in Oracle Database @ Azure.
 
 ## Pre-requisites
 
@@ -10,10 +10,10 @@ A virtual network with subnet delegated to `Oracle.Database/networkAttachment` p
 
 ## Providers
 
-| Name                                                   | Version |
-| ------------------------------------------------------ | ------- |
-| [azapi](#provider_azapi) | n/a     |
-| [azurerm](#provider_azapi) | [>=3.99.0](https://github.com/hashicorp/terraform-provider-azurerm/blob/main/CHANGELOG.md#3990-april-11-2024) |
+| Name      | Version                                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------------------------- |
+| [azapi]   | n/a                                                                                                           |
+| [azurerm] | [>=3.99.0](https://github.com/hashicorp/terraform-provider-azurerm/blob/main/CHANGELOG.md#3990-april-11-2024) |
 
 ## Resources
 
@@ -33,8 +33,8 @@ A virtual network with subnet delegated to `Oracle.Database/networkAttachment` p
 | `db_resource_group`             | ADBS resource group name                                                                                                                                                                                                      | string | n/a               |   yes    |
 | `db_name`                       | Database name. The name must begin with an alphabetic character and can contain a maximum of 14 alphanumeric characters. Special characters are not permitted                                                                 | string | n/a               |   yes    |
 | `db_admin_password`             | Password must be between 12 and 30 characters long, and must contain at least 1 uppercase, 1 lowercase, and 1 numeric character. It cannot contain the double quote symbol (“) or the username “admin”, regardless of casing. | string | n/a               |   yes    |
-| `db_ecpu_count`                 | Number of CPU cores to be made available to the database                                                                                                                                                                      | number | n/a               |   yes    |
-| `db_storage_in_gb`              | Size, in gigabytes, of the data volume that will be created and attached to the database                                                                                                                                      | number | n/a               |   yes    |
+| `db_ecpu_count`                 | Number of CPU cores to be made available to the database                                                                                                                                                                      | number | 2                 |    no    |
+| `db_storage_in_gb`              | Size, in gigabytes, of the data volume that will be created and attached to the database                                                                                                                                      | number | 20                |    no    |
 | `db_version`                    | Oracle Database version for Autonomous Database                                                                                                                                                                               | string | "19c"             |          |
 | `db_license_model`              | License model either LicenseIncluded or BringYourOwnLicense "                                                                                                                                                                 | string | "LicenseIncluded" |          |
 | `db_workload`                   | Autonomous Database workload type                                                                                                                                                                                             | string | "DW"              |          |
@@ -46,7 +46,10 @@ A virtual network with subnet delegated to `Oracle.Database/networkAttachment` p
 | `db_character_set`              | Character set for the Autonomous Database                                                                                                                                                                                     | string | "AL32UTF8"        |          |
 | `db_n_character_set`            | Character set for the Autonomous Database                                                                                                                                                                                     | string | "AL16UTF16"       |          |
 
-**NOTE:** Autonomous Database resource has lot of parameter combinations and input constraints , Oracle documents [database_autonomous_database](https://docs.oracle.com/en-us/iaas/tools/terraform-provider-oci/6.2.0/docs/r/database_autonomous_database.html) all these in detail.
+**NOTE:** Autonomous Database resource has lot of parameter combinations and input constraints , please refer to official Oracle docs
+
+- [CreateAutonomousDatabaseBase](https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/CreateAutonomousDatabaseBase)
+- [database_autonomous_database](https://docs.oracle.com/en-us/iaas/tools/terraform-provider-oci/6.2.0/docs/r/database_autonomous_database.html)
 
 ## Outputs
 
