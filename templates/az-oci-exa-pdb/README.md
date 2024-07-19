@@ -144,3 +144,20 @@ terraform apply -var='region=us-ashburn-1' .....
 | virtual_network_address_space                                    | The address space of the virtual network. e.g. 10.2.0.0/16                                                                                                                                                                                                                                                           | `string` | n/a     |   yes    |
 | delegated_subnet_address_prefix                                  | The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.1.0/24                                                                                                                                                                                                  | `string` | n/a     |   yes    |     | exadata_infrastructure_storage_count | The display name of the DB Home | `string` | n/a | yes |
 | delegated_subnet_name                                            | The name of the delegated subnet                                                                                                                                                                                                                                                                                     | `string` | n/a     |   yes    |
+
+# Caveat
+when you clean up exa infra and vm cluster resources via `terraform destroy`, you may encounter `EXA_INFRA_DELETE_FAILED` see error like below:
+```
+│ Error: Failed to delete resource
+|
+|deleting Resource: ...
+│ --------------------------------------------------------------------------------
+│ RESPONSE 200: 200 OK
+│ ERROR CODE: EXA_INFRA_DELETE_FAILED
+│ --------------------------------------------------------------------------------
+...
+│     "code": "EXA_INFRA_DELETE_FAILED",
+│     "message": "Error returned by DeleteCloudExadataInfrastructure operation in Database service.(409, IncorrectState, false) Cannot delete Exadata infrastructure ocid1.cloudexadatainfrastructure.oc1.uk-london-1... for tenant ocid1.tenancy.oc1.... All associated VM clusters must be deleted before you delete the Exadata infrastructure. (opc-request-id: ...)\nTimestamp: 2024-07-18T17:16:12.958Z\n"
+```
+This is because deleting Vm cluster is still in progress.
+Please retry `terraform destroy` after 1hr ~ 1.5hr.

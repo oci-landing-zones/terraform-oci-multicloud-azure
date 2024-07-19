@@ -44,7 +44,7 @@ variable "delegated_subnet_address_prefix" {
   }
 }
 
-# 
+#
 
 variable "db_home_display_name" {
   type        = string
@@ -220,3 +220,55 @@ variable "config_file_profile" {
   description = "OCI Config file name"
 }
 
+variable "nsgCidrs" {
+  type        = list(object({
+          source= string,
+          destinationPortRange = map(string)
+        }))
+  description = "Add additional Network ingress rules for the VM cluster's network security group. e.g. If connect to the VM Cluster from a different Azure VNET where the VM Cluster is located in, please set this to [{'source': '0.0.0.0/0','destinationPortRange': {'max': 1522,'min': 1521 }}]."
+}
+
+
+variable "vm_network_resource_group_name" {
+  type = string
+}
+
+variable "vm_virtual_network_address_space" {
+  description = "The address space of the virtual network. e.g. 10.2.0.0/16"
+  type        = string
+  validation {
+    condition     = can(cidrnetmask(var.vm_virtual_network_address_space))
+    error_message = "Must be a valid IPv4 CIDR block address."
+  }
+}
+
+variable "vm_subnet_address_prefix" {
+  description = "The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.0.0/24"
+  type        = string
+  validation {
+    condition     = var.vm_subnet_address_prefix == "" || can(cidrnetmask(var.vm_subnet_address_prefix))
+    error_message = "Must be a valid IPv4 CIDR block address."
+  }
+  default = ""
+}
+
+variable "vm_vnet_name" {
+  description = "virtual network name for virtual machine"
+  type        = string
+  default = ""
+}
+
+variable "virtual_machine_name" {
+  description = "The name of the virtual machine"
+  type        = string
+  default = ""
+}
+
+variable "ssh_private_key_file" {
+  type = string
+  sensitive   = true
+  validation {
+    condition = can(file(var.ssh_private_key_file))
+    error_message = "Must be a valid file path"
+  }
+}
