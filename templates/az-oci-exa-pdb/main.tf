@@ -6,10 +6,10 @@ resource "azurerm_resource_group" "resource_group" {
 # Delete comment before merge
 # Reference code : https://github.com/Azure/terraform-azurerm-avm-res-network-virtualnetwork/blob/5b60a9a29fa471d3298427f706645e80f09de9da/examples/legacy_address_prefix/README.md 
 module "avm_vmc_network" {
-  source = "Azure/avm-res-network-virtualnetwork/azurerm"
+  source  = "Azure/avm-res-network-virtualnetwork/azurerm"
   version = "0.2.4"
 
-  address_space       = var.virtual_network_address_space
+  address_space       = [var.virtual_network_address_space]
   location            = var.location
   name                = var.virtual_network_name
   resource_group_name = azurerm_resource_group.resource_group.name
@@ -17,7 +17,7 @@ module "avm_vmc_network" {
   subnets = {
     delegated = {
       name             = var.delegated_subnet_name
-      address_prefixes = var.delegated_subnet_address_prefix
+      address_prefixes = [var.delegated_subnet_address_prefix]
 
       delegation = [{
         name = "Oracle.Database/networkAttachments"
@@ -41,7 +41,7 @@ module "exa_infra_and_vm_cluster" {
   exadata_infrastructure_resource_display_name                     = var.exadata_infrastructure_resource_display_name
   exadata_infrastructure_resource_name                             = var.exadata_infrastructure_resource_name
   location                                                         = var.location
-  oracle_database_delegated_subnet_id                              = module.avm_vmc_network.subnets[0].id
+  oracle_database_delegated_subnet_id                              = module.avm_vmc_network.subnets.delegated.resource_id
   resource_group_id                                                = azurerm_resource_group.resource_group.id
   ssh_public_key                                                   = var.ssh_public_key
   vm_cluster_display_name                                          = var.vm_cluster_display_name
