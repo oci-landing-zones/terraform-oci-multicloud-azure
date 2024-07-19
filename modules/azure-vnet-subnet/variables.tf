@@ -34,4 +34,11 @@ variable "delegated_subnet_address_prefix" {
 variable "delegated_subnet_name" {
   description = "The name of the delegated subnet."
   type        = string
+  default = ""
+}
+
+variable "subnet_name" {
+  description = "The name of the subnet."
+  type        = string
+  default = ""
 }
