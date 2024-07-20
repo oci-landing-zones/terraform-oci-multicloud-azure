@@ -7,15 +7,15 @@ terraform {
 }
 
 locals {
-  location            = var.location
-  resource_group_name = var.exa_infra_vm_cluster_resource_group
-  virtual_machine_name     = var.virtual_machine_name
+  location             = var.location
+  resource_group_name  = var.exa_infra_vm_cluster_resource_group
+  virtual_machine_name = var.virtual_machine_name
   region_vm_size_map = tomap({
     uksouth            = "Standard_D2as_v4"
     germanywestcentral = "Standard_D2s_v3"
     eastus             = "Standard_D2s_v3"
   })
-  vm_size        = local.region_vm_size_map[local.location]
+  vm_size      = local.region_vm_size_map[local.location]
   vnet_peering = var.vm_vnet_id != var.vm_cluster_vnet_id
 }
 
@@ -28,21 +28,6 @@ resource "azurerm_public_ip" "public-ip" {
   depends_on = [
   ]
 }
-
-#data "azurerm_virtual_network" "example" {
-#  name                = var.vm_cluster_vent_name
-#  resource_group_name = var.exa_infra_vm_cluster_resource_group
-#}
-#
-#
-#resource "azurerm_subnet" "vm-subnet" {
-#  address_prefixes     = [var.vm_subnet_address_prefix]
-#  name                 = "default"
-#  resource_group_name  = local.resource_group_name
-#  virtual_network_name = var.vm_cluster_vent_name
-#  depends_on = [
-#  ]
-#}
 
 resource "azurerm_network_interface" "network-interface" {
   enable_accelerated_networking = true
@@ -127,19 +112,3 @@ resource "azurerm_network_security_rule" "nsg-rule" {
     azurerm_network_security_group.network-security-group,
   ]
 }
-
-#resource "azurerm_virtual_network_peering" "peerVMtoVMCluster" {
-#  name                      = "peerVMtoVMCluster"
-#  resource_group_name       = var.vm_vnet_resource_group
-#  virtual_network_name      = var.vm_vnet_name
-#  remote_virtual_network_id = var.vm_cluster_vnet_id
-#}
-#
-#resource "azurerm_virtual_network_peering" "peerVMClustertoVM" {
-##  allow_forwarded_traffic   = true
-#  name                      = "peerVMClustertoVM"
-#  resource_group_name       = var.vm_cluster_vnet_resource_group
-#  virtual_network_name      = var.vm_cluster_vnet_name
-#  remote_virtual_network_id = var.vm_vnet_id
-#}
-

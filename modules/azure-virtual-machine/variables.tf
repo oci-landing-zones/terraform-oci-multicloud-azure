@@ -1,43 +1,54 @@
 variable "exa_infra_vm_cluster_resource_group" {
   type        = string
-  description = "The name of Exadata Infrastructure and VM Cluster resource group"
+  description = "The name of Exadata Infrastructure and VM Cluster resource group."
 }
 
 variable "location" {
-  description = "The location of the network resources."
+  description = "The location of the virtual machine resource."
   type        = string
 }
 
 variable "virtual_machine_name" {
-  description = "virtual machine name"
+  description = "The name of the virtual machine."
   type        = string
 }
 
 variable "vm_subnet_id" {
-  description = ""
+  description = "The subnet Id of the virtual machine."
   type        = string
 }
 
 variable "ssh_public_key" {
-  type = string
+  description = "The ssh public key of the virtual machine."
+  type        = string
 }
 
 variable "vm_vnet_resource_group" {
-  type = string
+  description = "The resource group of the VM's virtual network."
+  type        = string
 }
+
 variable "vm_vnet_name" {
-  type = string
+  description = "The virtual network name of the virtual machine."
+  type        = string
 }
+
+variable "vm_vnet_id" {
+  description = "The virtual network Id of the virtual machine."
+  type        = string
+}
+
 variable "vm_cluster_vnet_id" {
-  type = string
+  description = "The virtual network Id of the VM Cluster."
+  type        = string
 }
 
 variable "vm_cluster_vnet_resource_group" {
-  type = string
+  description = "The resource group of the VM Cluster's virtual network."
+  type        = string
 }
+
 variable "vm_cluster_vnet_name" {
-  type = string
-}
-variable "vm_vnet_id" {
-  type = string
+  description = "The virtual network name of the VM Cluster."
+  type        = string
 }

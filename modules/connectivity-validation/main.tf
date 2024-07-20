@@ -1,25 +1,11 @@
-provider "azurerm" {
-  features {
-  }
-}
-
-terraform {
-  required_providers {
-    azurerm = {
-      source = "hashicorp/azurerm"
-    }
-  }
-}
-
 resource "null_resource" "validation" {
   # Establishes connection to be used by all
   # generic remote provisioners (i.e. file/remote-exec)
   connection {
-    type     = "ssh"
-    user     = "azureuser"
+    type        = "ssh"
+    user        = "azureuser"
     private_key = var.ssh_private_key
-    host     = var.vm_public_ip_address
-#    script_path = "${path.module}/script/connectivity_validation.py"
+    host        = var.vm_public_ip_address
   }
 
   provisioner "remote-exec" {
