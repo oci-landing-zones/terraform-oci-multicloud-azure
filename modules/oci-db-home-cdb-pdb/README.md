@@ -40,6 +40,14 @@ No modules.
 | db_version    | A valid Oracle Database version. e.g. 19.20.0.0                                                            | `string` | n/a     |   yes    |
 | db_source    | The source of the database: Use NONE for creating a new database. Use DB_BACKUP for creating a new database by restoring from a backup.                                                             | `string` | n/a     |   yes    |
 
+## Outputs
+
+| Name                                                                                          | Description                |
+|-----------------------------------------------------------------------------------------------|----------------------------|
+| <a name="cdb_connection_string"></a> [cdb\_connection\_string](#output\cdb\_connection\_string)  | CDB long connection string |
+| <a name="pdb_connection_string"></a> [pdb\_connection\_string](#output\pdb\_connection\_string) | PDB long connection string |
+
+
 # License
 
 Copyright (c) 2022,2023 Oracle and/or its affiliates.

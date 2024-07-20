@@ -1,22 +1,26 @@
 variable "vm_public_ip_address" {
-  type = string
+  type        = string
+  description = "The public IP address of the Virtual machine."
 }
 
 variable "ssh_private_key" {
-  type = string
+  type        = string
   sensitive   = true
+  description = "The ssh private key use to connect to VM."
 }
 
 variable "cdb_long_connection_string" {
   type        = string
+  description = "The long connection string of the CDB ."
+}
+
+variable "pdb_long_connection_string" {
+  type        = string
+  description = "The long connection string of the PDB."
 }
 
 variable "db_admin_password" {
   type        = string
   sensitive   = true
-  description = "A strong password for SYS, SYSTEM, and PDB Admin. The password must be at least nine characters and contain at least two uppercase, two lowercase, two numbers, and two special characters. The special characters must be _, #, or -."
-}
-
-variable "pdb_long_connection_string" {
-  type        = string
+  description = "The Database Administrator password."
 }

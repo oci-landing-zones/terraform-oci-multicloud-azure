@@ -61,41 +61,27 @@ module "exa_infra_and_vm_cluster" {
   nsgCidrs                                                         = var.nsgCidrs
 }
 
-#module "db_home_and_cdb_pdb" {
-#  source = "../../modules/oci-db-home-cdb-pdb"
-#  providers = {
-#    oci = oci.oci-st
-#  }
-#  db_admin_password    = var.db_admin_password
-#  db_home_display_name = var.db_home_display_name
-#  db_name              = var.db_name
-#  pdb_name             = var.pdb_name
-#  region               = var.region
-#  vm_cluster_ocid      = module.exa_infra_and_vm_cluster.vm_cluster_ocid
-#  db_home_source       = var.db_home_source
-#  db_source            = var.db_source
-#  db_version           = var.db_version
-#}
+module "db_home_and_cdb_pdb" {
+  source = "../../modules/oci-db-home-cdb-pdb"
+  providers = {
+    oci = oci.oci-st
+  }
+  db_admin_password    = var.db_admin_password
+  db_home_display_name = var.db_home_display_name
+  db_name              = var.db_name
+  pdb_name             = var.pdb_name
+  region               = var.region
+  vm_cluster_ocid      = module.exa_infra_and_vm_cluster.vm_cluster_ocid
+  db_home_source       = var.db_home_source
+  db_source            = var.db_source
+  db_version           = var.db_version
+}
 
 resource "azurerm_resource_group" "vm_network_resource_group" {
   count =  local.provision_vm_resource_group? 1:0
   location = var.location
   name     = var.vm_network_resource_group_name
 }
-
-#module "vm_network" {
-#  source = "../../modules/azure-vnet-subnet"
-#  count = local.provision_vm_vnet? 1:0
-#  providers = {
-#    azurerm = azurerm
-#  }
-#  location                        = var.location
-#  resource_group_name             = local.vm_resource_group_name
-#  virtual_network_name            = var.vm_vnet_name
-#  delegated_subnet_address_prefix = var.vm_subnet_address_prefix
-#  virtual_network_address_space   = var.vm_virtual_network_address_space
-#  subnet_name = "${var.vm_vnet_name}-subnet"
-#}
 
 module "avm_virtual_machine_network" {
   source              = "Azure/avm-res-network-virtualnetwork/azurerm"
@@ -145,8 +131,8 @@ module "virtual_machine" {
 module "validate_connectivity" {
   source = "../../modules/connectivity-validation"
   db_admin_password = var.db_admin_password
-  cdb_long_connection_string = "(DESCRIPTION=(CONNECT_TIMEOUT=5)(TRANSPORT_CONNECT_TIMEOUT=3)(RETRY_COUNT=3)(ADDRESS_LIST=(LOAD_BALANCE=on)(ADDRESS=(PROTOCOL=TCP)(HOST=10.2.1.46)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=10.2.1.45)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=10.2.1.221)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=CDB0718_dsg_lhr.ocidelegated.ocidatabasevir.oraclevcn.com)))"
-  pdb_long_connection_string = "(DESCRIPTION=(CONNECT_TIMEOUT=5)(TRANSPORT_CONNECT_TIMEOUT=3)(RETRY_COUNT=3)(ADDRESS_LIST=(LOAD_BALANCE=on)(ADDRESS=(PROTOCOL=TCP)(HOST=10.2.1.46)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=10.2.1.45)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=10.2.1.221)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=CDB0718_PDB0718.paas.oracle.com)))"
+  cdb_long_connection_string = module.db_home_and_cdb_pdb.cdb_connection_string
+  pdb_long_connection_string = module.db_home_and_cdb_pdb.pdb_connection_string
   ssh_private_key = file(var.ssh_private_key_file)
   vm_public_ip_address = one(module.virtual_machine).vm_public_ip_address
 }

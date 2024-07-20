@@ -154,13 +154,13 @@ variable "ssh_public_key" {
 }
 
 variable "nsgCidrs" {
-  type        = list(object({
-          source= string,
-          destinationPortRange = object({
-            min = number
-            max = number
-          })
-        }))
-  default = []
+  type = list(object({
+    source = string,
+    destinationPortRange = object({
+      min = number
+      max = number
+    })
+  }))
+  default     = []
   description = "Add additional Network ingress rules for the VM cluster's network security group. I,e [{'source': '0.0.0.0/0','destinationPortRange': {'max': 1522,'min': 1521 }}] "
 }
