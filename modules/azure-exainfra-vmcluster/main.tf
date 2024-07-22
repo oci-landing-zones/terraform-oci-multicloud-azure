@@ -53,7 +53,7 @@ resource "azapi_resource" "cloudVmCluster" {
     "location" : var.location,
     "properties" : {
       "subnetId" : var.oracle_database_delegated_subnet_id
-      "nsgCidrs" : var.nsgCidrs
+      "nsgCidrs" : var.nsg_cidrs
       "cloudExadataInfrastructureId" : azapi_resource.cloudExadataInfrastructure.id
       "cpuCoreCount" : var.vm_cluster_cpu_core_count
       "dataCollectionOptions" : {

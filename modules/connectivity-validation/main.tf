@@ -12,6 +12,7 @@ resource "null_resource" "validation" {
     inline = [
       "sudo dnf install -y oracle-instantclient-release-el8",
       "sudo dnf install -y oracle-instantclient-sqlplus",
+      "sqlplus -V",
     ]
   }
 

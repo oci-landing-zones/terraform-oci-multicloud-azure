@@ -211,26 +211,19 @@ variable "config_file_profile" {
   description = "OCI Config file name"
 }
 
-variable "nsgCidrs" {
-  type        = list(object({
-          source= string,
-          destinationPortRange = map(string)
-        }))
-  description = "Add additional Network ingress rules for the VM cluster's network security group. e.g. If connect to the VM Cluster from a different Azure VNET where the VM Cluster is located in, please set this to [{'source': '0.0.0.0/0','destinationPortRange': {'max': 1522,'min': 1521 }}]."
+variable "nsg_cidrs" {
+  type = list(object({
+    source               = string,
+    destinationPortRange = map(string)
+  }))
+  description = "Add additional Network ingress rules for the VM cluster's network security group. e.g. If connect to the VM Cluster from a different Azure VNET where the VM Cluster is located in, please set this to [{source: \"0.0.0.0/0\",destinationPortRange:{max:1522,min:1521}}]"
+  default = []
 }
-
 
 variable "vm_network_resource_group_name" {
-  type = string
-}
-
-variable "vm_virtual_network_address_space" {
-  description = "The address space of the virtual network. e.g. 10.2.0.0/16"
   type        = string
-  validation {
-    condition     = can(cidrnetmask(var.vm_virtual_network_address_space))
-    error_message = "Must be a valid IPv4 CIDR block address."
-  }
+  description = "The resource group name of virtual machine network on Azure."
+  default     = ""
 }
 
 variable "vm_subnet_address_prefix" {
@@ -243,23 +236,33 @@ variable "vm_subnet_address_prefix" {
   default = ""
 }
 
-variable "vm_vnet_name" {
-  description = "virtual network name for virtual machine"
+variable "vm_virtual_network_address_space" {
+  description = "The address space of the VM's virtual network. e.g. 10.2.0.0/16."
   type        = string
-  default = ""
+  validation {
+    condition     = can(cidrnetmask(var.vm_virtual_network_address_space))
+    error_message = "Must be a valid IPv4 CIDR block address."
+  }
+}
+
+variable "vm_vnet_name" {
+  description = "The virtual network name of the virtual machine."
+  type        = string
+  default     = ""
 }
 
 variable "virtual_machine_name" {
-  description = "The name of the virtual machine"
+  description = "The name of the virtual machine."
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "ssh_private_key_file" {
-  type = string
+  type        = string
+  description = "The file path to SSH private key use to connect to VM."
   sensitive   = true
   validation {
-    condition = can(file(var.ssh_private_key_file))
+    condition     = can(file(var.ssh_private_key_file))
     error_message = "Must be a valid file path"
   }
 }
