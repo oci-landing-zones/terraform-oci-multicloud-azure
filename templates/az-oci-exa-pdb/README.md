@@ -163,6 +163,10 @@ terraform apply -var='region=us-ashburn-1' .....
 | <a name="vm_public_ip_address"></a> [vm\_public\_ip\_address](#input\_vm\_public\_ip\_address)                                       | Virtual machine public IP address.                                                                                  | `string`          | ""                                   |    no    |
 | <a name="enable_connectivity_validation"></a> [enable\_connectivity\_validation](#input\_enable\_connectivity\_validation)                    | Enable or disable the CDB/PDB connectivity test.                                                                                  | `bool`            | true                                 |    no    |
 
+# To Destroy VM after Connectivity Test
+
+Use `terraform destroy -target="module.virtual_machine"` to destroy the VM and its network resources.
+
 # Caveat
 
 when you clean up exa infra and vm cluster resources via `terraform destroy`, you may
