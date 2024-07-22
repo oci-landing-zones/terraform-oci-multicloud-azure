@@ -226,7 +226,7 @@ variable "nsg_cidrs" {
     destinationPortRange = map(string)
   }))
   description = "Add additional Network ingress rules for the VM cluster's network security group. e.g. If connect to the VM Cluster from a different Azure VNET where the VM Cluster is located in, please set this to [{source: \"0.0.0.0/0\",destinationPortRange:{max:1522,min:1521}}]"
-  default = []
+  default     = []
 }
 
 variable "vm_network_resource_group_name" {
@@ -249,9 +249,10 @@ variable "vm_virtual_network_address_space" {
   description = "The address space of the VM's virtual network. e.g. 10.2.0.0/16."
   type        = string
   validation {
-    condition     = can(cidrnetmask(var.vm_virtual_network_address_space))
+    condition     = var.vm_virtual_network_address_space == "" || can(cidrnetmask(var.vm_virtual_network_address_space))
     error_message = "Must be a valid IPv4 CIDR block address."
   }
+  default = ""
 }
 
 variable "vm_vnet_name" {
@@ -271,7 +272,20 @@ variable "ssh_private_key_file" {
   description = "The file path to SSH private key use to connect to VM."
   sensitive   = true
   validation {
-    condition     = can(file(var.ssh_private_key_file))
+    condition     = var.ssh_private_key_file == "" || can(file(var.ssh_private_key_file))
     error_message = "Must be a valid file path"
   }
+  default = ""
+}
+
+variable "vm_public_ip_address" {
+  type        = string
+  description = "The public IP address of the Virtual machine."
+  default     = ""
+}
+
+variable "enable_connectivity_validation" {
+  type        = bool
+  description = "Enable or disable the CDB/PDB connectivity test."
+  default     = true
 }

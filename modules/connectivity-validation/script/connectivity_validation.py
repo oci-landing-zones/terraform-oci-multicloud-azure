@@ -21,11 +21,11 @@ def validate_connectivity(db_admin_password, long_connection_string):
     except subprocess.CalledProcessError as e:
         logging.error("Failed to connect to db.")
         logging.error(e.output)
-        logging.error("Connectivity validation Failed!")
+        logging.error("Connectivity validation Failed!!!")
     except subprocess.TimeoutExpired as e:
         logging.error("Failed to connect to db. hint: please check your connection string.")
         logging.error(e.output)
-        logging.error("Connectivity validation Failed!")
+        logging.error("Connectivity validation Failed!!!")
     else:
         db_name = long_connection_string.split("SERVICE_NAME=")[1].split("_")[0]
         validate_db_name(query_result, db_name)
@@ -35,15 +35,16 @@ def validate_connectivity(db_admin_password, long_connection_string):
 
 def validate_db_name(query_result, db_name):
     query_result = query_result.decode("utf-8").split("SQL>")
-    logging.info(query_result[0].lstrip().rstrip())
     query_returned_db_name = query_result[1].strip().splitlines()[2]
     if query_returned_db_name == db_name:
         logging.info(
-            f"SQL query returned db name is {query_returned_db_name} that matches with given database name {db_name}. Connectivity validation Passed!")
+            f"SQL query returned db name is {query_returned_db_name} that matches with given database name {db_name}.")
+        logging.info("Connectivity validation Passed!!!")
     else:
         logging.info(
             f"SQL query returned db name is {query_returned_db_name} that DOESN'T match with given database "
-            f"name {db_name}. Connectivity validation Failed!")
+            f"name {db_name}.")
+        logging.error("Connectivity validation Failed!!!")
 
 
 if __name__ == "__main__":

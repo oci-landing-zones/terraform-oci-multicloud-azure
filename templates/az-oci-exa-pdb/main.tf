@@ -3,6 +3,7 @@ locals {
   provision_vm_vnet           = local.provision_vm && length(var.vm_vnet_name) > 0 && length(var.vm_subnet_address_prefix) > 0
   provision_vm_resource_group = local.provision_vm && length(var.vm_network_resource_group_name) > 0 && var.resource_group_name != var.vm_network_resource_group_name
   vm_resource_group_name      = local.provision_vm_resource_group ? one(azurerm_resource_group.vm_network_resource_group).name : azurerm_resource_group.resource_group.name
+  vm_public_ip                = local.provision_vm ? one(module.virtual_machine).vm_public_ip_address : var.vm_public_ip_address
 }
 
 resource "azurerm_resource_group" "resource_group" {
@@ -145,9 +146,10 @@ module "virtual_machine" {
 
 module "validate_connectivity" {
   source                     = "../../modules/connectivity-validation"
+  count                      = var.enable_connectivity_validation ? 1 : 0
   db_admin_password          = var.db_admin_password
   cdb_long_connection_string = module.db_home_and_cdb_pdb.cdb_connection_string
   pdb_long_connection_string = module.db_home_and_cdb_pdb.pdb_connection_string
   ssh_private_key            = file(var.ssh_private_key_file)
-  vm_public_ip_address       = one(module.virtual_machine).vm_public_ip_address
+  vm_public_ip_address       = local.vm_public_ip
 }

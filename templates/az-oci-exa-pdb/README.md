@@ -15,6 +15,8 @@
 | [avm-res-network-virtualnetwork](https://registry.terraform.io/modules/Azure/avm-res-network-virtualnetwork/azurerm/latest) |
 | [azure-exainfra-vmcluster](modules/azure-exainfra-vmcluster)                                                                |
 | [oci-db-home-cdb-pdb](oci-db-home-cdb-pdb)                                                                                  |
+| [azure-virtual-machine](azure-virtual-machine)               |
+| [connectivity-validation](connectivity-validation)                                  |
 
 
 ## Prerequisite
@@ -158,9 +160,14 @@ terraform apply -var='region=us-ashburn-1' .....
 | vm_vnet_name                                                                 | The virtual network name of the virtual machine.                                                                                                                                                                                                                                                                     | `string` | VM Cluster resource virtual network.    |    no    |
 | virtual_machine_name                                         | The name of the virtual machine.                                                                                                                                                                                                                                                                                     | `string` | n/a                                     |   yes    |
 | ssh_private_key_file                                                      | The file path to SSH private key use to connect to VM.                                                                                                                                                                                                                                                               | `string` | n/a                                     |   yes    |
+| <a name="vm_public_ip_address"></a> [vm\_public\_ip\_address](#input\_vm\_public\_ip\_address)                                       | Virtual machine public IP address.                                                                                  | `string`          | ""                                   |    no    |
+| <a name="enable_connectivity_validation"></a> [enable\_connectivity\_validation](#input\_enable\_connectivity\_validation)                    | Enable or disable the CDB/PDB connectivity test.                                                                                  | `bool`            | true                                 |    no    |
 
 # Caveat
-when you clean up exa infra and vm cluster resources via `terraform destroy`, you may encounter `EXA_INFRA_DELETE_FAILED` see error like below:
+
+when you clean up exa infra and vm cluster resources via `terraform destroy`, you may
+encounter `EXA_INFRA_DELETE_FAILED` see error like below:
+
 ```
 │ Error: Failed to delete resource
 |
@@ -173,5 +180,6 @@ when you clean up exa infra and vm cluster resources via `terraform destroy`, yo
 │     "code": "EXA_INFRA_DELETE_FAILED",
 │     "message": "Error returned by DeleteCloudExadataInfrastructure operation in Database service.(409, IncorrectState, false) Cannot delete Exadata infrastructure ocid1.cloudexadatainfrastructure.oc1.uk-london-1... for tenant ocid1.tenancy.oc1.... All associated VM clusters must be deleted before you delete the Exadata infrastructure. (opc-request-id: ...)\nTimestamp: 2024-07-18T17:16:12.958Z\n"
 ```
+
 This is because deleting Vm cluster is still in progress.
 Please retry `terraform destroy` after 1hr ~ 1.5hr.
