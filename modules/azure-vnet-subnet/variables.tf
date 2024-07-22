@@ -36,9 +36,3 @@ variable "delegated_subnet_name" {
   type        = string
   default = ""
 }
-
-variable "subnet_name" {
-  description = "The name of the subnet."
-  type        = string
-  default = ""
-}
