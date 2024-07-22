@@ -50,6 +50,7 @@ In the current folder, create a `terraform.tfvars` file, which provides input va
 region              = "uk-london-1"
 location            = "uksouth"
 resource_group_name = "OracleDatabaseResourceGroup"
+vm_network_resource_group_name = "VMResourceGroup"
 
 # DbHome, CDB, PDB
 db_home_display_name = "DBHOME"
@@ -93,7 +94,14 @@ vm_cluster_time_zone                                             = "UTC"
 vm_cluster_resource_name                                         = "VMCluster"
 vm_cluster_display_name                                          = "VMCluster"
 vm_cluster_ssh_public_key                                        ="ssh-rsa AA...=="
+nsgCidrs = []
 
+# virtual machine
+virtual_machine_name             = "VirtualMachine"
+vm_vnet_name                     = "VMVirtualNetwork"
+vm_virtual_network_address_space = "10.3.0.0/16"
+vm_subnet_address_prefix         = "10.3.0.0/24"
+ssh_private_key_file             = "<TODO: ssh-private-key-file-path>"
 ```
 
 Or, you can pass all the variables in the `terraform apply` commend instead.
@@ -144,6 +152,12 @@ terraform apply -var='region=us-ashburn-1' .....
 | virtual_network_address_space                                    | The address space of the virtual network. e.g. 10.2.0.0/16                                                                                                                                                                                                                                                           | `string` | n/a     |   yes    |
 | delegated_subnet_address_prefix                                  | The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.1.0/24                                                                                                                                                                                                  | `string` | n/a     |   yes    |     | exadata_infrastructure_storage_count | The display name of the DB Home | `string` | n/a | yes |
 | delegated_subnet_name                                            | The name of the delegated subnet                                                                                                                                                                                                                                                                                     | `string` | n/a     |   yes    |
+| nsg_cidrs                                                                            | Add additional Network ingress rules for the VM cluster's network security group. e.g. [{source: "0.0.0.0/0",destinationPortRange:{max:1522,min:1521}}].                                                                                                                                                             | `list of objects` | []                                      |    no    |
+| vm_network_resource_group_name       | The resource group name of virtual machine network on Azure.                                                                                                                                                                                                                                                         | `string` | n/a                                     |   yes    |
+| vm_virtual_network_address_space | The address space of the VM's virtual network. e.g. 10.3.0.0/16                                                                                                                                                                                                                                                      | `string` | Exa Infra and VM Cluster resource group |    no    |
+| vm_vnet_name                                                                 | The virtual network name of the virtual machine.                                                                                                                                                                                                                                                                     | `string` | VM Cluster resource virtual network.    |    no    |
+| virtual_machine_name                                         | The name of the virtual machine.                                                                                                                                                                                                                                                                                     | `string` | n/a                                     |   yes    |
+| ssh_private_key_file                                                      | The file path to SSH private key use to connect to VM.                                                                                                                                                                                                                                                               | `string` | n/a                                     |   yes    |
 
 # Caveat
 when you clean up exa infra and vm cluster resources via `terraform destroy`, you may encounter `EXA_INFRA_DELETE_FAILED` see error like below:
