@@ -1,0 +1,15 @@
+location = "germanywestcentral"
+
+resource_group = "rg"
+
+virtual_network_name            = "vnet"
+virtual_network_address_space   = "10.1.0.0/16"
+delegated_subnet_name           = "delegate"
+delegated_subnet_address_prefix = "10.1.1.0/24"
+
+
+
+db_name           = "demodb"
+db_admin_password = "*************"
+db_ecpu_count     = 2
+db_storage_in_gb  = 20
