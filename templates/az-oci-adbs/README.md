@@ -13,10 +13,10 @@ Terraform module for **Oracle Autonomous Database Service (ADBS)** , Createss a 
 
 ## Modules
 
-| Name                                                 |
-| ---------------------------------------------------- |
-| [azure-vnet-subnet](../../modules/azure-vnet-subnet) |
-| [azure-oracle-adbs](../../modules/azure-oracle-adbs) |
+| Name                                                                                                                        |
+| --------------------------------------------------------------------------------------------------------------------------- |
+| [avm-res-network-virtualnetwork](https://registry.terraform.io/modules/Azure/avm-res-network-virtualnetwork/azurerm/latest) |
+| [azure-oracle-adbs](../../modules/azure-oracle-adbs)                                                                        |
 
 ## Inputs Variables
 

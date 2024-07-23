@@ -3,17 +3,30 @@ resource "azurerm_resource_group" "resource_group" {
   name     = var.resource_group_name
 }
 
-module "vm_cluster_network" {
-  source = "../../modules/azure-vnet-subnet"
-  providers = {
-    azurerm = azurerm
+module "avm_vmc_network" {
+  source  = "Azure/avm-res-network-virtualnetwork/azurerm"
+  version = "0.2.4"
+
+  address_space       = [var.virtual_network_address_space]
+  location            = var.location
+  name                = var.virtual_network_name
+  resource_group_name = azurerm_resource_group.resource_group.name
+
+  subnets = {
+    delegated = {
+      name             = var.delegated_subnet_name
+      address_prefixes = [var.delegated_subnet_address_prefix]
+
+      delegation = [{
+        name = "Oracle.Database/networkAttachments"
+        service_delegation = {
+          name    = "Oracle.Database/networkAttachments"
+          actions = ["Microsoft.Network/networkinterfaces/*", "Microsoft.Network/virtualNetworks/subnets/join/action"]
+
+        }
+      }]
+    }
   }
-  location                        = var.location
-  resource_group_name             = azurerm_resource_group.resource_group.name
-  virtual_network_name            = var.virtual_network_name
-  delegated_subnet_address_prefix = var.delegated_subnet_address_prefix
-  virtual_network_address_space   = var.virtual_network_address_space
-  delegated_subnet_name           = var.delegated_subnet_name
 }
 
 module "exa_infra_and_vm_cluster" {
@@ -21,15 +34,17 @@ module "exa_infra_and_vm_cluster" {
   providers = {
     azapi = azapi
   }
+  depends_on = [module.avm_vmc_network]
+
   exadata_infrastructure_resource_display_name                     = var.exadata_infrastructure_resource_display_name
   exadata_infrastructure_resource_name                             = var.exadata_infrastructure_resource_name
   location                                                         = var.location
-  oracle_database_delegated_subnet_id                              = module.vm_cluster_network.delegated_subnet_id
+  oracle_database_delegated_subnet_id                              = module.avm_vmc_network.subnets.delegated.resource_id
   resource_group_id                                                = azurerm_resource_group.resource_group.id
   ssh_public_key                                                   = var.ssh_public_key
   vm_cluster_display_name                                          = var.vm_cluster_display_name
   vm_cluster_resource_name                                         = var.vm_cluster_resource_name
-  vnet_id                                                          = module.vm_cluster_network.virtual_network_id
+  vnet_id                                                          = module.avm_vmc_network.resource_id
   zones                                                            = var.zones
   exadata_infrastructure_compute_cpu_count                         = var.exadata_infrastructure_compute_cpu_count
   exadata_infrastructure_maintenance_window_lead_time_in_weeks     = var.exadata_infrastructure_maintenance_window_lead_time_in_weeks
