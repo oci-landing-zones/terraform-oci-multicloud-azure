@@ -3,53 +3,65 @@ terraform {
     azapi = {
       source = "Azure/azapi"
     }
-  }
-}
-
-
-
-resource "azapi_resource" "cloudExadataInfrastructure" {
-  type      = "Oracle.Database/cloudExadataInfrastructures@2023-09-01"
-  parent_id = var.resource_group_id
-  name      = var.exadata_infrastructure_resource_name
-  timeouts {
-    create = "1h30m"
-    delete = "20m"
-  }
-  body = {
-    "location" : var.location,
-    "zones" : [
-      var.zones
-    ],
-    "properties" : {
-      "computeCount" : var.exadata_infrastructure_compute_cpu_count,
-      "displayName" : var.exadata_infrastructure_resource_display_name,
-      "maintenanceWindow" : {
-        "leadTimeInWeeks" : var.exadata_infrastructure_maintenance_window_lead_time_in_weeks,
-        "preference" : var.exadata_infrastructure_maintenance_window_preference,
-        "patchingMode" : var.exadata_infrastructure_maintenance_window_patching_mode
-      },
-      "shape" : var.exadata_infrastructure_shape,
-      "storageCount" : var.exadata_infrastructure_storage_count
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>3.99.0"
     }
   }
-  schema_validation_enabled = false
 }
+
+provider "azurerm" {
+  features {
+  }
+}
+
+provider "azapi" {}
+
+
+
+
+module "avm_vmc_network" {
+  source  = "Azure/avm-res-network-virtualnetwork/azurerm"
+  version = "0.2.4"
+
+  address_space       = [var.virtual_network_address_space]
+  location            = var.location
+  name                = var.virtual_network_name
+  resource_group_name = var.network_resource_group_name
+
+  subnets = {
+    delegated = {
+      name             = var.delegated_subnet_name
+      address_prefixes = [var.delegated_subnet_address_prefix]
+
+      delegation = [{
+        name = "Oracle.Database/networkAttachments"
+        service_delegation = {
+          name    = "Oracle.Database/networkAttachments"
+          actions = ["Microsoft.Network/networkinterfaces/*", "Microsoft.Network/virtualNetworks/subnets/join/action"]
+
+        }
+      }]
+    }
+  }
+}
+
 
 
 
 module "az_vmcluster" {
-  source = "../azure-vmcluster"
+  source = "../../modules/azure-vmcluster"
   providers = {
     azapi = azapi
   }
+  depends_on = [module.avm_vmc_network]
 
-  exadata_infrastructure_id = azapi_resource.cloudExadataInfrastructure.id
-  #exadata_infra_dbserver_ocids = var.exadata_infra_dbserver_ocids # for default value of all dbservers
+  exadata_infrastructure_id                                        = var.exadata_infrastructure_id
+  exadata_infra_dbserver_ocids                                     = var.exadata_infra_dbserver_ocids
   location                                                         = var.location
   resource_group_id                                                = var.resource_group_id
-  vnet_id                                                          = var.vnet_id
-  oracle_database_delegated_subnet_id                              = var.oracle_database_delegated_subnet_id
+  vnet_id                                                          = module.avm_vmc_network.resource_id
+  oracle_database_delegated_subnet_id                              = module.avm_vmc_network.subnets.delegated.resource_id
   vm_cluster_resource_name                                         = var.vm_cluster_resource_name
   vm_cluster_display_name                                          = var.vm_cluster_display_name
   vm_cluster_gi_version                                            = var.vm_cluster_gi_version
@@ -69,3 +81,4 @@ module "az_vmcluster" {
   vm_cluster_ssh_public_key                                        = var.vm_cluster_ssh_public_key
 
 }
+

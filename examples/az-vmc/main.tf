@@ -7,45 +7,14 @@ terraform {
 }
 
 
-
-resource "azapi_resource" "cloudExadataInfrastructure" {
-  type      = "Oracle.Database/cloudExadataInfrastructures@2023-09-01"
-  parent_id = var.resource_group_id
-  name      = var.exadata_infrastructure_resource_name
-  timeouts {
-    create = "1h30m"
-    delete = "20m"
-  }
-  body = {
-    "location" : var.location,
-    "zones" : [
-      var.zones
-    ],
-    "properties" : {
-      "computeCount" : var.exadata_infrastructure_compute_cpu_count,
-      "displayName" : var.exadata_infrastructure_resource_display_name,
-      "maintenanceWindow" : {
-        "leadTimeInWeeks" : var.exadata_infrastructure_maintenance_window_lead_time_in_weeks,
-        "preference" : var.exadata_infrastructure_maintenance_window_preference,
-        "patchingMode" : var.exadata_infrastructure_maintenance_window_patching_mode
-      },
-      "shape" : var.exadata_infrastructure_shape,
-      "storageCount" : var.exadata_infrastructure_storage_count
-    }
-  }
-  schema_validation_enabled = false
-}
-
-
-
 module "az_vmcluster" {
-  source = "../azure-vmcluster"
+  source = "../../modules/azure-vmcluster"
   providers = {
     azapi = azapi
   }
 
-  exadata_infrastructure_id = azapi_resource.cloudExadataInfrastructure.id
-  #exadata_infra_dbserver_ocids = var.exadata_infra_dbserver_ocids # for default value of all dbservers
+  exadata_infrastructure_id                                        = var.exadata_infrastructure_id
+  exadata_infra_dbserver_ocids                                     = var.exadata_infra_dbserver_ocids
   location                                                         = var.location
   resource_group_id                                                = var.resource_group_id
   vnet_id                                                          = var.vnet_id
