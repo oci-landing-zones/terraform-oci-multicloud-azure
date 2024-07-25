@@ -1,4 +1,4 @@
-# azure-connectivity-validation
+# connectivity-validation
 ## Summary
 
 Terraform module for CDB/PDB connectivity test.
