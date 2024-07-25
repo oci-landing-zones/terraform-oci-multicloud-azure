@@ -1,4 +1,4 @@
-# azure-vnet-subnet
+# azure-virtual-machine
 ## Summary
 
 Terraform module for Azure Linux Virtual machine resource.
