@@ -27,7 +27,8 @@ def get_oci_billing_usage_metrics(resource_ocid: str, config_file_profile: str, 
     auth = get_signer(config_file_profile=config_file_profile)
     config = oci.config.from_file(profile_name=config_file_profile)
     # Initialize service client with default config file
-    usage_api_client = oci.usage_api.UsageapiClient(config, signer=auth, timeout=120)
+    usage_api_client = oci.usage_api.UsageapiClient(config, signer=auth, timeout=120,
+                                                    retry_strategy=oci.retry.DEFAULT_RETRY_STRATEGY)
     now = datetime.now().utcnow().strftime("%Y-%m-%dT%000:%000:%000Z")
     start_time = (datetime.now().utcnow() - timedelta(days=20)).strftime("%Y-%m-%dT%000:%000:%000Z")
     try:

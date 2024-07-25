@@ -13,15 +13,15 @@ data "azurerm_resources" "resource" {
   name                = var.azure_resource_name
 }
 
-resource null_resource "resource-json" {
+resource "null_resource" "resource-json" {
 
   provisioner "local-exec" {
     environment = {
-      "PYTHONPATH": "${path.module}/../..:${path.module}/../../scripts:${path.module}/../../scripts/src:${path.module}/../../scripts/src/billing_usage_metrics_validation:${path.module}/../../scripts/src/common"
-      "OCI_CLI_AUTH": "security_token"
+      "PYTHONPATH" : "${path.module}/../..:${path.module}/../../scripts:${path.module}/../../scripts/src:${path.module}/../../scripts/src/billing_usage_metrics_validation:${path.module}/../../scripts/src/common"
+      "OCI_CLI_AUTH" : "security_token"
     }
     working_dir = path.module
-    command = <<EOT
+    command     = <<EOT
       python -m venv venv
       source venv/bin/activate
       pip3 install -r ${path.module}/../../scripts/src/billing_usage_metrics_validation/requirements.txt
