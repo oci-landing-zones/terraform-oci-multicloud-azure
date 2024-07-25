@@ -7,7 +7,7 @@ import json
 from datetime import datetime, timedelta
 
 import oci
-from src.common import get_signer
+from scripts.src.common import get_signer
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 
@@ -82,10 +82,13 @@ def get_resource_ocid(subscription: str, resource_group_name: str, resource_name
     except (AttributeError, TypeError, json.JSONDecodeError) as e:
         logging.error(f"Failed to Get resource OCID. {e}.")
         raise e
+    except IndexError as e:
+        logging.error(f"Failed to Get resource OCID. Can't find {resource_name}.")
+        raise e
 
 
-def verify_azure_billing_usage_metrics(subscriptionId):
-    url = f"https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.CostManagement/query?api-version=2023-11-01"
+def verify_azure_billing_usage_metrics(subscription_id):
+    url = f"https://management.azure.com/subscriptions/{subscription_id}/providers/Microsoft.CostManagement/query?api-version=2023-11-01"
     headers: dict = {"Authorization": f"Bearer {os.environ.get('AZ_AUTH_TOKEN')}".replace("\"", ""),
                      "Content-Type": "application/json; charset=UTF-8"}
     request_body = {"type": "ActualCost",
@@ -141,4 +144,4 @@ if __name__ == "__main__":
     verify_oci_billing_usage_metrics(resource_ocid=ocid,
                                      config_file_profile=args.config_file_profile,
                                      tenant_id=args.oci_tenant_id)
-    verify_azure_billing_usage_metrics(subscriptionId=args.azure_subscription)
+    verify_azure_billing_usage_metrics(subscription_id=args.azure_subscription)
