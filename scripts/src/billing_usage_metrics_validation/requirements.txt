@@ -1,0 +1,5 @@
+
+oci>=2.127.0
+#refer 
+#https://github.com/oracle/oci-cli/blob/master/requirements.txt
+#https://github.com/oracle/oci-python-sdk/blob/master/requirements.txt
