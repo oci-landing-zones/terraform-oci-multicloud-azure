@@ -6,15 +6,15 @@ variable "config_file_profile" {
 
 variable "oci_compartment_ocid" {
   description = "Tenancy OCID of root compartment."
-  type = string
+  type        = string
 }
 
 variable "azure_resource_name" {
   description = "The resource group name of the resource."
-  type = string
+  type        = string
 }
 
 variable "azure_resource_group_name" {
   description = "The name of the resource."
-  type = string
+  type        = string
 }
