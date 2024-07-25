@@ -117,7 +117,7 @@ module "avm_virtual_machine_network" {
   peerings = {
     "vm-to-vmc-vnet-peering" = {
       name                               = "vm-to-vmc-vnet-peering"
-      remote_virtual_network_resource_id = module.vm_cluster_network.virtual_network_id
+      remote_virtual_network_resource_id = module.avm_vmc_network.resource_id
       create_reverse_peering             = true
       reverse_name                       = "vmc-to-vm-vnet-peering"
     }
@@ -133,11 +133,12 @@ module "virtual_machine" {
   exa_infra_vm_cluster_resource_group = var.resource_group_name
   location                            = var.location
   virtual_machine_name                = var.virtual_machine_name
+  vm_size                             = var.vm_size
   vm_subnet_id                        = one(module.avm_virtual_machine_network).subnets["${var.vm_vnet_name}-subnet"].resource_id
   ssh_public_key                      = var.ssh_public_key
 
-  vm_cluster_vnet_id             = module.vm_cluster_network.virtual_network_id
-  vm_cluster_vnet_name           = module.vm_cluster_network.virtual_network_name
+  vm_cluster_vnet_id             = module.avm_vmc_network.resource_id
+  vm_cluster_vnet_name           = module.avm_vmc_network.resource.name
   vm_cluster_vnet_resource_group = azurerm_resource_group.resource_group.name
   vm_vnet_id                     = one(module.avm_virtual_machine_network).resource_id
   vm_vnet_name                   = one(module.avm_virtual_machine_network).resource.name

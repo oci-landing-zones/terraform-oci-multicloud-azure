@@ -235,6 +235,11 @@ variable "vm_network_resource_group_name" {
   default     = ""
 }
 
+variable "vm_size" {
+  description = "The SKU which should be used for this Virtual Machine, such as Standard_D2s_v3 or Standard_D2as_v4."
+  type        = string
+}
+
 variable "vm_subnet_address_prefix" {
   description = "The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.0.0/24"
   type        = string

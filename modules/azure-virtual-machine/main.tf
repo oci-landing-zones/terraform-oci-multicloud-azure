@@ -10,13 +10,7 @@ locals {
   location             = var.location
   resource_group_name  = var.exa_infra_vm_cluster_resource_group
   virtual_machine_name = var.virtual_machine_name
-  region_vm_size_map = tomap({
-    uksouth            = "Standard_D2as_v4"
-    germanywestcentral = "Standard_D2s_v3"
-    eastus             = "Standard_D2s_v3"
-  })
-  vm_size      = local.region_vm_size_map[local.location]
-  vnet_peering = var.vm_vnet_id != var.vm_cluster_vnet_id
+  vnet_peering         = var.vm_vnet_id != var.vm_cluster_vnet_id
 }
 
 resource "azurerm_public_ip" "public-ip" {
@@ -52,7 +46,7 @@ resource "azurerm_linux_virtual_machine" "virtual-machine" {
   network_interface_ids = [azurerm_network_interface.network-interface.id]
   resource_group_name   = local.resource_group_name
   secure_boot_enabled   = true
-  size                  = local.vm_size
+  size                  = var.vm_size
   vtpm_enabled          = true
   additional_capabilities {
   }

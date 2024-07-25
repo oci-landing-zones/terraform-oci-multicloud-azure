@@ -13,6 +13,11 @@ variable "virtual_machine_name" {
   type        = string
 }
 
+variable "vm_size" {
+  description = "The SKU which should be used for this Virtual Machine, such as Standard_D2s_v3 or Standard_D2as_v4."
+  type        = string
+}
+
 variable "vm_subnet_id" {
   description = "The subnet Id of the virtual machine."
   type        = string

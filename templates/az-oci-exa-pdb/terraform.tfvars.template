@@ -3,6 +3,7 @@ region              = "eu-frankfurt-1"
 location            = "germanywestcentral"
 zones               = "2"
 resource_group_name = "rg"
+vm_network_resource_group_name = "VM-rg"
 
 # DbHome, CDB, PDB
 db_home_display_name = "dbhome1"
@@ -47,3 +48,22 @@ vm_cluster_license_model                                         = "LicenseInclu
 vm_cluster_memory_size_in_gbs                                    = 60
 vm_cluster_time_zone                                             = "UTC"
 vm_cluster_ssh_public_key                                                   = "ssh-rsa AAAAB3NzaC1....=="
+nsgCidrs = [
+  {
+    source : "0.0.0.0/0",
+    destinationPortRange : {
+      max : 1522,
+      min : 1521
+    }
+  }
+]
+# virtual machine
+virtual_machine_name             = "ciciTest"
+vm_size                          = "Standard_D2as_v3"
+vm_vnet_name                     = "VMDatabaseVirtualNetwork"
+vm_virtual_network_address_space = "10.2.0.0/16"
+vm_subnet_address_prefix         = "10.2.0.0/24"
+ssh_private_key_file             = "~/.ssh/id_rsa"
+enable_connectivity_validation   = true
+# Pass existing VM Public IP address
+# vm_public_ip_address             = "123.123.123"
