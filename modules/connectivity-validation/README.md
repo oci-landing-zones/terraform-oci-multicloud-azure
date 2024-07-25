@@ -1,4 +1,4 @@
-# azure-vnet-subnet
+# azure-connectivity-validation
 ## Summary
 
 Terraform module for CDB/PDB connectivity test.
