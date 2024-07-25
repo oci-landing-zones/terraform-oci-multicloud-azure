@@ -1,6 +1,4 @@
-# Terraform Template to setup SSO Federation between OCI & Azure
-
-Terraform Template to step up [SSO Between OCI and Microsoft Azure](https://docs.oracle.com/en-us/iaas/Content/Identity/tutorials/azure_ad/sso_azure/azure_sso.htm) This template peforms all steps described in document using Terraform.
+# Terraform Template to create Oracle ADBS on Azure
 
 Terraform module for **Oracle Autonomous Database Service (ADBS)** , Createss a new Azure virtual network with oracle network attachment subnet and link it to new Autonomous Database resource in Oracle Database @ Azure .
 
