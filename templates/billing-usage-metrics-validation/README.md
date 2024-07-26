@@ -1,4 +1,4 @@
-# blling-usage-metrics-validation
+# billing-usage-metrics-validation
 
 ## Summary
 

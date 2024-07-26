@@ -24,7 +24,8 @@ Terraform module for verify Billing/Usage metrics are visible on OCI and Azure.
 ## Execution
 ### Authentication
 1. Using `az login --use-device-code --tenant <AZURE_TENANT_ID>`.
-2. Login to OCI tenancy by executing the following command: 
+2. Using `az account set <AZURE_SUBSCRIPTION_ID>` to specify the desired subscription ID if you have multiple subscriptions within a tenant.
+3. Login to OCI tenancy by executing the following command: 
     ```
     # authenticate OCI cli
     oci session authenticate --region=<region-identifier>

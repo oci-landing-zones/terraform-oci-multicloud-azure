@@ -17,10 +17,19 @@ def verify_oci_billing_usage_metrics(resource_ocid: str, config_file_profile: st
                                          query_type="COST", tenant_id=tenant_id)
     if len(cost) > 0:
         logging.info(f"OCI Cost metrics is visible and Validation is Passed!")
+    else:
+        logging.error(f"OCI Cost metrics data is empty. It takes 8 hours for billing and usage metrics to show up in "
+                      f"OCI. Please retry later.")
+        logging.error(f"OCI Cost metrics validation is Failed!")
     usage = get_oci_billing_usage_metrics(resource_ocid=resource_ocid, config_file_profile=config_file_profile,
                                           query_type="USAGE", tenant_id=tenant_id)
     if len(usage) > 0:
         logging.info(f"OCI Usage metrics is visible and Validation is Passed!")
+    else:
+        logging.error(
+            f"OCI Usage metrics data is empty. It takes 8 hours for billing and usage metrics to show up in OCI. "
+            f"Please retry later.")
+        logging.error(f"OCI Usage metrics validation is Failed!")
 
 
 def get_oci_billing_usage_metrics(resource_ocid: str, config_file_profile: str, query_type: str, tenant_id: str):
@@ -77,13 +86,13 @@ def get_resource_ocid(subscription: str, resource_group_name: str, resource_name
         resource_ocid: str = resource_json.get("properties").get("ocid")
         return resource_ocid
     except urllib.error.HTTPError as e:
-        logging.error(f"Failed to Get resource OCID. {e.status} {e.reason} {headers}.")
+        logging.error(f"Failed to get resource OCID from subscriptions {subscription}'s resource group {resource_group_name}. {e.status} {e.reason}.")
         raise e
     except (AttributeError, TypeError, json.JSONDecodeError) as e:
-        logging.error(f"Failed to Get resource OCID. {e}.")
+        logging.error(f"Failed to get resource OCID. {e}.")
         raise e
     except IndexError as e:
-        logging.error(f"Failed to Get resource OCID. Can't find {resource_name}.")
+        logging.error(f"Failed to get resource OCID. Can't find {resource_name}.")
         raise e
 
 
@@ -106,15 +115,17 @@ def verify_azure_billing_usage_metrics(subscription_id):
     try:
         costs: str = json.loads(urllib.request.urlopen(httprequest).read()).get("properties").get("rows")
         if len(costs) > 0:
-            logging.info(f"Azure Billing metrics Validation is Passed!")
+            logging.info(f"Azure Billing metrics is visible and Validation is Passed!")
         else:
-            logging.error(f"Azure Billing metrics is empty and Validation is Failed!")
+            logging.error("Azure Billing metrics is empty. It takes 56 hours for metrics to show up in Azure (48 "
+                          "hours on MSFT  + 8 hours in OCI). Please retry later.")
+            logging.error(f" Azure Billing metrics validation is Failed!")
     except urllib.error.HTTPError as e:
-        logging.error(f"{e.status} {e.reason}.")
+        logging.error(f"Failed to Azure cost from subscriptions {subscription_id}:  {e.status} {e.reason}.")
         logging.error(f"Azure Billing metrics Validation is Failed!")
         raise e
     except (AttributeError, TypeError, json.JSONDecodeError) as e:
-        logging.error(f"{e}.")
+        logging.error(f"Failed to Azure cost data: {e}.")
         logging.error(f"Azure Billing metrics Validation is Failed!")
         raise e
 
@@ -145,3 +156,4 @@ if __name__ == "__main__":
                                      config_file_profile=args.config_file_profile,
                                      tenant_id=args.oci_tenant_id)
     verify_azure_billing_usage_metrics(subscription_id=args.azure_subscription)
+
