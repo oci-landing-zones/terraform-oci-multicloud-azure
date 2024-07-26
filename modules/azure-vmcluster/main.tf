@@ -20,8 +20,7 @@ locals {
 
 
   # use supplied dbservers if provided else use exa.dbservers
-  are_dbservers_provided = (length(var.exadata_infra_dbserver_ocids) == 0)
-  db_server_ocids        = local.are_dbservers_provided ? local.exa_infra_dbServers_ocids : var.exadata_infra_dbserver_ocids
+  db_server_ocids           = (length(var.exadata_infra_dbserver_ocids) == 0) ? local.exa_infra_dbServers_ocids : var.exadata_infra_dbserver_ocids
 }
 
 resource "azapi_resource" "cloudVmCluster" {
