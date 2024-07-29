@@ -1,3 +1,3 @@
 output "vm_cluster_ocid" {
-  value = azapi_resource.cloudVmCluster.output.properties.ocid
+  value = module.az_vmcluster.vm_cluster_ocid
 }
