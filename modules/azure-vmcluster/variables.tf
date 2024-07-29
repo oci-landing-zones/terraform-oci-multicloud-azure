@@ -1,13 +1,6 @@
-# -----------------------------------------------------------------------------
-# Required inputs
-# -----------------------------------------------------------------------------
+
 variable "location" {
   description = "The location of the exadata infrastructure."
-  type        = string
-}
-
-variable "zones" {
-  description = "The zone of the exadata infrastructure."
   type        = string
 }
 
@@ -16,49 +9,32 @@ variable "resource_group_id" {
   description = "The Azure Id of resource group"
 }
 
-variable "exadata_infrastructure_resource_name" {
-  description = "The name of the exadata infrastructure on Azure."
+
+variable "exadata_infrastructure_id" {
   type        = string
-}
-variable "exadata_infrastructure_resource_display_name" {
-  description = "The display name of the exadata infrastructure."
-  type        = string
+  description = "Azure resource id of Oracle Exadata Infrastructure"
 }
 
-variable "exadata_infrastructure_compute_cpu_count" {
-  description = "The number of compute servers for the cloud Exadata infrastructure."
-  type        = number
-}
-
-variable "exadata_infrastructure_storage_count" {
-  description = "The number of storage servers for the Exadata infrastructure."
-  type        = number
-}
-
-variable "exadata_infrastructure_shape" {
-  description = "The shape of the cloud Exadata infrastructure resource. e.g. Exadata.X9M"
-  type        = string
-}
-
-variable "exadata_infrastructure_maintenance_window_lead_time_in_weeks" {
-  description = "Lead time window allows user to set a lead time to prepare for a down time. The lead time is in weeks and valid value is between 1 to 4."
-  type        = number
-}
-
-variable "exadata_infrastructure_maintenance_window_preference" {
-  description = "The maintenance window scheduling preference.Allowed values are: NO_PREFERENCE, CUSTOM_PREFERENCE."
-  type        = string
-}
-
-variable "exadata_infrastructure_maintenance_window_patching_mode" {
-  description = "Cloud Exadata infrastructure node patching method, either ROLLING or NONROLLING."
-  type        = string
+variable "exadata_infra_dbserver_ocids" {
+  type        = set(string)
+  description = "List of Db servers of exadata infrastructure which VM cluster need to use for configuration. By default all dbServers will be used"
+  default     = []
+  validation {
+    condition = (
+      (length(var.exadata_infra_dbserver_ocids) == 0)
+      || (length(var.exadata_infra_dbserver_ocids) > 1
+        && alltrue([for o in var.exadata_infra_dbserver_ocids : startswith(o, "ocid1.dbserver")])
+      )
+    )
+    error_message = "Variable `exadata_infra_dbserver_ocids` should have atleast 2 dbserver ocids matching pattern `ocid1.dbserver.xxx.xxx.xxxxxx` or supply no value so all dbservers will be used "
+  }
 }
 
 variable "vnet_id" {
   description = "The Azure id of the virtual network"
   type        = string
 }
+
 variable "oracle_database_delegated_subnet_id" {
   description = "Azure Id of the delegated subnet"
   type        = string
@@ -72,6 +48,16 @@ variable "vm_cluster_resource_name" {
 
 variable "vm_cluster_display_name" {
   description = "The display name of a VM cluster"
+  type        = string
+}
+
+variable "vm_cluster_gi_version" {
+  description = "The Oracle Grid Infrastructure software version for the VM cluster."
+  type        = string
+}
+
+variable "vm_cluster_hostname" {
+  description = "The hostname for the cloud VM cluster. The hostname must begin with an alphabetic character, and can contain alphanumeric characters and hyphens (-). The maximum length of the hostname is 16 characters for bare metal and virtual machine DB systems, and 12 characters for Exadata systems."
   type        = string
 }
 
@@ -108,16 +94,6 @@ variable "vm_cluster_db_node_storage_size_in_gbs" {
   type        = number
 }
 
-variable "vm_cluster_gi_version" {
-  description = "The Oracle Grid Infrastructure software version for the VM cluster."
-  type        = string
-}
-
-variable "vm_cluster_hostname" {
-  description = "The hostname for the cloud VM cluster. The hostname must begin with an alphabetic character, and can contain alphanumeric characters and hyphens (-). The maximum length of the hostname is 16 characters for bare metal and virtual machine DB systems, and 12 characters for Exadata systems."
-  type        = string
-}
-
 variable "vm_cluster_license_model" {
   description = "The Oracle license model that applies to the VM clusterAllowed values are: LICENSE_INCLUDED, BRING_YOUR_OWN_LICENSE"
   type        = string
@@ -142,7 +118,6 @@ variable "vm_cluster_is_sparse_diskgroup_enabled" {
   description = "If true, the sparse disk group is configured for the VM cluster. If false, the sparse disk group is not created."
   type        = bool
 }
-
 
 variable "vm_cluster_ssh_public_key" {
   description = "The public SSH key for VM cluster."

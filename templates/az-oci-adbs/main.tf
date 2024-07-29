@@ -49,7 +49,7 @@ module "odbas_database" {
   db_admin_password             = var.db_admin_password
   db_compute_model              = var.db_compute_model
   db_ecpu_count                 = var.db_ecpu_count
-  db_storage_in_gb              = var.db_storage_in_gb
+  db_storage_in_tbs            = var.db_storage_in_tbs
   db_version                    = var.db_version
   db_license_model              = var.db_license_model
   db_workload                   = var.db_workload

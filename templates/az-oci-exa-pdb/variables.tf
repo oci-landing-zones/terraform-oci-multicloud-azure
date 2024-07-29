@@ -1,3 +1,51 @@
+
+variable "region" {
+  type        = string
+  description = "OCI region name. e.g. uk-south-1"
+}
+
+variable "location" {
+  description = "The location of the resources on Azure. e.g. useast"
+  type        = string
+}
+
+
+# Networking Resources
+variable "resource_group_name" {
+  type        = string
+  description = "The name of resource group on Azure."
+}
+
+variable "virtual_network_name" {
+  description = "The name of the virtual network."
+  type        = string
+}
+
+variable "virtual_network_address_space" {
+  description = "The address space of the virtual network. e.g. 10.2.0.0/16"
+  type        = string
+  validation {
+    condition     = can(cidrnetmask(var.virtual_network_address_space))
+    error_message = "Must be a valid IPv4 CIDR block address."
+  }
+}
+
+variable "delegated_subnet_name" {
+  description = "The name of the delegated subnet"
+  type        = string
+}
+
+variable "delegated_subnet_address_prefix" {
+  description = "The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.1.0/24"
+  type        = string
+  validation {
+    condition     = can(cidrnetmask(var.delegated_subnet_address_prefix))
+    error_message = "Must be a valid IPv4 CIDR block address."
+  }
+}
+
+# 
+
 variable "db_home_display_name" {
   type        = string
   description = "The display name of the DB Home"
@@ -19,25 +67,6 @@ variable "pdb_name" {
   description = "The name of the pluggable database. The name must begin with an alphabetic character and can contain a maximum of thirty alphanumeric characters. Special characters are not permitted. Pluggable database should not be same as database name."
 }
 
-variable "region" {
-  type        = string
-  description = "OCI region name. e.g. uk-south-1"
-}
-
-variable "location" {
-  description = "The location of the resources on Azure. e.g. useast"
-  type        = string
-}
-
-variable "virtual_network_name" {
-  description = "The name of the virtual network."
-  type        = string
-}
-
-variable "resource_group_name" {
-  type        = string
-  description = "The name of resource group on Azure."
-}
 
 variable "exadata_infrastructure_resource_name" {
   description = "The name of the Exadata Infrastructure on Azure."
@@ -64,7 +93,7 @@ variable "vm_cluster_display_name" {
   type        = string
 }
 
-variable "ssh_public_key" {
+variable "vm_cluster_ssh_public_key" {
   description = "The public SSH key for VM Cluster."
   type        = string
 }
@@ -182,31 +211,12 @@ variable "exadata_infrastructure_storage_count" {
   type        = number
 }
 
-variable "virtual_network_address_space" {
-  description = "The address space of the virtual network. e.g. 10.2.0.0/16"
-  type        = string
-  validation {
-    condition     = can(cidrnetmask(var.virtual_network_address_space))
-    error_message = "Must be a valid IPv4 CIDR block address."
-  }
-}
 
-variable "delegated_subnet_address_prefix" {
-  description = "The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.1.0/24"
-  type        = string
-  validation {
-    condition     = can(cidrnetmask(var.delegated_subnet_address_prefix))
-    error_message = "Must be a valid IPv4 CIDR block address."
-  }
-}
 
-variable "delegated_subnet_name" {
-  description = "The name of the delegated subnet"
-  type        = string
-}
 
 variable "config_file_profile" {
   type        = string
   default     = "DEFAULT"
   description = "OCI Config file name"
 }
+
