@@ -7,8 +7,8 @@ locals {
   ])))
   shape_per_zone = join("\n", flatten([for z in module.zone_mappings : "AZ logical Zone: ${z.logical_zone} AZ Pyhsical Zone: ${z.az_physical_zone} Internal AD: ${z.internal_ad}:\n${local.shape_info}\n"]))
   region = join("", distinct([for z in module.zone_mappings : z.region]))
-  description_info = "We need to provision a new Prod Exadata Cloud Infrastructure.\n${local.customer_info}\n${local.region_info}\nTenancy OCID: <Put user's Tenancy OCID Here>\n"
-  customer_info = "Customer Name: <Put Customer Name Here>\n4 Letter Customer ID: <Customer ID or N/A>\nTenancy Name: <Put user's Tenancy Name Here>\nCompartment: <Customer compartment OCID>"
+  description_info = "We need to provision a new Prod Exadata Cloud Infrastructure.\n${local.customer_info}\n${local.region_info}\n"
+  customer_info = "Customer Name: <Put Customer Name Here>\n4 Letter Customer ID: <User's ID or N/A>\nTenancy Name: <Put user's Tenancy Name Here>\nCompartment: <Put user's compartment OCID Here>\nTenancy OCID: <Put user's Tenancy OCID Here>\n"
   shape_info = "\tShape: Exadata X9M (Exadata X9M-2) of <number> Compute nodes and <number> Storage nodes\n"
   region_info = "Region: ${local.region}\n    ${indent(4,local.shape_per_zone)}\nAzure Far Child Site: ${var.az_far_child_site}\n\nAzure logic zones: ${local.output_zones}\n\nAzure availibility zone mapping: {\n${indent(2,local.zone_mappings)}\n}"
 }
