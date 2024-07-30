@@ -58,9 +58,9 @@ variable "db_ecpu_count" {
   description = "Number of CPU cores to be made available to the database"
   default     = 2
 }
-variable "db_storage_in_gb" {
+variable "db_storage_in_tbs" {
   type        = number
-  description = "Size, in gigabytes, of the data volume that will be created and attached to the database"
+  description = "Size, in terrabytes, of the data volume that will be created and attached to the database"
   default     = 20
 }
 variable "db_version" {

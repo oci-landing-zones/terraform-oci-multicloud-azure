@@ -53,7 +53,7 @@ resource "azapi_resource" "autonomous_db" {
     "properties" : {
       "displayName" : var.db_name,
       "computeCount" : var.db_ecpu_count,
-      "dataStorageSizeInGbs" : var.db_storage_in_gb,
+      "dataStorageSizeInTbs" : var.db_storage_in_tbs,
       "adminPassword" : var.db_admin_password,
       "dbVersion" : var.db_version,
       "licenseModel" : var.db_license_model,

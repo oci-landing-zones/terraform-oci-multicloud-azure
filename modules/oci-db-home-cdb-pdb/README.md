@@ -41,9 +41,4 @@ No modules.
 | db_source    | The source of the database: Use NONE for creating a new database. Use DB_BACKUP for creating a new database by restoring from a backup.                                                             | `string` | n/a     |   yes    |
 
 # License
-
-Copyright (c) 2022,2023 Oracle and/or its affiliates.
-
-Licensed under the Universal Permissive License (UPL), Version 1.0.
-
 See [LICENSE](../../LICENSE) for more details.
