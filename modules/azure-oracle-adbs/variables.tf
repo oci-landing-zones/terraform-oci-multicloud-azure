@@ -48,7 +48,7 @@ variable "db_ecpu_count" {
 variable "db_storage_in_tbs" {
   type        = number
   description = "Size, in terrabyte, of the data volume that will be created and attached to the database"
-  default     = 20
+  default     = 1
 }
 variable "db_version" {
   type        = string
