@@ -16,10 +16,11 @@ Terraform Template to get info for exadata limits raising.
 
 ## Inputs Variables 
 
-| VARIABLE                                   |                                                                                                                                                                   DESCRIPTION                                                                                                                                                                    | Type | REQUIRED | DEFAULT_VALUE |             SAMPLE VALUE |
-|:-------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------:|---------:|--------------:|-------------------------:|
-| location                                   | Specifies the Azure location where would like to get limits increased.                                                                                                                                                                                                                                                                           | `string` |      n/a |           yes | e.g. "East US", "eastus" |
-| zones                                      | The Azure logicalZones would like to get limits increased.                                                                                                                                            | `string` |     ""   |            no |               e.g. "1,2" |
+| VARIABLE                                   |                              DESCRIPTION                               | Type | REQUIRED | DEFAULT_VALUE |                    SAMPLE VALUE |
+|:-------------------------------------------|:----------------------------------------------------------------------:|:--------:|---------:|--------------:|--------------------------------:|
+| location                                   | Specifies the Azure location where would like to get limits increased. | `string` |      n/a |           yes |        e.g. "East US", "eastus" |
+| zones                                      |       The Azure logicalZones would like to get limits increased.       | `string` |       "" |            no |                      e.g. "1,2" |
+| az_far_child_site                          |                       The Azure far child site.                        | `string` |    "N/A" |            no |     e.g. "IAD-52", "IAD-53", "FRA-16" |
 
 
 ### Setting param value 

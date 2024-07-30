@@ -10,7 +10,7 @@ locals {
   description_info = "We need to provision a new Prod Exadata Cloud Infrastructure.\n${local.customer_info}\n${local.region_info}\nTenancy OCID: <Put user's Tenancy OCID Here>\n"
   customer_info = "Customer Name: <Put Customer Name Here>\n4 Letter Customer ID: <Customer ID or N/A>\nTenancy Name: <Put user's Tenancy Name Here>\nCompartment: <Customer compartment OCID>"
   shape_info = "\tShape: Exadata X9M (Exadata X9M-2) of <number> Compute nodes and <number> Storage nodes\n"
-  region_info = "Region: ${local.region}\n    ${indent(4,local.shape_per_zone)}\nAzure Far Child Site - <e.g IAD53, IAD52, or N/A>\n\nAzure logic zones: ${local.output_zones}\n\nAzure availibility zone mapping: {\n${indent(2,local.zone_mappings)}\n}"
+  region_info = "Region: ${local.region}\n    ${indent(4,local.shape_per_zone)}\nAzure Far Child Site: ${var.az_far_child_site}\n\nAzure logic zones: ${local.output_zones}\n\nAzure availibility zone mapping: {\n${indent(2,local.zone_mappings)}\n}"
 }
 
 module "zone_mappings" {
