@@ -13,6 +13,12 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 
 
 def verify_oci_billing_usage_metrics(resource_ocid: str, config_file_profile: str, tenant_id: str):
+    """
+    Check if  OCI Usage/Cost metrics is visible.
+    :param resource_ocid: oci resource ocid
+    :param config_file_profile: oci config file
+    :param tenant_id: oci tenant id
+    """
     cost = get_oci_billing_usage_metrics(resource_ocid=resource_ocid, config_file_profile=config_file_profile,
                                          query_type="COST", tenant_id=tenant_id)
     if len(cost) > 0:
@@ -33,6 +39,14 @@ def verify_oci_billing_usage_metrics(resource_ocid: str, config_file_profile: st
 
 
 def get_oci_billing_usage_metrics(resource_ocid: str, config_file_profile: str, query_type: str, tenant_id: str):
+    """
+    get a list of oci metrics from oci usage api.
+    :param resource_ocid: oci resource ocid
+    :param config_file_profile: oci config file
+    :param query_type: oci metrics type e.g. cost or usage
+    :param tenant_id: oci tenant id
+    :return: a list of oci metrics
+    """
     auth = get_signer(config_file_profile=config_file_profile)
     config = oci.config.from_file(profile_name=config_file_profile)
     # Initialize service client with default config file
@@ -70,6 +84,13 @@ def get_oci_billing_usage_metrics(resource_ocid: str, config_file_profile: str, 
 
 
 def get_resource_ocid(subscription: str, resource_group_name: str, resource_name: str):
+    """
+    Get a resource's OCID.
+    :param subscription: Azure subscription Id.
+    :param resource_group_name: Azure resource group name;
+    :param resource_name: Azure resource name.
+    :return: the oci ocid of the resource.
+    """
     headers: dict = {"Authorization": f"Bearer {os.environ.get('AZ_AUTH_TOKEN')}".replace("\"", "")}
     resource_url: str = f"https://management.azure.com/subscriptions/{subscription}/resourceGroups/{resource_group_name}/resources?$filter=name%20eq%20'{resource_name}'&api-version=2021-04-01"
     httprequest: urllib.request.Request = urllib.request.Request(
@@ -97,6 +118,10 @@ def get_resource_ocid(subscription: str, resource_group_name: str, resource_name
 
 
 def verify_azure_billing_usage_metrics(subscription_id):
+    """
+    Check if  Azure Cost metrics is visible.
+    :param subscription_id: Azure subscription Id.
+    """
     url = f"https://management.azure.com/subscriptions/{subscription_id}/providers/Microsoft.CostManagement/query?api-version=2023-11-01"
     headers: dict = {"Authorization": f"Bearer {os.environ.get('AZ_AUTH_TOKEN')}".replace("\"", ""),
                      "Content-Type": "application/json; charset=UTF-8"}

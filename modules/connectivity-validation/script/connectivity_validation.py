@@ -7,6 +7,11 @@ logging.basicConfig(filename="connectivity_validation.log", level=logging.INFO, 
 
 
 def validate_connectivity(db_admin_password, long_connection_string):
+    """
+    Validate database connectivity.
+    :param db_admin_password: database admin password.
+    :param long_connection_string: database long connection string.
+    """
     try:
         dbsession = subprocess.Popen([f"sqlplus sys/{db_admin_password}@'{long_connection_string} as sysdba'"],
                                      shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -34,6 +39,11 @@ def validate_connectivity(db_admin_password, long_connection_string):
 
 
 def validate_db_name(query_result, db_name):
+    """
+    Validate if queried db name is equal to expected db name.
+    :param query_result: actual database name from query results.
+    :param db_name: expected database name.
+    """
     query_result = query_result.decode("utf-8").split("SQL>")
     query_returned_db_name = query_result[1].strip().splitlines()[2]
     if query_returned_db_name == db_name:
