@@ -36,5 +36,15 @@ terraform apply -var="location=westus"  -var="zone=1"
 az login --tenant <azure-tenant-id>
 ```
 
+## Outputs
+
+| Name                  | Description                                                                                      |
+|-----------------------|--------------------------------------------------------------------------------------------------|
+| location_zone_mapping | Availability zone mappings for the region.  The map of logical_zone and physical_zone.           |
+| internal_ad           | OCI AD which logical zone id is mapped to.                                                       |
+| az_physical_zone      | The fully qualified physical zone id of availability zone to which logical zone id is mapped to. |
+| region                | Region which var.location is mapped to.                                                          |
+| logical_zone          | The logical zone id for the availability zone.                                                   |
+
 ## Troubleshooting
 ### Known Issues:

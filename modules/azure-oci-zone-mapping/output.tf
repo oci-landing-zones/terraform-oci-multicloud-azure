@@ -14,6 +14,6 @@ output "region" {
   value = local.region
 }
 
-output "logical_zone" {
+output "az_logical_zone" {
   value = var.zone
 }
