@@ -148,3 +148,15 @@ variable "vm_cluster_ssh_public_key" {
   description = "The public SSH key for VM cluster."
   type        = string
 }
+
+variable "nsg_cidrs" {
+  type = list(object({
+    source = string,
+    destinationPortRange = object({
+      min = number
+      max = number
+    })
+  }))
+  default     = []
+  description = "Add additional Network ingress rules for the VM cluster's network security group. e.g. [{'source': '0.0.0.0/0','destinationPortRange': {'max': 1522,'min': 1521 }}]."
+}

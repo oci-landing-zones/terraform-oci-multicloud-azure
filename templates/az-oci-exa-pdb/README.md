@@ -15,6 +15,8 @@
 | [avm-res-network-virtualnetwork](https://registry.terraform.io/modules/Azure/avm-res-network-virtualnetwork/azurerm/latest) |
 | [azure-exainfra-vmcluster](modules/azure-exainfra-vmcluster)                                                                |
 | [oci-db-home-cdb-pdb](oci-db-home-cdb-pdb)                                                                                  |
+| [azure-virtual-machine](azure-virtual-machine)               |
+| [connectivity-validation](connectivity-validation)                                  |
 
 
 ## Prerequisite
@@ -50,6 +52,7 @@ In the current folder, create a `terraform.tfvars` file, which provides input va
 region              = "uk-london-1"
 location            = "uksouth"
 resource_group_name = "OracleDatabaseResourceGroup"
+vm_network_resource_group_name = "VMResourceGroup"
 
 # DbHome, CDB, PDB
 db_home_display_name = "DBHOME"
@@ -93,7 +96,15 @@ vm_cluster_time_zone                                             = "UTC"
 vm_cluster_resource_name                                         = "VMCluster"
 vm_cluster_display_name                                          = "VMCluster"
 vm_cluster_ssh_public_key                                        ="ssh-rsa AA...=="
+nsgCidrs = []
 
+# virtual machine
+virtual_machine_name             = "VirtualMachine"
+vm_size                          = "Standard_D2as_v4"
+vm_vnet_name                     = "VMVirtualNetwork"
+vm_virtual_network_address_space = "10.3.0.0/16"
+vm_subnet_address_prefix         = "10.3.0.0/24"
+ssh_private_key_file             = "<TODO: ssh-private-key-file-path>"
 ```
 
 Or, you can pass all the variables in the `terraform apply` commend instead.
@@ -103,7 +114,7 @@ terraform apply -var='region=us-ashburn-1' .....
 ```
 
 | Name                                                             | Description                                                                                                                                                                                                                                                                                                          | Type     | Default | Required |
-| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- | :------: | --- | ------------------------------------ | ------------------------------- | -------- | --- | --- |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- | :------: | 
 | db_home_display_name                                             | The display name of the DB Home                                                                                                                                                                                                                                                                                      | `string` | n/a     |   yes    |
 | db_admin_password                                                | A strong password for SYS, SYSTEM, and PDB Admin. The password must be at least nine characters and contain at least two uppercase, two lowercase, two numbers, and two special characters. The special characters must be \_, #, or -.                                                                              | `string` | n/a     |   yes    |
 | db_name                                                          | The database name. The name must begin with an alphabetic character and can contain a maximum of eight alphanumeric characters. Special characters are not permitted.                                                                                                                                                | `string` | n/a     |   yes    |
@@ -142,5 +153,39 @@ terraform apply -var='region=us-ashburn-1' .....
 | exadata_infrastructure_maintenance_window_patching_mode          | Cloud Exadata infrastructure node patching method, either ROLLING or NONROLLING.                                                                                                                                                                                                                                     | `string` | n/a     |   yes    |
 | exadata_infrastructure_storage_count                             | The number of storage servers for the Exadata infrastructure                                                                                                                                                                                                                                                         | `number` | n/a     |   yes    |
 | virtual_network_address_space                                    | The address space of the virtual network. e.g. 10.2.0.0/16                                                                                                                                                                                                                                                           | `string` | n/a     |   yes    |
-| delegated_subnet_address_prefix                                  | The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.1.0/24                                                                                                                                                                                                  | `string` | n/a     |   yes    |     | exadata_infrastructure_storage_count | The display name of the DB Home | `string` | n/a | yes |
+| delegated_subnet_address_prefix                                  | The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.1.0/24                                                                                                                                                                                                  | `string` | n/a     |   yes    |
 | delegated_subnet_name                                            | The name of the delegated subnet                                                                                                                                                                                                                                                                                     | `string` | n/a     |   yes    |
+| nsg_cidrs                                                        | Add additional Network ingress rules for the VM cluster's network security group. e.g. [{source: "0.0.0.0/0",destinationPortRange:{max:1522,min:1521}}].                                                                                                                                                             | `list of objects`  | []  |    no    |
+| vm_network_resource_group_name                                   | The resource group name of virtual machine network on Azure.                                                                                                                                                                                                                                                         | `string` | n/a     |   yes    |
+| vm_size                                                          | The SKU which should be used for this Virtual Machine, such as Standard_D2s_v3 or Standard_D2as_v4.                                                                                                                                                                                                                  | `string` | n/a                                     |   yes    |
+| vm_virtual_network_address_space                                 | The address space of the VM's virtual network. e.g. 10.3.0.0/16                                                                                                                                                                                                                                                      | `string` | Exa Infra and VM Cluster resource group |    no    |
+| vm_vnet_name                                                     | The virtual network name of the virtual machine.                                                                                                                                                                                                                                                                     | `string` | VM Cluster resource virtual network.    |    no    |
+| virtual_machine_name                                             | The name of the virtual machine.                                                                                                                                                                                                                                                                                     | `string` | n/a                                     |   yes    |
+| ssh_private_key_file                                             | The file path to SSH private key use to connect to VM.                                                                                                                                                                                                                                                               | `string` | n/a                                     |   yes    |
+| vm_public_ip_address                                             | Virtual machine public IP address.                                                                                                                                                                                                                                                                                   | `string` | ""                                      |    no    |
+| enable_connectivity_validation                                   | Enable or disable the CDB/PDB connectivity test.                                                                                                                                                                                                                                                                     | `bool`   | true                                    |    no    |
+
+# To Destroy VM after Connectivity Test
+
+Comment out module "virtual_machine" block and re-run `terraform apply`.
+
+# Caveat
+
+when you clean up exa infra and vm cluster resources via `terraform destroy`, you may
+encounter `EXA_INFRA_DELETE_FAILED` see error like below:
+
+```
+│ Error: Failed to delete resource
+|
+|deleting Resource: ...
+│ --------------------------------------------------------------------------------
+│ RESPONSE 200: 200 OK
+│ ERROR CODE: EXA_INFRA_DELETE_FAILED
+│ --------------------------------------------------------------------------------
+...
+│     "code": "EXA_INFRA_DELETE_FAILED",
+│     "message": "Error returned by DeleteCloudExadataInfrastructure operation in Database service.(409, IncorrectState, false) Cannot delete Exadata infrastructure ocid1.cloudexadatainfrastructure.oc1.uk-london-1... for tenant ocid1.tenancy.oc1.... All associated VM clusters must be deleted before you delete the Exadata infrastructure. (opc-request-id: ...)\nTimestamp: 2024-07-18T17:16:12.958Z\n"
+```
+
+This is because deleting Vm cluster is still in progress.
+Please retry `terraform destroy` after 1hr ~ 1.5hr.

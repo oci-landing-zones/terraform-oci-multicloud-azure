@@ -67,5 +67,5 @@ module "az_vmcluster" {
   vm_cluster_is_local_backup_enabled                               = var.vm_cluster_is_local_backup_enabled
   vm_cluster_is_sparse_diskgroup_enabled                           = var.vm_cluster_is_sparse_diskgroup_enabled
   vm_cluster_ssh_public_key                                        = var.vm_cluster_ssh_public_key
-
+  nsg_cidrs                                                        = var.nsg_cidrs
 }

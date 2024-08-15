@@ -1,3 +1,11 @@
+locals {
+  provision_vm                = length(var.virtual_machine_name) > 0
+  provision_vm_vnet           = local.provision_vm && length(var.vm_vnet_name) > 0 && length(var.vm_subnet_address_prefix) > 0
+  provision_vm_resource_group = local.provision_vm && length(var.vm_network_resource_group_name) > 0 && var.resource_group_name != var.vm_network_resource_group_name
+  vm_resource_group_name      = local.provision_vm_resource_group ? one(azurerm_resource_group.vm_network_resource_group).name : azurerm_resource_group.resource_group.name
+  vm_public_ip                = local.provision_vm ? one(module.virtual_machine).vm_public_ip_address : var.vm_public_ip_address
+}
+
 resource "azurerm_resource_group" "resource_group" {
   location = var.location
   name     = var.resource_group_name
@@ -66,6 +74,7 @@ module "exa_infra_and_vm_cluster" {
   vm_cluster_memory_size_in_gbs                                    = var.vm_cluster_memory_size_in_gbs
   vm_cluster_time_zone                                             = var.vm_cluster_time_zone
   exadata_infrastructure_storage_count                             = var.exadata_infrastructure_storage_count
+  nsg_cidrs                                                        = var.nsg_cidrs
 }
 
 module "db_home_and_cdb_pdb" {
@@ -82,4 +91,66 @@ module "db_home_and_cdb_pdb" {
   db_home_source       = var.db_home_source
   db_source            = var.db_source
   db_version           = var.db_version
+}
+
+resource "azurerm_resource_group" "vm_network_resource_group" {
+  count    = local.provision_vm_resource_group ? 1 : 0
+  location = var.location
+  name     = var.vm_network_resource_group_name
+}
+
+module "avm_virtual_machine_network" {
+  source              = "Azure/avm-res-network-virtualnetwork/azurerm"
+  version             = "0.2.4"
+  count               = local.provision_vm_vnet ? 1 : 0
+  address_space       = [var.vm_virtual_network_address_space]
+  location            = var.location
+  name                = var.vm_vnet_name
+  resource_group_name = var.vm_network_resource_group_name
+
+  subnets = {
+    "${var.vm_vnet_name}-subnet" = {
+      name             = "${var.vm_vnet_name}-subnet"
+      address_prefixes = [var.vm_subnet_address_prefix]
+    }
+  }
+  peerings = {
+    "vm-to-vmc-vnet-peering" = {
+      name                               = "vm-to-vmc-vnet-peering"
+      remote_virtual_network_resource_id = module.avm_vmc_network.resource_id
+      create_reverse_peering             = true
+      reverse_name                       = "vmc-to-vm-vnet-peering"
+    }
+  }
+}
+
+module "virtual_machine" {
+  source = "../../modules/azure-virtual-machine"
+  count  = local.provision_vm ? 1 : 0
+  providers = {
+    azurerm = azurerm
+  }
+  exa_infra_vm_cluster_resource_group = var.resource_group_name
+  location                            = var.location
+  virtual_machine_name                = var.virtual_machine_name
+  vm_size                             = var.vm_size
+  vm_subnet_id                        = one(module.avm_virtual_machine_network).subnets["${var.vm_vnet_name}-subnet"].resource_id
+  ssh_public_key                      = var.ssh_public_key
+
+  vm_cluster_vnet_id             = module.avm_vmc_network.resource_id
+  vm_cluster_vnet_name           = module.avm_vmc_network.resource.name
+  vm_cluster_vnet_resource_group = azurerm_resource_group.resource_group.name
+  vm_vnet_id                     = one(module.avm_virtual_machine_network).resource_id
+  vm_vnet_name                   = one(module.avm_virtual_machine_network).resource.name
+  vm_vnet_resource_group         = local.vm_resource_group_name
+}
+
+module "validate_connectivity" {
+  source                     = "../../modules/connectivity-validation"
+  count                      = var.enable_connectivity_validation ? 1 : 0
+  db_admin_password          = var.db_admin_password
+  cdb_long_connection_string = module.db_home_and_cdb_pdb.cdb_connection_string
+  pdb_long_connection_string = module.db_home_and_cdb_pdb.pdb_connection_string
+  ssh_private_key            = file(var.ssh_private_key_file)
+  vm_public_ip_address       = local.vm_public_ip
 }

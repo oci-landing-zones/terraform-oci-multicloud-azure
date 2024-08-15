@@ -44,7 +44,7 @@ variable "delegated_subnet_address_prefix" {
   }
 }
 
-# 
+#
 
 variable "db_home_display_name" {
   type        = string
@@ -220,3 +220,77 @@ variable "config_file_profile" {
   description = "OCI Config file name"
 }
 
+variable "nsg_cidrs" {
+  type = list(object({
+    source               = string,
+    destinationPortRange = map(string)
+  }))
+  description = "Add additional Network ingress rules for the VM cluster's network security group. e.g. If connect to the VM Cluster from a different Azure VNET where the VM Cluster is located in, please set this to [{source: \"0.0.0.0/0\",destinationPortRange:{max:1522,min:1521}}]"
+  default     = []
+}
+
+variable "vm_network_resource_group_name" {
+  type        = string
+  description = "The resource group name of virtual machine network on Azure."
+  default     = ""
+}
+
+variable "vm_size" {
+  description = "The SKU which should be used for this Virtual Machine, such as Standard_D2s_v3 or Standard_D2as_v4."
+  type        = string
+}
+
+variable "vm_subnet_address_prefix" {
+  description = "The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.0.0/24"
+  type        = string
+  validation {
+    condition     = var.vm_subnet_address_prefix == "" || can(cidrnetmask(var.vm_subnet_address_prefix))
+    error_message = "Must be a valid IPv4 CIDR block address."
+  }
+  default = ""
+}
+
+variable "vm_virtual_network_address_space" {
+  description = "The address space of the VM's virtual network. e.g. 10.2.0.0/16."
+  type        = string
+  validation {
+    condition     = var.vm_virtual_network_address_space == "" || can(cidrnetmask(var.vm_virtual_network_address_space))
+    error_message = "Must be a valid IPv4 CIDR block address."
+  }
+  default = ""
+}
+
+variable "vm_vnet_name" {
+  description = "The virtual network name of the virtual machine."
+  type        = string
+  default     = ""
+}
+
+variable "virtual_machine_name" {
+  description = "The name of the virtual machine."
+  type        = string
+  default     = ""
+}
+
+variable "ssh_private_key_file" {
+  type        = string
+  description = "The file path to SSH private key use to connect to VM."
+  sensitive   = true
+  validation {
+    condition     = var.ssh_private_key_file == "" || can(file(var.ssh_private_key_file))
+    error_message = "Must be a valid file path"
+  }
+  default = ""
+}
+
+variable "vm_public_ip_address" {
+  type        = string
+  description = "The public IP address of the Virtual machine."
+  default     = ""
+}
+
+variable "enable_connectivity_validation" {
+  type        = bool
+  description = "Enable or disable the CDB/PDB connectivity test."
+  default     = true
+}

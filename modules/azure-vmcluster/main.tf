@@ -20,7 +20,7 @@ locals {
 
 
   # use supplied dbservers if provided else use exa.dbservers
-  db_server_ocids           = (length(var.exadata_infra_dbserver_ocids) == 0) ? local.exa_infra_dbServers_ocids : var.exadata_infra_dbserver_ocids
+  db_server_ocids = (length(var.exadata_infra_dbserver_ocids) == 0) ? local.exa_infra_dbServers_ocids : var.exadata_infra_dbserver_ocids
 }
 
 resource "azapi_resource" "cloudVmCluster" {
@@ -56,7 +56,8 @@ resource "azapi_resource" "cloudVmCluster" {
       "memorySizeInGbs" : var.vm_cluster_memory_size_in_gbs,
       "sshPublicKeys" : [var.vm_cluster_ssh_public_key],
       "timeZone" : var.vm_cluster_time_zone,
-      "vnetId" : var.vnet_id
+      "vnetId" : var.vnet_id,
+      "nsg_cidrs" : var.nsg_cidrs
     }
   }
   response_export_values = ["properties.ocid"]
