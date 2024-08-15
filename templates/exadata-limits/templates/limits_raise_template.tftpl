@@ -1,0 +1,24 @@
+We need to provision a new Prod Exadata Cloud Infrastructure.
+    Customer Name: <Put Customer Name Here>
+    4 Letter Customer ID: <User's ID or N/A>
+    Tenancy Name: <Put user's Tenancy Name Here>
+    Compartment: <Put user's compartment OCID Here>
+    Tenancy OCID: <Put user's Tenancy OCID Here>
+
+    Region: ${region}
+    %{ for map in zone_mapping ~}
+    * AZ logical Zone: ${map.az_logical_zone} AZ Pyhsical Zone: ${map.az_physical_zone} Internal AD: ${map.internal_ad}:
+            * Shape: Exadata X9M (Exadata X9M-2) of <Number> Compute nodes and <Number> Storage nodes
+    %{ endfor ~}
+
+
+    Azure Far Child Site: ${az_far_child_site}
+    Azure logic zones:  ${output_zones}
+
+    Azure availibility zone mapping: {
+    %{ for map in full_zone_mapping ~}
+        logical_zone: ${map.logical_zone}, physical_zone: ${map.physical_zone}
+    %{ endfor ~}
+
+    }
+Kindly increase limit asap.
