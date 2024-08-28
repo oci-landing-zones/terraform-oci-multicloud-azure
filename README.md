@@ -53,7 +53,7 @@ These module automates the provisioning of components for running Oracle Databas
 You must [authenticate to your oci tenancy](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.43.1/oci_cli_docs/cmdref/session/authenticate.html) with config auth profile as `<MY_PROFILE_NAME>`. All available OCI regions are defined in [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm#top).
 
 ``` shell
-oci session authenticate --region=<MY_REGION_IDENTIFIERr> --profile-name=<MY_PROFILE_NAME>
+oci session authenticate --region=<MY_REGION_IDENTIFIER> --profile-name=<MY_PROFILE_NAME>
 ```
 
 Example:
@@ -190,6 +190,6 @@ Please consult the [security guide](./SECURITY.md) for our responsible security 
 
 ## License
 
-Copyright (c) 2023,2024 Oracle and/or its affiliates.
+Copyright (c) 2024 Oracle and/or its affiliates.
 
 Released under the Universal Permissive License v1.0 as shown at <https://oss.oracle.com/licenses/upl/>.
