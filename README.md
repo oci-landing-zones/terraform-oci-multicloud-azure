@@ -53,13 +53,13 @@ These module automates the provisioning of components for running Oracle Databas
 You must [authenticate to your oci tenancy](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.43.1/oci_cli_docs/cmdref/session/authenticate.html) with config auth profile as `<MY_PROFILE_NAME>`. All available OCI regions are defined in [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm#top).
 
 ``` shell
-oci session authenticate --region=<MY_REGION_IDENTIFIERr> --profile_name=<MY_PROFILE_NAME>
+oci session authenticate --region=<MY_REGION_IDENTIFIERr> --profile-name=<MY_PROFILE_NAME>
 ```
 
 Example:
 
 ``` shell
-oci session authenticate --region=us-ashburn-1 --profile_name=ONBOARDING
+oci session authenticate --region=us-ashburn-1 --profile-name=ONBOARDING
 ```
 
 ### AZ Authentication
@@ -164,17 +164,32 @@ tofu destroy
 
 ## Further Documentation
 
-- [Terraform OCI Provider](https://www.terraform.io/docs/providers/oci/index.html)
+### Terraform Provider
 - [Oracle Cloud Infrastructure Provider](https://registry.terraform.io/providers/oracle/oci/latest/docs)
 - [Azure Active Directory Provider](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs)
 - [Azure Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
+- [AzAPI Provider](https://registry.terraform.io/providers/Azure/azapi/latest/docs)
+
+### Terraform Modules
+- [Azure Verified Modules](https://azure.github.io/Azure-Verified-Modules/indexes/terraform/)
+- [OCI Landing Zones](https://github.com/oci-landing-zones/)
 
 **Acknowledgement:** Code derived adapted from samples, examples and documentations provided by above mentioned providers.
 
+## Help
+
+Open an issue in this repository.
+
 ## Contributing
 
-Learn how to [contribute](./CONTRIBUTING.md).
+This project welcomes contributions from the community. Before submitting a pull request, please [review our contribution guide](./CONTRIBUTING.md).
+
+## Security
+
+Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process.
 
 ## License
 
-Copyright (c) 2017, 2024 Oracle Corporation and/or its affiliates. Licensed under the [Universal Permissive License 1.0](./LICENSE) as shown at [https://oss.oracle.com/licenses/upl](https://oss.oracle.com/licenses/upl/).
+Copyright (c) 2023,2024 Oracle and/or its affiliates.
+
+Released under the Universal Permissive License v1.0 as shown at <https://oss.oracle.com/licenses/upl/>.

@@ -1,4 +1,4 @@
-# Contributing
+# Contributing to the project
 
 Oracle welcomes contributions to this repository from anyone.
 
@@ -6,29 +6,40 @@ If you want to submit a pull request to fix a bug or enhance an existing feature
 
 If you have any questions about a possible submission, feel free to open an issue too.
 
-## Contributing to the repository
+## Contributing code
 
-Pull requests can be made under [The Oracle Contributor Agreement](https://oca.opensource.oracle.com/).
+Before submitting code via a pull request, you will need to have signed the [Oracle Contributor Agreement][OCA] (OCA) and your commits need to include the following line using the name and e-mail address you used to sign the OCA:
 
-For pull requests to be accepted, the bottom of your commit message must have the following line using your name and e-mail address as it appears in the OCA Signatories list.
-
-```
+```text
 Signed-off-by: Your Name <you@example.org>
 ```
 
-This can be automatically added to pull requests by committing with:
+This can be automatically added to pull requests by committing with `--sign-off` or `-s`, e.g.
 
+```text
+git commit --signoff
 ```
-  git commit --signoff
-```
 
-Only pull requests from committers that can be verified as having
-signed the OCA can be accepted.
+Only pull requests from committers that can be verified as having signed the OCA can be accepted.
 
-### Pull request process
+## Pull request process
 
 1. Fork this repository
-1. Create a branch in your fork to implement the changes. We recommend using the issue number as part of your branch name, e.g. `1234-fixes`
-1. Ensure that any documentation is updated with the changes that are required by your fix.
-1. Ensure that any samples are updated if the base image has been changed.
-1. Submit the pull request. *Do not leave the pull request blank*. Explain exactly what your changes are meant to do and provide simple steps on how to validate your changes. Ensure that you reference the issue you created as well. We will assign the pull request to 2-3 people for review before it is merged.
+2. Create a branch in your fork to implement the changes. We recommend using the issue number as part of your branch name, e.g. `1234-fixes`
+3. Ensure that there is at least one test that would fail without the fix and passes post fix
+4. Submit the pull request. *Do not leave the pull request blank*. Explain exactly what your changes are meant to do and provide simple steps on how to validate your changes, ideally referencing the test. Ensure that you reference the issue you created as well. We will assign the pull request to 1-2 people for review before it is submitted internally and the PR is closed.
+
+## Code of conduct
+
+Follow the [Golden Rule](https://en.wikipedia.org/wiki/Golden_Rule). If you'd like more specific guidelines, see the [Contributor Covenant Code of Conduct][COC].
+
+## License
+
+Copyright (c) 2023 Oracle and/or its affiliates.
+
+Licensed under the Universal Permissive License (UPL), Version 1.0.
+
+See [LICENSE](./LICENSE.txt) for more details.
+
+[OCA]: https://oca.opensource.oracle.com
+[COC]: https://www.contributor-covenant.org/version/1/4/code-of-conduct/
