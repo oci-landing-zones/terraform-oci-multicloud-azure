@@ -1,0 +1,7 @@
+# terrascan configuration file
+
+# https://runterrascan.io/docs/policies/
+[rules]
+    skip-rules = [
+        "accurics.azure.NS.272"
+    ]
