@@ -135,7 +135,7 @@ module "virtual_machine" {
   virtual_machine_name                = var.virtual_machine_name
   vm_size                             = var.vm_size
   vm_subnet_id                        = one(module.avm_virtual_machine_network).subnets["${var.vm_vnet_name}-subnet"].resource_id
-  ssh_public_key                      = var.ssh_public_key
+  ssh_public_key                      = var.vm_cluster_ssh_public_key
 
   vm_cluster_vnet_id             = module.avm_vmc_network.resource_id
   vm_cluster_vnet_name           = module.avm_vmc_network.resource.name
