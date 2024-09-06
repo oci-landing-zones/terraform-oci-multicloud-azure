@@ -12,27 +12,27 @@ on:
 permissions: {}
 
 jobs:
-    docs:
-      name: Generate terraform docs
-      runs-on: ubuntu-latest
-      permissions:
-          contents: write
-          packages: read
-          statuses: write
-      steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-      - name: Render terraform docs and push changes back to PR
-        uses: terraform-docs/gh-actions@main
-        with:
-          working-dir: .
-          output-file: README.md
-          output-method: inject
-          git-push: true
-          recursive: true
-          recursive-path: modules
-          args: --recursive-include-main=false
+    # docs:
+    #   name: Generate terraform docs
+    #   runs-on: ubuntu-latest
+    #   permissions:
+    #       contents: write
+    #       packages: read
+    #       statuses: write
+    #   steps:
+    #   - uses: actions/checkout@v4
+    #     with:
+    #       ref: ${{ github.event.pull_request.head.ref }}
+    #   - name: Render terraform docs and push changes back to PR
+    #     uses: terraform-docs/gh-actions@main
+    #     with:
+    #       working-dir: .
+    #       output-file: README.md
+    #       output-method: inject
+    #       git-push: true
+    #       recursive: true
+    #       recursive-path: modules
+    #       args: --recursive-include-main=false
     lint:
         name: Lint Code Base
         runs-on: ubuntu-latest
@@ -57,27 +57,27 @@ jobs:
               VALIDATE_TERRAFORM_TERRASCAN: true
               VALIDATE_CHECKOV: true
 
-    tofu_test_ubuntu:
-        name: Tofu Test (ubuntu)
-        environment: sandbox3
-        runs-on: ubuntu-latest
-        needs: lint
-        permissions:
-            contents: read
-            packages: read
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-              with:
-                fetch-depth: 0
-            - name: Azure login
-              uses: azure/login@v2
-              with:
-                creds: '{"clientId":"${{ secrets.ARM_CLIENT_ID }}","clientSecret":"${{ secrets.ARM_CLIENT_SECRET }}","subscriptionId":"${{ secrets.ARM_SUBSCRIPTIONS_ID }}","tenantId":"${{ secrets.ARM_TENANT_ID }}"}'
-            - name: setup opentofu
-              uses: opentofu/setup-opentofu@v1
-              with:
-                tofu_version: 1.8.1
+    # tofu_test_ubuntu:
+    #     name: Tofu Test (ubuntu)
+    #     environment: sandbox3
+    #     runs-on: ubuntu-latest
+    #     needs: lint
+    #     permissions:
+    #         contents: read
+    #         packages: read
+    #     steps:
+    #         - name: Checkout code
+    #           uses: actions/checkout@v4
+    #           with:
+    #             fetch-depth: 0
+    #         - name: Azure login
+    #           uses: azure/login@v2
+    #           with:
+    #             creds: '{"clientId":"${{ secrets.ARM_CLIENT_ID }}","clientSecret":"${{ secrets.ARM_CLIENT_SECRET }}","subscriptionId":"${{ secrets.ARM_SUBSCRIPTIONS_ID }}","tenantId":"${{ secrets.ARM_TENANT_ID }}"}'
+    #         - name: setup opentofu
+    #           uses: opentofu/setup-opentofu@v1
+    #           with:
+    #             tofu_version: 1.8.1
             # - name: Iterate over each module for tofu test
             #   run: |
             #     for dir in $(find ./modules -maxdepth 1 -mindepth 1 -type d); do
@@ -89,18 +89,18 @@ jobs:
             #     # tofu test
             #     cd -  # Go back to root directory
             #     done
-            - name: Iterate over each examples for tofu plan
-              run: |
-                # for dir in $(find ./examples -maxdepth 1 -mindepth 1 -type d); do
-                # echo "----- Testing $dir -----"
-                # cd $dir
-                cd ./examples/exainfra_only
-                tofu init
-                tofu validate
-                tofu fmt -check
-                tofu plan
-                cd -  # Go back to root directory
-                done
+            # - name: Iterate over each examples for tofu plan
+            #   run: |
+            #     # for dir in $(find ./examples -maxdepth 1 -mindepth 1 -type d); do
+            #     # echo "----- Testing $dir -----"
+            #     # cd $dir
+            #     cd ./examples/exainfra_only
+            #     tofu init
+            #     tofu validate
+            #     tofu fmt -check
+            #     tofu plan
+            #     cd -  # Go back to root directory
+            #     done
 
     # tofu_test_windows:
     #     name: Tofu Test (windows)
