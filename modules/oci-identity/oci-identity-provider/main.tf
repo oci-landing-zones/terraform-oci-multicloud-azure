@@ -2,7 +2,7 @@ terraform {
   required_providers {
     oci = {
       source = "hashicorp/oci"
-      # version = ">= 5.0.0"# -- for local module run
+      version = ">= 5.0.0"
     }
   }
 }
@@ -40,29 +40,26 @@ resource "oci_identity_domains_identity_provider" "new_saml_idp" {
   user_mapping_method          = "NameIDToUserAttribute"
   user_mapping_store_attribute = "emails.primary"
   name_id_format               = "saml-emailaddress"
-}
 
+  # Append new SAML identity provider into default IdP policy
+  provisioner "local-exec" {
+    when = create
+    environment = {
+      "OCI_CLI_AUTH" : "security_token"
+    }
+    interpreter = ["/bin/bash","-c"]
+    working_dir = path.module
+    command     = <<EOT
+      python3 -m venv .venv
+      . .venv/bin/activate
+      .venv/bin/pip install -r scripts/requirements.txt
+      python3 scripts/identity_domain_helper.py -o ADD -p '${var.config_file_profile}'  -u '${var.oci_domain_url}' -r '${var.default_rule_id}' -i '${oci_identity_domains_identity_provider.new_saml_idp.id}'
+EOT
+  }
 
-locals {
-  new_saml_idp_id = oci_identity_domains_identity_provider.new_saml_idp.id
+  # [To-Do: remove the IdP from IdP policy + disable the IdP ]
 }
 
 output "new_saml_idp_id" {
-  value = local.new_saml_idp_id
+  value = oci_identity_domains_identity_provider.new_saml_idp.id
 }
-
-resource "terraform_data" "default_policy_rule_update" {
-  depends_on = [
-    oci_identity_domains_identity_provider.new_saml_idp
-  ]
-
-  provisioner "local-exec" {
-    working_dir = path.module
-    command     = "pip3 install -r scripts/requirements.txt"
-  }
-
-  provisioner "local-exec" {
-    working_dir = path.module
-    command     = "python3 scripts/identity_domain_helper.py -p '${var.config_file_profile}'  -u '${var.oci_domain_url}' -r '${var.default_rule_id}' -i '${local.new_saml_idp_id}'  "
-  }
-} 
