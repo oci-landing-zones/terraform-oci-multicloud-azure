@@ -57,7 +57,7 @@ resource "azapi_resource" "cloudVmCluster" {
       "sshPublicKeys" : [var.vm_cluster_ssh_public_key],
       "timeZone" : var.vm_cluster_time_zone,
       "vnetId" : var.vnet_id,
-      "nsg_cidrs" : var.nsg_cidrs
+      "nsgCidrs" : var.nsg_cidrs
     }
   }
   response_export_values = ["properties.ocid"]

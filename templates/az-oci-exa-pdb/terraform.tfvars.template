@@ -10,7 +10,7 @@ db_home_display_name = "dbhome1"
 db_admin_password    = "Dont-KEEP-this#1234"
 db_name              = "db1"
 pdb_name             = "pdb1"
-db_home_source       = "vmc1"
+db_home_source       = "DATABASE"
 db_version           = "19.20.0.0"
 db_source            = "NONE"
 
