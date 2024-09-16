@@ -1,6 +1,6 @@
 import argparse
 import oci
-
+import ast
 
 # https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/clitoken.htm#Running_Scripts_on_a_Computer_without_a_Browser
 def get_signer(config: dict):
@@ -12,7 +12,7 @@ def get_signer(config: dict):
     return oci.auth.signers.SecurityTokenSigner(token, private_key)
 
 # https://docs.oracle.com/en-us/iaas/tools/python-sdk-examples/2.128.0/identitydomains/get_rule.py.html
-def add_saml_idp_to_default_ipd_policy(config_file_profile, domain_url, default_rule_id, new_saml_idp_id):
+def update_saml_idp_to_default_ipd_policy(operation, config_file_profile, domain_url, default_rule_id, saml_idp_id):
     config = oci.config.from_file(profile_name=config_file_profile)
     if "security_token_file" in config:
         signer = get_signer(config)
@@ -20,19 +20,22 @@ def add_saml_idp_to_default_ipd_policy(config_file_profile, domain_url, default_
     else:
         identity_domains_client = oci.identity_domains.IdentityDomainsClient(config, domain_url)
     
-
     get_rule_response = identity_domains_client.get_rule(rule_id=default_rule_id, attribute_sets=["all"])
     default_rule_details = get_rule_response.data
     return_node = default_rule_details._return
 
     for ele in return_node:
         if ele.name == "SamlIDPs":
-            if ele.value == '[]' or ele.value is None:
-                ele.value = '[' + new_saml_idp_id + ']'
-            else:
-                # replacing closing bracket with new saml idp append value
-                appending_val = ', ' + new_saml_idp_id + '\"]'
-                ele.value = ele.value.replace('\"]', appending_val)
+            SamlIDPs = ast.literal_eval(ele.value) if ele.value else []
+
+            # Append new SAML IdP ID to list of SamlIDPs
+            if operation == "ADD" and saml_idp_id not in SamlIDPs:
+                SamlIDPs.append(saml_idp_id)
+
+            # Remove SAML IdP ID from list of SamlIDPs
+            elif operation == "REMOVE" and saml_idp_id in SamlIDPs:
+                SamlIDPs.remove(saml_idp_id)
+            ele.value = str(SamlIDPs).replace("'",'"')
             print("updated SAML-IPDs=", ele)
 
     # PATCH update rules
@@ -43,7 +46,7 @@ def add_saml_idp_to_default_ipd_policy(config_file_profile, domain_url, default_
                 schemas=["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                 operations=[oci.identity_domains.models.Operations(op="REPLACE", path="return", value=return_node)]
             ))
-        print("Rule update successful!" +patch_rule_response.data)
+        print("Rule update successful!", patch_rule_response.data)
     except Exception as e:
         print("Rule update encountered issue, but would have updated!", e.args[0])
 
@@ -52,6 +55,9 @@ def add_saml_idp_to_default_ipd_policy(config_file_profile, domain_url, default_
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
+    parser.add_argument('-o', '--operation',  default='ADD',
+                        help='ADD / REMOVE',
+                        required=False)
     parser.add_argument('-p', '--config_file_profile',  default='DEFAULT', 
                         help='OCI auth profile name', 
                         required=False)  
@@ -61,10 +67,10 @@ if __name__ == "__main__":
     parser.add_argument('-r', '--default_rule_id', default='DefaultIDPRule',
                         help='Default Identity Provider Policy if not provided ', 
                         required=False)   
-    parser.add_argument('-i', '--new_saml_idp_id', 
+    parser.add_argument('-i', '--saml_idp_id',
                         help='Default Identity Provider Policy if not provided ', 
                         required=True)
     args = parser.parse_args()
     
-    add_saml_idp_to_default_ipd_policy(args.config_file_profile, args.domain_url, args.default_rule_id, args.new_saml_idp_id)
+    update_saml_idp_to_default_ipd_policy(args.operation, args.config_file_profile, args.domain_url, args.default_rule_id, args.saml_idp_id)
     
