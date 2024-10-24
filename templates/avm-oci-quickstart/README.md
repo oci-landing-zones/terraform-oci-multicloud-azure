@@ -10,6 +10,9 @@ This is a Terraform Template for provisioning Oracle Database@Azure with the fol
 - Oracle Container Database (OCI)
 - Oracle Pluggable Database (OCI)
 
+> [!NOTE]  
+> This template involving Azure Verified Modules (AVM) which [require Terraform 1.9](https://github.com/Azure/terraform-azurerm-avm-res-oracledatabase-cloudvmcluster/blob/main/terraform.tf) and does not support OpenTofu (which [support up to Terraform 1.8](https://opentofu.org/docs/intro/migration/terraform-1.8/) at the moment).
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
