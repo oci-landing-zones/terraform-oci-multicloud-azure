@@ -110,8 +110,7 @@ module "avm_exadata_vmc" {
   # version = "0.1.0"
   
   # OpenTofu or Terraform
-  # source  = "github.com/Azure/terraform-azurerm-avm-res-oracledatabase-cloudvmcluster" 
-  source = "github.com/chanstev/terraform-azurerm-avm-res-oracledatabase-cloudvmcluster"
+  source  = "github.com/Azure/terraform-azurerm-avm-res-oracledatabase-cloudvmcluster" 
 
   # VM Cluster details
   resource_group_id               = module.azure-resource-grp.resource_group_id
