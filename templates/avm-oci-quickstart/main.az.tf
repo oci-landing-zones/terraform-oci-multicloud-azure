@@ -106,11 +106,11 @@ resource "time_sleep" "wait_after_deletion" {
 # AVM - Exadata VM Cluster
 module "avm_exadata_vmc" {
   # Terraform only
-  # source  = "Azure/avm-res-oracledatabase-cloudvmcluster/azurerm" 
-  # version = "0.1.0"
+  source  = "Azure/avm-res-oracledatabase-cloudvmcluster/azurerm" 
+  version = "0.1.1"
   
   # OpenTofu or Terraform
-  source  = "github.com/Azure/terraform-azurerm-avm-res-oracledatabase-cloudvmcluster" 
+  # source  = "github.com/Azure/terraform-azurerm-avm-res-oracledatabase-cloudvmcluster" 
 
   # VM Cluster details
   resource_group_id               = module.azure-resource-grp.resource_group_id

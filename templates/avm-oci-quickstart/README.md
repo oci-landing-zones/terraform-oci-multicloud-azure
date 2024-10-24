@@ -39,7 +39,7 @@ This is a Terraform Template for provisioning Oracle Database@Azure with the fol
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_avm_exadata_infra"></a> [avm\_exadata\_infra](#module\_avm\_exadata\_infra) | Azure/avm-res-oracledatabase-cloudexadatainfrastructure/azurerm | 0.1.0 |
-| <a name="module_avm_exadata_vmc"></a> [avm\_exadata\_vmc](#module\_avm\_exadata\_vmc) | github.com/chanstev/terraform-azurerm-avm-res-oracledatabase-cloudvmcluster | n/a |
+| <a name="module_avm_exadata_vmc"></a> [avm\_exadata\_vmc](#module\_avm\_exadata\_vmc) | Azure/avm-res-oracledatabase-cloudvmcluster/azurerm | 0.1.1 |
 | <a name="module_avm_network"></a> [avm\_network](#module\_avm\_network) | Azure/avm-res-network-virtualnetwork/azurerm | 0.2.4 |
 | <a name="module_azure-oci-mapping"></a> [azure-oci-mapping](#module\_azure-oci-mapping) | ../../modules/azure-oci-zone-mapping | n/a |
 | <a name="module_azure-resource-grp"></a> [azure-resource-grp](#module\_azure-resource-grp) | ../../modules/azure-resource-grp | n/a |
