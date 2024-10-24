@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     oci = {
-      source = "hashicorp/oci"
+      source = "oracle/oci"
     }
   }
 }
@@ -11,6 +11,7 @@ resource "oci_database_db_home" "exa_db_home" {
   vm_cluster_id = var.vm_cluster_ocid
   db_version    = var.db_version
   display_name  = var.db_home_display_name
+  enable_database_delete = var.enable_database_delete
 }
 
 resource "oci_database_database" "exa_cdb" {
