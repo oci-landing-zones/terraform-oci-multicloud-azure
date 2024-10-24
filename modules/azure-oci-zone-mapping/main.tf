@@ -27,5 +27,7 @@ locals {
   location_zone_mapping             = try(local.location_info.zone_mapping, {})
   oci_ad                            = lookup(local.location_zone_mapping, local.az_physical_zone, "None")
   region                            = lookup(local.location_info, "region", "None")
+  region_id                         = lookup(local.location_info, "region_id", "None")
+
 }
 

@@ -17,3 +17,7 @@ output "region" {
 output "az_logical_zone" {
   value = var.zone
 }
+
+output "region_id" {
+  value = local.region_id
+}

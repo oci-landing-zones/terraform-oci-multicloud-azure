@@ -46,3 +46,9 @@ variable "db_source" {
   type        = string
   description = "The source of the database: Use NONE for creating a new database. Use DB_BACKUP for creating a new database by restoring from a backup. "
 }
+
+variable "enable_database_delete" {
+  type = bool
+  default = false
+  description = "Unless enable_database_delete is explicitly set to true, Terraform will not delete the database within the Db Home configuration but rather remove it from the config and state file."
+}

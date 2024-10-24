@@ -44,6 +44,7 @@ az login --tenant <azure-tenant-id>
 | internal_ad           | OCI AD which logical zone id is mapped to.                                                       |
 | az_physical_zone      | The fully qualified physical zone id of availability zone to which logical zone id is mapped to. |
 | region                | Region which var.location is mapped to.                                                          |
+| region_id                | Region ID which var.location is mapped to.                                                          |
 | logical_zone          | The logical zone id for the availability zone.                                                   |
 
 ## Troubleshooting
