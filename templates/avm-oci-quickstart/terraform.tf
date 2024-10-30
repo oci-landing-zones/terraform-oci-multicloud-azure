@@ -10,7 +10,7 @@ terraform {
     # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.74"
+      version = ">= 3.74"
     }
     # https://registry.terraform.io/providers/hashicorp/local/latest/docs
     local = {
