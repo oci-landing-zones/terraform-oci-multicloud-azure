@@ -1,5 +1,5 @@
 variable "database_db_home" {
-  description = "Oracle Home configurations"
+  description = "Oracle Home configurations."
   type = map(object({
     admin_password   = string
     defined_tags     = optional(map(string))

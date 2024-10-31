@@ -66,12 +66,12 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_oci_compartment_ocid"></a> [oci\_compartment\_ocid](#output\_oci\_compartment\_ocid) | n/a |
-| <a name="output_oci_nsg_ocid"></a> [oci\_nsg\_ocid](#output\_oci\_nsg\_ocid) | n/a |
-| <a name="output_oci_region"></a> [oci\_region](#output\_oci\_region) | n/a |
-| <a name="output_oci_vcn_ocid"></a> [oci\_vcn\_ocid](#output\_oci\_vcn\_ocid) | n/a |
-| <a name="output_resource"></a> [resource](#output\_resource) | n/a |
-| <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id) | Resource ID of the VM Cluster from Azure |
-| <a name="output_vm_cluster_hostname_actual"></a> [vm\_cluster\_hostname\_actual](#output\_vm\_cluster\_hostname\_actual) | The actual hostname of VM Cluster nodes after provision |
-| <a name="output_vm_cluster_ocid"></a> [vm\_cluster\_ocid](#output\_vm\_cluster\_ocid) | OCID of the VM Cluster for OCI |
+| <a name="output_oci_compartment_ocid"></a> [oci\_compartment\_ocid](#output\_oci\_compartment\_ocid) | Compartment OCID of the VM Cluster in OCI |
+| <a name="output_oci_nsg_ocid"></a> [oci\_nsg\_ocid](#output\_oci\_nsg\_ocid) | OCID of the Network Security Group (NSG) in OCI |
+| <a name="output_oci_region"></a> [oci\_region](#output\_oci\_region) | Region of the VM Cluster in OCI |
+| <a name="output_oci_vcn_ocid"></a> [oci\_vcn\_ocid](#output\_oci\_vcn\_ocid) | OCID of the Virtual Cloud Network (VCN)in OCI |
+| <a name="output_resource"></a> [resource](#output\_resource) | Resource Object of VM Cluster in Azure |
+| <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id) | Resource ID of the VM Cluster in Azure |
+| <a name="output_vm_cluster_hostname_actual"></a> [vm\_cluster\_hostname\_actual](#output\_vm\_cluster\_hostname\_actual) | The actual hostname of the VM Cluster after provision |
+| <a name="output_vm_cluster_ocid"></a> [vm\_cluster\_ocid](#output\_vm\_cluster\_ocid) | OCID of the VM Cluster in OCI |
 <!-- END_TF_DOCS -->

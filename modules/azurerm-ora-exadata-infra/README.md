@@ -47,8 +47,8 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_oci_compartment_ocid"></a> [oci\_compartment\_ocid](#output\_oci\_compartment\_ocid) | n/a |
-| <a name="output_oci_region"></a> [oci\_region](#output\_oci\_region) | n/a |
-| <a name="output_resource"></a> [resource](#output\_resource) | n/a |
-| <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id) | n/a |
+| <a name="output_oci_compartment_ocid"></a> [oci\_compartment\_ocid](#output\_oci\_compartment\_ocid) | Compartment OCID of the Exadata Infrastructure in OCI |
+| <a name="output_oci_region"></a> [oci\_region](#output\_oci\_region) | Region of the Exadata Infrastructure in OCI |
+| <a name="output_resource"></a> [resource](#output\_resource) | Resource Object of Exadata Infrastructure in Azure |
+| <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id) | Resource ID of Exadata Infrastructure in Azure |
 <!-- END_TF_DOCS -->
