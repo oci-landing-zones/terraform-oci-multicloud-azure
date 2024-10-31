@@ -4,7 +4,7 @@
 This is a Terraform Template for provisioning Oracle Database@Azure with the following resources using AzureRM and OCI Terraform provider
 
 - Azure Resource Group (AzureRM) - Optional
-- Azure VNet with a delegated subnet for OracleDB@Azure (AzureRM)
+- Azure VNet with a delegated subnet for OracleDB@Azure (AzureRM/AVM)
 - Oracle Exadata Infrastructure (AzureRM)
 - Oracle VM Cluster (AzureRM)
 - OCI Private View (OCI) - Optional
