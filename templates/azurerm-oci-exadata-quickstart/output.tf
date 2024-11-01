@@ -83,4 +83,3 @@ output "oci_pdb_id" {
 #   description = "OCID of the Oracle Pluggable Database from OCI"
 #   value = data.oci_database_pluggable_databases.pdb.pluggable_databases[0].connection_strings[0].pdb_ip_default
 # }
-
