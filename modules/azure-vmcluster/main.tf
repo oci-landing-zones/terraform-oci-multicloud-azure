@@ -58,8 +58,9 @@ resource "azapi_resource" "cloudVmCluster" {
       "timeZone" : var.vm_cluster_time_zone,
       "vnetId" : var.vnet_id,
       "nsgCidrs" : var.nsg_cidrs,
-      "scanListenerPortTcpSsl" : var.scan_listener_port_tcp_ssl,
-      "scanListenerPortTcp" : var.scan_listener_port_tcp
+      "scanListenerPortTcpSsl" : var.vm_cluster_scan_listener_port_tcp_ssl,
+      "scanListenerPortTcp" : var.vm_cluster_scan_listener_port_tcp,
+      "backupSubnetCidr" : var.vm_cluster_backup_subnet_cidr
     }
   }
   response_export_values = ["properties.ocid"]
