@@ -26,7 +26,7 @@ locals {
 resource "azapi_resource" "cloudVmCluster" {
   type                      = "Oracle.Database/cloudVmClusters@2023-09-01"
   parent_id                 = var.resource_group_id
-  name                      = var.vm_cluster_resource_name
+  name                      = var.vm_cluster_name
   schema_validation_enabled = false
   timeouts {
     create = "24m"
@@ -47,7 +47,7 @@ resource "azapi_resource" "cloudVmCluster" {
       "dataStorageSizeInTbs" : var.vm_cluster_data_storage_size_in_tbs,
       "dbNodeStorageSizeInGbs" : var.vm_cluster_db_node_storage_size_in_gbs,
       "dbServers" : local.db_server_ocids
-      "displayName" : var.vm_cluster_display_name,
+      "displayName" : var.vm_cluster_name,
       "giVersion" : var.vm_cluster_gi_version,
       "hostname" : var.vm_cluster_hostname,
       "isLocalBackupEnabled" : var.vm_cluster_is_local_backup_enabled,

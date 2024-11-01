@@ -59,8 +59,9 @@ module "az_vmcluster" {
   resource_group_id                                                = var.resource_group_id
   vnet_id                                                          = var.vnet_id
   oracle_database_delegated_subnet_id                              = var.oracle_database_delegated_subnet_id
-  vm_cluster_resource_name                                         = var.vm_cluster_resource_name
-  vm_cluster_display_name                                          = var.vm_cluster_display_name
+  vm_cluster_name                                                  = var.vm_cluster_name
+  # vm_cluster_resource_name                                         = var.vm_cluster_resource_name
+  # vm_cluster_display_name                                          = var.vm_cluster_display_name
   vm_cluster_gi_version                                            = var.vm_cluster_gi_version
   vm_cluster_hostname                                              = var.vm_cluster_hostname
   vm_cluster_cpu_core_count                                        = var.vm_cluster_cpu_core_count

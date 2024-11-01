@@ -40,16 +40,21 @@ variable "oracle_database_delegated_subnet_id" {
   type        = string
 }
 
-
-variable "vm_cluster_resource_name" {
-  description = "The resource name of a VM cluster"
+# Merging vm_cluster_display_name and vm_cluster_resource_name as they have to be identical
+variable "vm_cluster_name" {
+  description = "The name of a VM cluster"
   type        = string
 }
 
-variable "vm_cluster_display_name" {
-  description = "The display name of a VM cluster"
-  type        = string
-}
+# variable "vm_cluster_resource_name" {
+#   description = "The resource name of a VM cluster"
+#   type        = string
+# }
+
+# variable "vm_cluster_display_name" {
+#   description = "The display name of a VM cluster"
+#   type        = string
+# }
 
 variable "vm_cluster_gi_version" {
   description = "The Oracle Grid Infrastructure software version for the VM cluster."

@@ -70,16 +70,20 @@ variable "oracle_database_delegated_subnet_id" {
   type        = string
 }
 
-
-variable "vm_cluster_resource_name" {
-  description = "The resource name of a VM cluster"
+variable "vm_cluster_name" {
+  description = "The name of a VM cluster"
   type        = string
 }
 
-variable "vm_cluster_display_name" {
-  description = "The display name of a VM cluster"
-  type        = string
-}
+# variable "vm_cluster_resource_name" {
+#   description = "The resource name of a VM cluster"
+#   type        = string
+# }
+
+# variable "vm_cluster_display_name" {
+#   description = "The display name of a VM cluster"
+#   type        = string
+# }
 
 variable "vm_cluster_cpu_core_count" {
   description = "The number of CPU cores to enable for the VM cluster."

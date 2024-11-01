@@ -50,8 +50,9 @@ module "exa_infra_and_vm_cluster" {
   location                                                         = var.location
   resource_group_id                                                = azurerm_resource_group.resource_group.id
   vm_cluster_ssh_public_key                                        = var.vm_cluster_ssh_public_key
-  vm_cluster_display_name                                          = var.vm_cluster_display_name
-  vm_cluster_resource_name                                         = var.vm_cluster_resource_name
+  vm_cluster_name                                                  = var.vm_cluster_name
+  # vm_cluster_display_name                                          = var.vm_cluster_display_name
+  # vm_cluster_resource_name                                         = var.vm_cluster_resource_name
   vnet_id                                                          = module.avm_vmc_network.resource_id
   oracle_database_delegated_subnet_id                              = module.avm_vmc_network.subnets.delegated.resource_id
   zones                                                            = var.zones

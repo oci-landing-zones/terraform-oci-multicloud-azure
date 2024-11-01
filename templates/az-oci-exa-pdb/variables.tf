@@ -88,15 +88,21 @@ variable "zones" {
   type        = string
 }
 
-variable "vm_cluster_resource_name" {
-  description = "The resource name of a VM Cluster on Azure."
+# Merging vm_cluster_resource_name and vm_cluster_display_name as they have to be identical
+variable "vm_cluster_name" {
+  description = "The name of a VM Cluster"
   type        = string
 }
 
-variable "vm_cluster_display_name" {
-  description = "The display name of a VM Cluster on OCI."
-  type        = string
-}
+# variable "vm_cluster_resource_name" {
+#   description = "The resource name of a VM Cluster on Azure."
+#   type        = string
+# }
+
+# variable "vm_cluster_display_name" {
+#   description = "The display name of a VM Cluster on OCI."
+#   type        = string
+# }
 
 variable "vm_cluster_ssh_public_key" {
   description = "The public SSH key for VM Cluster."
