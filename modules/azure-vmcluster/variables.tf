@@ -135,3 +135,21 @@ variable "nsg_cidrs" {
   default     = []
   description = "Add additional Network ingress rules for the VM cluster's network security group. e.g. [{'source': '0.0.0.0/0','destinationPortRange': {'max': 1522,'min': 1521 }}]."
 }
+
+variable "vm_cluster_scan_listener_port_tcp" {
+  description = "The TCP Single Client Access Name (SCAN) port. The default port is 1521."
+  type        = number
+  default     = 1521
+}
+
+variable "vm_cluster_scan_listener_port_tcp_ssl" {
+  description = "The TCPS Single Client Access Name (SCAN) port. The default port is 2484."
+  type        = number
+  default     = 2484
+}
+
+variable "vm_cluster_backup_subnet_cidr" {
+  description = "Client OCI backup subnet CIDR, default is 192.168.252.0/22"
+  type        = string
+  default     = "192.168.252.0/22"
+}
