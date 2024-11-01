@@ -29,8 +29,8 @@ resource "azapi_resource" "cloudVmCluster" {
   name                      = var.vm_cluster_resource_name
   schema_validation_enabled = false
   timeouts {
-    create = "6h30m"
-    delete = "1h"
+    create = "24m"
+    delete = "8h"
   }
   body = {
     "location" : var.location,
@@ -57,13 +57,16 @@ resource "azapi_resource" "cloudVmCluster" {
       "sshPublicKeys" : [var.vm_cluster_ssh_public_key],
       "timeZone" : var.vm_cluster_time_zone,
       "vnetId" : var.vnet_id,
-      "nsgCidrs" : var.nsg_cidrs
+      "nsgCidrs" : var.nsg_cidrs,
+      "scanListenerPortTcpSsl" : var.scan_listener_port_tcp_ssl,
+      "scanListenerPortTcp" : var.scan_listener_port_tcp
     }
   }
   response_export_values = ["properties.ocid"]
   lifecycle {
     ignore_changes = [
-      body.properties.giVersion, body.properties.hostname
+      body.properties.giVersion, body.properties.hostname, body.properties.sshPublicKeys
+
     ]
   }
 }
