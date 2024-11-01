@@ -34,6 +34,15 @@ resource "azapi_resource" "cloudExadataInfrastructure" {
     }
   }
   schema_validation_enabled = false
+  lifecycle {
+    ignore_changes = [
+      body.properties.computeCount,
+      body.properties.storageCount,
+      body.properties.maintenanceWindow.leadTimeInWeeks,
+      body.properties.maintenanceWindow.preference,
+      body.properties.maintenanceWindow.patchingMode
+    ]
+  }
 }
 
 
