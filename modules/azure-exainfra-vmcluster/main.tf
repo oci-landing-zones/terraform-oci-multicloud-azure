@@ -21,6 +21,7 @@ resource "azapi_resource" "cloudExadataInfrastructure" {
     "zones" : [
       var.zones
     ],
+    "tags" : var.tags,
     "properties" : {
       "computeCount" : var.exadata_infrastructure_compute_cpu_count,
       "displayName" : var.exadata_infrastructure_name,
@@ -78,4 +79,5 @@ module "az_vmcluster" {
   vm_cluster_is_sparse_diskgroup_enabled                           = var.vm_cluster_is_sparse_diskgroup_enabled
   vm_cluster_ssh_public_key                                        = var.vm_cluster_ssh_public_key
   nsg_cidrs                                                        = var.nsg_cidrs
+  tags                                                             = var.tags
 }

@@ -158,3 +158,9 @@ variable "vm_cluster_backup_subnet_cidr" {
   type        = string
   default     = "192.168.252.0/22"
 }
+
+variable "tags" {
+  description = "(optional) tags of resource"
+  type        = map(string)
+  default     = null
+}

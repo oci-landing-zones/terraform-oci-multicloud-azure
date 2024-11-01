@@ -170,3 +170,9 @@ variable "nsg_cidrs" {
   default     = []
   description = "Add additional Network ingress rules for the VM cluster's network security group. e.g. [{'source': '0.0.0.0/0','destinationPortRange': {'max': 1522,'min': 1521 }}]."
 }
+
+variable "tags" {
+  description = "(optional) tags of resource"
+  type        = map(string)
+  default     = null
+}

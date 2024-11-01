@@ -34,6 +34,7 @@ resource "azapi_resource" "cloudVmCluster" {
   }
   body = {
     "location" : var.location,
+    "tags" : var.tags,
     "properties" : {
       "subnetId" : var.oracle_database_delegated_subnet_id
       "cloudExadataInfrastructureId" : var.exadata_infrastructure_id

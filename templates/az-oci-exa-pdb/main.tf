@@ -77,6 +77,8 @@ module "exa_infra_and_vm_cluster" {
   vm_cluster_time_zone                                             = var.vm_cluster_time_zone
   exadata_infrastructure_storage_count                             = var.exadata_infrastructure_storage_count
   nsg_cidrs                                                        = var.nsg_cidrs
+
+  tags                                                             = var.tags
 }
 
 module "db_home_and_cdb_pdb" {

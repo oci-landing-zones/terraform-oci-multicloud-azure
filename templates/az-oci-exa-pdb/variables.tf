@@ -305,3 +305,9 @@ variable "enable_connectivity_validation" {
   description = "Enable or disable the CDB/PDB connectivity test."
   default     = true
 }
+
+variable "tags" {
+  description = "(optional) tags of resource"
+  type        = map(string)
+  default     = null
+}
