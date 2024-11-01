@@ -11,7 +11,7 @@ terraform {
 resource "azapi_resource" "cloudExadataInfrastructure" {
   type      = "Oracle.Database/cloudExadataInfrastructures@2023-09-01"
   parent_id = var.resource_group_id
-  name      = var.exadata_infrastructure_resource_name
+  name      = var.exadata_infrastructure_name
   timeouts {
     create = "1h30m"
     delete = "20m"
@@ -23,7 +23,7 @@ resource "azapi_resource" "cloudExadataInfrastructure" {
     ],
     "properties" : {
       "computeCount" : var.exadata_infrastructure_compute_cpu_count,
-      "displayName" : var.exadata_infrastructure_resource_display_name,
+      "displayName" : var.exadata_infrastructure_name,
       "maintenanceWindow" : {
         "leadTimeInWeeks" : var.exadata_infrastructure_maintenance_window_lead_time_in_weeks,
         "preference" : var.exadata_infrastructure_maintenance_window_preference,

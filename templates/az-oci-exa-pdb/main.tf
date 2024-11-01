@@ -44,8 +44,9 @@ module "exa_infra_and_vm_cluster" {
   }
   depends_on = [module.avm_vmc_network]
 
-  exadata_infrastructure_resource_display_name                     = var.exadata_infrastructure_resource_display_name
-  exadata_infrastructure_resource_name                             = var.exadata_infrastructure_resource_name
+  # exadata_infrastructure_resource_display_name                     = var.exadata_infrastructure_resource_display_name
+  # exadata_infrastructure_resource_name                             = var.exadata_infrastructure_resource_name
+  exadata_infrastructure_name                                      = var.exadata_infrastructure_name
   location                                                         = var.location
   resource_group_id                                                = azurerm_resource_group.resource_group.id
   vm_cluster_ssh_public_key                                        = var.vm_cluster_ssh_public_key

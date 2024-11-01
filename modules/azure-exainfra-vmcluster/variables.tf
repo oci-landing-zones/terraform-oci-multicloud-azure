@@ -16,14 +16,20 @@ variable "resource_group_id" {
   description = "The Azure Id of resource group"
 }
 
-variable "exadata_infrastructure_resource_name" {
-  description = "The name of the exadata infrastructure on Azure."
+# Merging exadata_infrastructure_resource_name and exadata_infrastructure_resource_display_name as they have to be identical
+variable "exadata_infrastructure_name" {
+  description = "The name of the exadata infrastructure."
   type        = string
 }
-variable "exadata_infrastructure_resource_display_name" {
-  description = "The display name of the exadata infrastructure."
-  type        = string
-}
+
+# variable "exadata_infrastructure_resource_name" {
+#   description = "The name of the exadata infrastructure on Azure."
+#   type        = string
+# }
+# variable "exadata_infrastructure_resource_display_name" {
+#   description = "The display name of the exadata infrastructure."
+#   type        = string
+# }
 
 variable "exadata_infrastructure_compute_cpu_count" {
   description = "The number of compute servers for the cloud Exadata infrastructure."
