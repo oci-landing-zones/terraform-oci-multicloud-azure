@@ -67,31 +67,42 @@ variable "pdb_name" {
   description = "The name of the pluggable database. The name must begin with an alphabetic character and can contain a maximum of thirty alphanumeric characters. Special characters are not permitted. Pluggable database should not be same as database name."
 }
 
-
-variable "exadata_infrastructure_resource_name" {
-  description = "The name of the Exadata Infrastructure on Azure."
+# Merging exadata_infrastructure_resource_name and exadata_infrastructure_resource_display_name as they have to be identical
+variable "exadata_infrastructure_name" {
+  description = "The name of the Exadata Infrastructure."
   type        = string
 }
 
-variable "exadata_infrastructure_resource_display_name" {
-  description = "The display name of the Exadata Infrastructure on OCI."
-  type        = string
-}
+# variable "exadata_infrastructure_resource_name" {
+#   description = "The name of the Exadata Infrastructure on Azure."
+#   type        = string
+# }
+
+# variable "exadata_infrastructure_resource_display_name" {
+#   description = "The display name of the Exadata Infrastructure on OCI."
+#   type        = string
+# }
 
 variable "zones" {
   description = "The zone of the Exadata Infrastructure for Azure."
   type        = string
 }
 
-variable "vm_cluster_resource_name" {
-  description = "The resource name of a VM Cluster on Azure."
+# Merging vm_cluster_resource_name and vm_cluster_display_name as they have to be identical
+variable "vm_cluster_name" {
+  description = "The name of a VM Cluster"
   type        = string
 }
 
-variable "vm_cluster_display_name" {
-  description = "The display name of a VM Cluster on OCI."
-  type        = string
-}
+# variable "vm_cluster_resource_name" {
+#   description = "The resource name of a VM Cluster on Azure."
+#   type        = string
+# }
+
+# variable "vm_cluster_display_name" {
+#   description = "The display name of a VM Cluster on OCI."
+#   type        = string
+# }
 
 variable "vm_cluster_ssh_public_key" {
   description = "The public SSH key for VM Cluster."
@@ -293,4 +304,10 @@ variable "enable_connectivity_validation" {
   type        = bool
   description = "Enable or disable the CDB/PDB connectivity test."
   default     = true
+}
+
+variable "tags" {
+  description = "(optional) tags of resource"
+  type        = map(string)
+  default     = null
 }

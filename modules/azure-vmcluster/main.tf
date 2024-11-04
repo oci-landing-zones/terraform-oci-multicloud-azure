@@ -26,14 +26,15 @@ locals {
 resource "azapi_resource" "cloudVmCluster" {
   type                      = "Oracle.Database/cloudVmClusters@2023-09-01"
   parent_id                 = var.resource_group_id
-  name                      = var.vm_cluster_resource_name
+  name                      = var.vm_cluster_name
   schema_validation_enabled = false
   timeouts {
-    create = "6h30m"
-    delete = "1h"
+    create = "24m"
+    delete = "8h"
   }
   body = {
     "location" : var.location,
+    "tags" : var.tags,
     "properties" : {
       "subnetId" : var.oracle_database_delegated_subnet_id
       "cloudExadataInfrastructureId" : var.exadata_infrastructure_id
@@ -47,7 +48,7 @@ resource "azapi_resource" "cloudVmCluster" {
       "dataStorageSizeInTbs" : var.vm_cluster_data_storage_size_in_tbs,
       "dbNodeStorageSizeInGbs" : var.vm_cluster_db_node_storage_size_in_gbs,
       "dbServers" : local.db_server_ocids
-      "displayName" : var.vm_cluster_display_name,
+      "displayName" : var.vm_cluster_name,
       "giVersion" : var.vm_cluster_gi_version,
       "hostname" : var.vm_cluster_hostname,
       "isLocalBackupEnabled" : var.vm_cluster_is_local_backup_enabled,
@@ -57,13 +58,17 @@ resource "azapi_resource" "cloudVmCluster" {
       "sshPublicKeys" : [var.vm_cluster_ssh_public_key],
       "timeZone" : var.vm_cluster_time_zone,
       "vnetId" : var.vnet_id,
-      "nsgCidrs" : var.nsg_cidrs
+      "nsgCidrs" : var.nsg_cidrs,
+      "scanListenerPortTcpSsl" : var.vm_cluster_scan_listener_port_tcp_ssl,
+      "scanListenerPortTcp" : var.vm_cluster_scan_listener_port_tcp,
+      "backupSubnetCidr" : var.vm_cluster_backup_subnet_cidr
     }
   }
   response_export_values = ["properties.ocid"]
   lifecycle {
     ignore_changes = [
-      body.properties.giVersion, body.properties.hostname
+      body.properties.giVersion, body.properties.hostname, body.properties.sshPublicKeys
+
     ]
   }
 }

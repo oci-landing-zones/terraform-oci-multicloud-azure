@@ -40,16 +40,21 @@ variable "oracle_database_delegated_subnet_id" {
   type        = string
 }
 
-
-variable "vm_cluster_resource_name" {
-  description = "The resource name of a VM cluster"
+# Merging vm_cluster_display_name and vm_cluster_resource_name as they have to be identical
+variable "vm_cluster_name" {
+  description = "The name of a VM cluster"
   type        = string
 }
 
-variable "vm_cluster_display_name" {
-  description = "The display name of a VM cluster"
-  type        = string
-}
+# variable "vm_cluster_resource_name" {
+#   description = "The resource name of a VM cluster"
+#   type        = string
+# }
+
+# variable "vm_cluster_display_name" {
+#   description = "The display name of a VM cluster"
+#   type        = string
+# }
 
 variable "vm_cluster_gi_version" {
   description = "The Oracle Grid Infrastructure software version for the VM cluster."
@@ -134,4 +139,28 @@ variable "nsg_cidrs" {
   }))
   default     = []
   description = "Add additional Network ingress rules for the VM cluster's network security group. e.g. [{'source': '0.0.0.0/0','destinationPortRange': {'max': 1522,'min': 1521 }}]."
+}
+
+variable "vm_cluster_scan_listener_port_tcp" {
+  description = "The TCP Single Client Access Name (SCAN) port. The default port is 1521."
+  type        = number
+  default     = 1521
+}
+
+variable "vm_cluster_scan_listener_port_tcp_ssl" {
+  description = "The TCPS Single Client Access Name (SCAN) port. The default port is 2484."
+  type        = number
+  default     = 2484
+}
+
+variable "vm_cluster_backup_subnet_cidr" {
+  description = "Client OCI backup subnet CIDR, default is 192.168.252.0/22"
+  type        = string
+  default     = "192.168.252.0/22"
+}
+
+variable "tags" {
+  description = "(optional) tags of resource"
+  type        = map(string)
+  default     = null
 }
