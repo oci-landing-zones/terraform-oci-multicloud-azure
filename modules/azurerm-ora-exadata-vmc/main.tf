@@ -35,8 +35,9 @@ resource "azurerm_oracle_cloud_vm_cluster" "this" {
     virtual_network_id = var.vnet_id
     subnet_id = var.subnet_id
     backup_subnet_cidr = var.backup_subnet_cidr
-    domain = var.domain #!= "" ? var.domain : null
-    zone_id = var.zone_id #!= "" ? var.zone_id : null
+    # pending on AzureRM 4.9.0 release
+    # domain = var.domain != "" ? var.domain : null
+    # zone_id = var.zone_id != "" ? var.zone_id : null
 
     # VM Cluster allocation
     cpu_core_count = var.cpu_core_count
@@ -63,7 +64,6 @@ resource "azurerm_oracle_cloud_vm_cluster" "this" {
             id,
             cluster_name,
             gi_version,
-            # hostname_actual,
             backup_subnet_cidr
         ]
     }
