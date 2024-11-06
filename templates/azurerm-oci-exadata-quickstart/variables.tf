@@ -348,3 +348,9 @@ variable "vm_cluster_new_oci_dns" {
   type = bool
   default = true
 }
+
+# wait time before destory
+variable "destroy_duration" {
+  type = string
+  default = "30m"
+}

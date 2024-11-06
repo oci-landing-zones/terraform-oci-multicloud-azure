@@ -88,7 +88,7 @@ data "azurerm_subnet" "delegated_subnet" {
 
 # Known Issue - https://docs.oracle.com/en-us/iaas/odexa/odexa-troubleshooting-and-known-issues-exadata-services.html
 resource "time_sleep" "wait_after_deletion" {
-  destroy_duration = "30m"
+  destroy_duration = var.destroy_duration
   depends_on = [module.azurerm_exadata_infra, module.oci-network-dns[0].oci_dns_view]
 }
 
