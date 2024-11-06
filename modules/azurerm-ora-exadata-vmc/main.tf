@@ -61,10 +61,22 @@ resource "azurerm_oracle_cloud_vm_cluster" "this" {
 
     lifecycle {
         ignore_changes = [
-            id,
-            cluster_name,
-            gi_version,
-            backup_subnet_cidr
+          # For Idempotency
+          id,
+          cluster_name,
+          hostname,
+          subnet_id,
+          backup_subnet_cidr,
+          gi_version,
+
+          # Updatable from OCI
+          license_model,
+          ssh_public_keys,
+          db_servers, 
+          cpu_core_count,
+          memory_size_in_gbs,
+          db_node_storage_size_in_gbs,
+          data_storage_size_in_tbs,
         ]
     }
 }

@@ -34,7 +34,16 @@ resource "azurerm_oracle_exadata_infrastructure" "this" {
       days_of_week = coalesce(var.maintenance_window.days_of_week,[])
       hours_of_day = coalesce(var.maintenance_window.hours_of_day,[])
   }
-
+  
+  lifecycle {
+    ignore_changes = [
+      # Updatable from OCI
+      compute_count,
+      storage_count,
+      customer_contacts,
+      maintenance_window
+    ]
+  }
 }
 
 data "azurerm_oracle_exadata_infrastructure" "this" {
