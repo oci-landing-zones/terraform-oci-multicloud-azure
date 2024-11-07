@@ -23,7 +23,7 @@ resource "random_string" "suffix" {
 module "azure-resource-grp" {
     source = "../../modules/azure-resource-grp"
     az_region=var.az_region
-    resource_group_name = "oradb"
+    resource_group_name = var.resource_group
     az_tags = local.az_tags
     new_rg = true
 }
