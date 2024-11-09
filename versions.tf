@@ -10,7 +10,7 @@ terraform {
     # https://github.com/hashicorp/terraform-provider-azurerm/blob/main/CHANGELOG.md#3990-april-11-2024
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 4.7.0"
+      version = ">= 4.9.0"
     }
     # https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/terraformspecifyingversions.htm#terraformspecifyingversions_ociprovider
     oci = {

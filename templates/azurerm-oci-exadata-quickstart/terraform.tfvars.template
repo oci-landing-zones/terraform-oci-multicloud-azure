@@ -10,7 +10,7 @@ common_tags = {
 az_region="germanywestcentral"
 az_zone="3"
 
-resource_group = "oradb"
+resource_group = "oradb-exadata"
 # new_rg = true
 # random_suffix_length = 3
 
