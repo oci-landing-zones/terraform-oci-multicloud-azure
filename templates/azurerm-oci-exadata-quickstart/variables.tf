@@ -4,6 +4,9 @@
 variable "common_tags" {
   description = "resource tags to be used in both Azure and OCI"
   type        = map(string)
+  default = {
+    createdby = "azurerm-oci-exadata-quickstart"
+  }
 }
 
 ## Mandatory to randomise namaing for resource group, exadata infra and vmcluster

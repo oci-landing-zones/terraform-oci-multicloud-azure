@@ -5,7 +5,7 @@ provider "azurerm" {
 locals {
   common_tags = var.common_tags
   az_region   = var.az_region
-  adbs_name = "${var.name}${random_string.suffix.result}"
+  adbs_name   = "${var.name}${random_string.suffix.result}"
 }
 
 resource "random_string" "suffix" {
@@ -17,11 +17,11 @@ resource "random_string" "suffix" {
 
 # Azure Resource Group
 module "azure-resource-grp" {
-    source = "../../modules/azure-resource-grp"
-    az_region=var.az_region
-    resource_group_name = var.resource_group
-    az_tags = local.common_tags
-    new_rg = true
+  source              = "../../modules/azure-resource-grp"
+  az_region           = var.az_region
+  resource_group_name = var.resource_group
+  az_tags             = local.common_tags
+  new_rg              = true
 }
 
 # Azure VNet with delegated subnet
@@ -31,7 +31,7 @@ module "avm_network" {
 
   # depends_on = [ module.azure-resource-grp ]
 
-  tags = local.common_tags
+  tags                = local.common_tags
   resource_group_name = module.azure-resource-grp.resource_group_name
   location            = var.az_region
   name                = var.virtual_network_name
@@ -59,17 +59,17 @@ data "azurerm_subnet" "delegated_subnet" {
   virtual_network_name = var.virtual_network_name
   resource_group_name  = module.azure-resource-grp.resource_group_name
 
-  depends_on = [ module.avm_network ]
+  depends_on = [module.avm_network]
 }
 
 # Oracle Autonomous Database@Azure (Read-only after creation)
 module "azurerm_ora_adbs" {
-  source  = "../../modules/azurerm-ora-adbs"
+  source                           = "../../modules/azurerm-ora-adbs"
   name                             = local.adbs_name
   resource_group_name              = module.azure-resource-grp.resource_group_name
   location                         = var.az_region
   subnet_id                        = data.azurerm_subnet.delegated_subnet.id
-  display_name                     = var.display_name
+  display_name                     = var.display_name == "" ? var.display_name : local.adbs_name
   db_workload                      = var.db_workload
   mtls_connection_required         = var.mtls_connection_required
   backup_retention_period_in_days  = var.backup_retention_period_in_days

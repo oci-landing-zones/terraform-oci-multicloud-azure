@@ -4,11 +4,14 @@
 variable "common_tags" {
   description = "resource tags to be used in both Azure and OCI"
   type        = map(string)
+  default = {
+    createdby = "azurerm-oci-adbs-quickstart"
+  }
 }
 
 ## Mandatory to randomise namaing for resource group, exadata infra and vmcluster
 variable "random_suffix_length" {
-  type = number
+  type    = number
   default = 3
 }
 
@@ -16,7 +19,7 @@ variable "random_suffix_length" {
 variable "avm_enable_telemetry" {
   description = "This variable controls whether or not telemetry is enabled for the Azure Verified Modules"
   type        = bool
-  default = true
+  default     = true
 }
 
 # Azure Resource Group (azure-resource-grp)
@@ -28,7 +31,7 @@ variable "az_region" {
 variable "resource_group" {
   type        = string
   description = "Resource Group Name"
-  default = "rg-oradb"
+  default     = "rg-oradb"
 }
 
 variable "new_rg" {
@@ -45,8 +48,9 @@ variable "virtual_network_name" {
 }
 
 variable "virtual_network_address_space" {
-  description = "The address space of the virtual network. e.g. 10.2.0.0/16"
+  description = "The address space of the virtual network. e.g. 10.1.0.0/16"
   type        = string
+  default     = "10.1.0.0/16"
   validation {
     condition     = can(cidrnetmask(var.virtual_network_address_space))
     error_message = "Must be a valid IPv4 CIDR block address."
@@ -60,8 +64,9 @@ variable "delegated_subnet_name" {
 }
 
 variable "delegated_subnet_address_prefix" {
-  description = "The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.2.1.0/24"
+  description = "The address prefix of the delegated subnet for Oracle Database @ Azure within the virtual network. e.g. 10.1.1.0/24"
   type        = string
+  default     = "10.1.1.0/24"
   validation {
     condition     = can(cidrnetmask(var.delegated_subnet_address_prefix))
     error_message = "Must be a valid IPv4 CIDR block address."
@@ -77,6 +82,7 @@ variable "name" {
 variable "display_name" {
   description = "The user-friendly name for the Autonomous Database. The name does not have to be unique."
   type        = string
+  default     = ""
 }
 
 variable "db_workload" {
@@ -147,9 +153,9 @@ variable "national_character_set" {
 variable "license_model" {
   description = "The Oracle license model that applies to the Oracle Autonomous Database. Bring your own license (BYOL) allows you to apply your current on-premises Oracle software licenses to equivalent, highly automated Oracle services in the cloud. License Included allows you to subscribe to new Oracle Database software licenses and the Oracle Database service."
   type        = string
-  default = "BringYourOwnLicense"
+  default     = "BringYourOwnLicense"
   validation {
-    condition = contains(["LicenseIncluded", "BringYourOwnLicense"], var.license_model)
+    condition     = contains(["LicenseIncluded", "BringYourOwnLicense"], var.license_model)
     error_message = "The value of open_mode must be either BringYourOwnLicense or LicenseIncluded."
   }
 }
@@ -173,32 +179,32 @@ variable "oci_config_file_profile" {
   default     = null
 }
 
-variable oci_tenancy_ocid {
+variable "oci_tenancy_ocid" {
   type        = string
   description = "OCID of the OCI tenancy"
-  default = null
+  default     = null
 }
-variable oci_user_ocid {
+variable "oci_user_ocid" {
   type        = string
   description = "OCID of the OCI user"
-  default = null
+  default     = null
 }
-variable oci_private_key_path {
+variable "oci_private_key_path" {
   type        = string
   description = "The path (including filename) of the private key"
-  default = null
+  default     = null
 }
-variable oci_private_key_password {
+variable "oci_private_key_password" {
   type        = string
   description = "Passphrase used for the key, if it's encrypted"
   sensitive   = true
-  default = null
+  default     = null
 }
 
-variable oci_fingerprint {
+variable "oci_fingerprint" {
   type        = string
   description = "Fingerprint for the key pair being used"
-  default = null
+  default     = null
 }
 
 # variable open_mode {
