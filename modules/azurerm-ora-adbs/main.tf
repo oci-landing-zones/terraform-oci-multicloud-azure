@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">=4.7.0"
+      version = ">=4.9.0"
     }
   }
 }
@@ -42,7 +42,7 @@ resource "azurerm_oracle_autonomous_database" "this" {
       admin_password,
       auto_scaling_enabled,            
       character_set,
-      compute_count,
+      # compute_count,
       national_character_set,
       license_model,
       db_version,                       

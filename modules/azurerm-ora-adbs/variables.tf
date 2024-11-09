@@ -1,5 +1,5 @@
 variable "name" {
-  description = "The name which should be used for this Autonomous Database."
+  description = "Azure resource name which should be used for this Autonomous Database."
   type        = string
 }
 
@@ -19,7 +19,7 @@ variable "subnet_id" {
 }
 
 variable "display_name" {
-  description = "The user-friendly name for the Autonomous Database. The name does not have to be unique."
+  description = "The user-friendly name for the Autonomous Database in OCI. The name does not have to be unique."
   type        = string
 }
 
