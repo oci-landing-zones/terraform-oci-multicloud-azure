@@ -1,0 +1,38 @@
+# Required
+az_region="francecentral"
+name="adbsdemo"
+admin_password="Dont-KEEP-this#1234"
+
+# # Optional with defaults
+# common_tags = {
+#     createdby = "azurerm-oci-adbs-quickstart"
+# }
+
+# # AZ Resource Group
+# resource_group = "oracle-adbs"
+# new_rg = true
+# random_suffix_length = 3
+
+# # AZ VNet
+# virtual_network_name            = "vnet-oci"
+# delegated_subnet_name           = "snet-delegate-oci"
+# virtual_network_address_space   = "10.1.0.0/16"
+# delegated_subnet_address_prefix = "10.1.1.0/24"
+
+# # AZ Autonomous Database
+# display_name = ""
+# db_workload="DW"
+# mtls_connection_required=false
+# backup_retention_period_in_days=10
+# compute_model="ECPU"                    
+# data_storage_size_in_tbs=2         
+# auto_scaling_for_storage_enabled=false
+# auto_scaling_enabled=true            
+# character_set="AL32UTF8"
+# compute_count=3
+# national_character_set="AL16UTF16"
+# license_model="LicenseIncluded"
+# db_version="23ai"                       
+# customer_contacts = [
+#   "replace_your_email@here"
+# ]
