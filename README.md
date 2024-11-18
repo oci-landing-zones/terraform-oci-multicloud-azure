@@ -58,7 +58,7 @@ These module automates the provisioning of components for running Oracle Databas
 ## Authentication
 
 ### OCI Authentication 
-The OCI Terraform provider supports [multiple authentication methods](https://docs.oracle.com/en-us/iaas/Content/terraform/configuring.htm). We recommend you configuration OCI Terraform Provider using API Key Authentication as illustrated below. Please refer to the [documentation](https://docs.oracle.com/en-us/iaas/Content/terraform/configuring.htm#api-key-auth) for details.
+The OCI Terraform provider supports [multiple authentication methods](https://docs.oracle.com/en-us/iaas/Content/terraform/configuring.htm). We recommend to configure OCI Terraform Provider using API Key Authentication as illustrated below. Please refer to the [documentation](https://docs.oracle.com/en-us/iaas/Content/terraform/configuring.htm#api-key-auth) for details.
 
 ``` shell
 export TF_VAR_oci_tenancy_ocid="OCID of the OCI tenancy"
