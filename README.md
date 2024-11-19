@@ -19,14 +19,15 @@ To use the Terraform modules and templates in your environment, you must install
 
 - [Terraform](https://developer.hashicorp.com/terraform/install)
   - Alternate [OpenTofu](https://opentofu.org/docs/intro/)
-- [Python 3.x](https://www.python.org/?downloads) (min version 3.4) with packages
-  - [pip](https://pypi.org/project/pip/)
-  - [venv](https://docs.python.org/3/library/venv.html) 
-    - (venv) virtual env is recommended (not mandatory) to install python packages for [oci-identity-provider/scripts/requirements.txt](modules/oci-identity/oci-identity-provider/scripts/requirements.txt)
 - Azure CLI - [How to install the Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
 - OCI CLI - [Quickstart](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm)
     - Setup OCI-CLI to [authenticate to your tenancy](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.43.1/oci_cli_docs/cmdref/session/authenticate.html) 
     - Create a token auth profile in your oci config with `<MY_PROFILE_NAME>`
+requirements.txt)
+- [Python 3.x](https://www.python.org/?downloads) (min version 3.4) with packages
+  - [pip](https://pypi.org/project/pip/)
+  - [venv](https://docs.python.org/3/library/venv.html) 
+    - (venv) virtual env is recommended (not mandatory) to install python packages for [oci-identity-provider/scripts/requirements.txt](modules/oci-identity/oci-identity-provider/scripts/
 
 Dependent which cloud resources a module manages, it will use some subset of the terraform cloud providers:
 
@@ -39,6 +40,14 @@ Dependent which cloud resources a module manages, it will use some subset of the
 
 These module automates the provisioning of components for running Oracle Database@Azure. Each template can run independently and default input values are configured which can be overridden per customer's preferences.
 
+### Exadata
+- `templates/azurerm-oci-exadata-quickstart`: Quickstart OracleDB@Azure (Exadata) with OCI LZ modules (AzureRM)
+- `templates/avm-oci-exadata-quickstart`: Quickstart OracleDB@Azure (Exadata) with Azure Verified Modules (AzAPI) and OCI LZ Modules
+
+### Autonomous Database
+- `templates/azurerm-oci-adbs-quickstart`: Quickstart OracleDB@Azure (Autonomous Database) with OCI LZ modules (AzureRM)
+
+### Identity
 - `templates/az-oci-sso-federation`: Configures Single Sign-on (SSO) Between OCI and Microsoft Azure with identity federation.
 - `templates/az-oci-rbac-n-sso-fed`: Configures SSO Between OCI and Microsoft Azure with identity federation And role, groups required for Oracle Database@Azure.
 - `templates/az-odb-rbac`: Creates Roles and Groups required for for Oracle Database@Azure.
@@ -49,29 +58,38 @@ These module automates the provisioning of components for running Oracle Databas
 ## Authentication
 
 ### OCI Authentication 
-
-You must [authenticate to your oci tenancy](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.43.1/oci_cli_docs/cmdref/session/authenticate.html) with config auth profile as `<MY_PROFILE_NAME>`. All available OCI regions are defined in [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm#top).
+The OCI Terraform provider supports [multiple authentication methods](https://docs.oracle.com/en-us/iaas/Content/terraform/configuring.htm). We recommend to configure OCI Terraform Provider using API Key Authentication as illustrated below. Please refer to the [documentation](https://docs.oracle.com/en-us/iaas/Content/terraform/configuring.htm#api-key-auth) for details.
 
 ``` shell
-oci session authenticate --region=<MY_REGION_IDENTIFIER> --profile-name=<MY_PROFILE_NAME>
+export TF_VAR_oci_tenancy_ocid="OCID of the OCI tenancy"
+export TF_VAR_oci_user_ocid="<OCID of the OCI user>"
+export TF_VAR_oci_private_key_path="<path (including filename) of the private key>"
+export TF_VAR_oci_fingerprint="<Key's fingerprint>"
 ```
 
-Example:
-
+You can verify the configuration using OCI CLI as illustrated below.
 ``` shell
-oci session authenticate --region=us-ashburn-1 --profile-name=ONBOARDING
+export OCI_CLI_TENANCY=$TF_VAR_oci_tenancy_ocid
+export OCI_CLI_USER=$TF_VAR_oci_user_ocid
+export OCI_CLI_FINGERPRINT=$TF_VAR_oci_fingerprint
+export OCI_CLI_KEY_FILE=$TF_VAR_oci_private_key_path
+oci iam tenancy get --tenancy-id $TF_VAR_oci_tenancy_ocid --output table --query "data.{Name:name, OCID:id}" --auth api_key
 ```
 
 ### AZ Authentication
+You can authenticate to Azure with [service principal](https://learn.microsoft.com/en-us/azure/developer/terraform/authenticate-to-azure-with-service-principle?tabs=bash) and verify it with Azure CLI as illustrated below. Please refer to the offical [Azure documentation](https://learn.microsoft.com/en-us/azure/developer/terraform/authenticate-to-azure?tabs=bash#2-authenticate-terraform-to-azure) for details.
 
-Official Microsoft documentation to [authenticate to Azure using Azure CLI](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli)
 
 ``` shell
-az login --tenant <azure-tenant-id>
+export ARM_CLIENT_ID="<service_principal_appid>"
+export ARM_CLIENT_SECRET="<service_principal_password>"
+export ARM_TENANT_ID="<azure_subscription_tenant_id>"
+export ARM_SUBSCRIPTION_ID="<azure_subscription_id>"
+az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET -t $ARM_TENANT_ID
+az account show -o table
 ```
 
 ## Execution 
-
 Navigate into the `templates` directory.
 
 **Note:** The Terraform state file writes to the directory from where you execute plans. You should keep this file in case you want to use Terraform to modify the environment configuration later. Refer to the Terraform documentation for more persistent and shareable ways to save state. 
@@ -81,7 +99,6 @@ Navigate into the `templates` directory.
 Input variable can be set in the [Variable Definitions file](https://developer.hashicorp.com/terraform/language/values/variables#variable-definitions-tfvars-files) (e.g. `terraform.tfvars`) or through the command line or environment variables:
 
 ``` terraform
-config_file_profile="<MY_PROFILE_NAME>"
 compartment_ocid="<MY_OCI_TENANCY_ID>"
 region="<MY_REGION_IDENTIFIER>"
 ```
@@ -89,13 +106,12 @@ region="<MY_REGION_IDENTIFIER>"
 or via [Command Line](https://developer.hashicorp.com/terraform/language/values/variables#variables-on-the-command-line)
 
 ``` shell
-terraform plan -var="config_file_profile=<MY_PROFILE_NAME>" -var="compartment_ocid=<MY_OCI_TENANCY_ID>" -var="region=<MY_REGION_IDENTIFIER>"
+terraform plan -var="compartment_ocid=<MY_OCI_TENANCY_ID>" -var="region=<MY_REGION_IDENTIFIER>"
 ```
 
 or via [Environment Variables](https://developer.hashicorp.com/terraform/cli/config/environment-variables#tf_var_name) 
 
 ``` shell
-export TF_VAR_config_file_profile="<MY_PROFILE_NAME>"
 export TF_VAR_compartment_ocid="<MY_OCI_TENANCY_ID>"
 export TF_VAR_region="<MY_REGION_IDENTIFIER>"
 ```
@@ -167,7 +183,7 @@ tofu destroy
 ### Terraform Provider
 - [Oracle Cloud Infrastructure Provider](https://registry.terraform.io/providers/oracle/oci/latest/docs)
 - [Azure Active Directory Provider](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs)
-- [Azure Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
+- [AzureRm Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
 - [AzAPI Provider](https://registry.terraform.io/providers/Azure/azapi/latest/docs)
 
 ### Terraform Modules

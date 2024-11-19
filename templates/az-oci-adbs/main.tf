@@ -1,18 +1,36 @@
-
-resource "azurerm_resource_group" "resource_group" {
-  location = var.location
-  name     = var.resource_group
+locals {
+  az_region           = var.az_region
+  adbs_name           = "${var.name}${random_string.suffix.result}"
+  resource_group_name = module.azure-resource-grp.resource_group_name
 }
 
+resource "random_string" "suffix" {
+  length  = var.random_suffix_length
+  special = false
+  upper   = false
+  numeric = true
+}
 
-module "avm_odbas_network" {
+# Azure Resource Group
+module "azure-resource-grp" {
+  source              = "../../modules/azure-resource-grp"
+  az_region           = local.az_region
+  resource_group_name = var.resource_group
+  az_tags             = var.tags
+  new_rg              = var.new_rg
+}
+
+# Azure VNet
+module "avm_network" {
   source  = "Azure/avm-res-network-virtualnetwork/azurerm"
   version = "0.2.4"
 
-  address_space       = [var.virtual_network_address_space]
-  location            = var.location
-  name                = var.virtual_network_name
-  resource_group_name = azurerm_resource_group.resource_group.name
+  tags                = var.tags
+  resource_group_name = local.resource_group_name
+  location            = local.az_region
+
+  name          = var.virtual_network_name
+  address_space = [var.virtual_network_address_space]
 
   subnets = {
     delegated = {
@@ -31,32 +49,39 @@ module "avm_odbas_network" {
   }
 }
 
-
-module "odbas_database" {
+module "azure-oracle-adbs" {
   source = "../../modules/azure-oracle-adbs"
   providers = {
     azapi   = azapi
     azurerm = azurerm
   }
-  depends_on = [module.avm_odbas_network]
+  depends_on = [module.avm_network]
 
-  location                      = var.location
-  nw_resource_group             = var.resource_group
-  nw_vnet_name                  = var.virtual_network_name
-  nw_delegated_subnet_name      = var.delegated_subnet_name
-  db_resource_group             = var.resource_group
-  db_name                       = var.db_name
-  db_admin_password             = var.db_admin_password
-  db_compute_model              = var.db_compute_model
-  db_ecpu_count                 = var.db_ecpu_count
-  db_storage_in_tbs            = var.db_storage_in_tbs
-  db_version                    = var.db_version
-  db_license_model              = var.db_license_model
-  db_workload                   = var.db_workload
-  db_auto_scale_enabled         = var.db_auto_scale_enabled
-  db_storage_auto_scale_enabled = var.db_storage_auto_scale_enabled
-  db_permission_level           = var.db_permission_level
-  db_type                       = var.db_type
-  db_character_set              = var.db_character_set
-  db_n_character_set            = var.db_n_character_set
+  tags     = var.tags
+  location = local.az_region
+
+  nw_resource_group        = local.resource_group_name
+  nw_vnet_name             = var.virtual_network_name
+  nw_delegated_subnet_name = var.delegated_subnet_name
+
+  db_resource_group                           = local.resource_group_name
+  name                                        = local.adbs_name
+  display_name                                = var.display_name == null ? local.adbs_name : var.display_name
+  compute_count                               = var.compute_count
+  data_storage_size_in_tbs                    = var.data_storage_size_in_tbs
+  admin_password                              = var.admin_password
+  db_version                                  = var.db_version
+  license_model                               = var.license_model
+  compute_model                               = var.compute_model
+  db_workload                                 = var.db_workload
+  permission_level                            = var.permission_level
+  character_set                               = var.character_set
+  national_character_set                      = var.national_character_set
+  auto_scaling_enabled                        = var.auto_scaling_enabled
+  auto_scaling_for_storage_enabled            = var.auto_scaling_for_storage_enabled
+  backup_retention_period_in_days             = var.backup_retention_period_in_days
+  open_mode                                   = var.open_mode
+  # cpu_core_count                              = var.cpu_core_count
+  local_dataguard_enabled                     = var.local_dataguard_enabled
+  local_adg_auto_failover_max_data_loss_limit = var.local_adg_auto_failover_max_data_loss_limit
 } 

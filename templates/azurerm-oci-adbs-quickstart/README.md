@@ -1,4 +1,4 @@
-# azurerm-oci-adbs-quickstart
+# Quickstart OracleDB@Azure (Autonomous Database) with OCI LZ modules (AzureRM)
 
 ## Summary
 This is a Terraform Template for provisioning Oracle Database@Azure with the following resources using AzureRM and OCI Terraform provider
