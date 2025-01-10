@@ -2,7 +2,7 @@
 
 This module extract OCI identifiers (such as region, tenancy and OCIDs) that assocate with the given Oracle Database@Azure resource.
 
-- Some Azure Verified Modules (AVMs) require Terraform version "~> 3.71" and "~> 3.74", conflicting the AzureRM version requirement of Oracle Exadata ">= 4.9.0"
+- Some Azure Verified Modules (AVMs) require Terraform version "\~> 3.71" and "\~> 3.74", conflicting the AzureRM version requirement of Oracle Exadata ">= 4.9.0"
 - This module is getting information using AZ CLI, instead of AzureRM, to serve as a workaround that works with both AVM-based and AzureRM-based implementation.
 - This module also eliminiated the dependency of JSON mapping data file by deducing information from CLI output directly.
 
