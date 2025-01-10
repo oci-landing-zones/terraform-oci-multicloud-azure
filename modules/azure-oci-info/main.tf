@@ -17,8 +17,3 @@ data "external" "az_exadata_infra" {
   program = ["sh", "-c", local.az_cli_cmd]
 }
 
-output "az_cli_cmd" {
-  value = local.az_cli_cmd
-}
-
-

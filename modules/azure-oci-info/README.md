@@ -6,11 +6,11 @@ This module extract OCI identifiers (such as region, tenancy and OCIDs) that ass
 - This module is getting information using AZ CLI, instead of AzureRM, to serve as a workaround that works with both AVM-based and AzureRM-based implementation.
 - This module also eliminiated the dependency of JSON mapping data file by deducing information from CLI output directly.
 
-<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-This module requires Azure CLI, which is already the [prerequisites](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/azure-build#prerequisites) of AzureRM Terraform Provider.
+This module requires Azure CLI, which is the [prerequisites of AzureRM Terraform Provider](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/azure-build#prerequisites).
 
+<!-- BEGIN_TF_DOCS -->
 ## Providers
 
 | Name | Version |
@@ -35,7 +35,6 @@ This module requires Azure CLI, which is already the [prerequisites](https://dev
 
 | Name | Description |
 |------|-------------|
-| <a name="output_az_cli_cmd"></a> [az\_cli\_cmd](#output\_az\_cli\_cmd) | n/a |
 | <a name="output_oci_compartment_ocid"></a> [oci\_compartment\_ocid](#output\_oci\_compartment\_ocid) | n/a |
 | <a name="output_oci_region"></a> [oci\_region](#output\_oci\_region) | n/a |
 | <a name="output_oci_resource_ocid"></a> [oci\_resource\_ocid](#output\_oci\_resource\_ocid) | n/a |
