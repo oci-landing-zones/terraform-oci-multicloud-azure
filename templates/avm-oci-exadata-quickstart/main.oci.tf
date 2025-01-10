@@ -12,7 +12,7 @@ provider "oci" {
 
 locals {
   # Define OCI Region base on Azure Region   
-  oci_region = module.azure-oci-mapping.region_id
+  oci_region = module.azure-oci-info.oci_region
 
   # Assign OCI tags  
   oci_tags = var.common_tags
@@ -33,10 +33,11 @@ locals {
 }
 
 # Lookup OCI info base on Azure info
-module "azure-oci-mapping" {
-  source   = "../../modules/azure-oci-zone-mapping"
-  location = var.az_region
-  zone     = var.az_zone
+module "azure-oci-info" {
+  source   = "../../modules/azure-oci-info"
+  resource_type = "cloud-exadata-infrastructure"
+  resource_group_name = module.azure-resource-grp.resource_group_name
+  name = module.avm_exadata_infra.resource.name
 }
 
 # Oracle Database DB Home + CDB with default PDB
