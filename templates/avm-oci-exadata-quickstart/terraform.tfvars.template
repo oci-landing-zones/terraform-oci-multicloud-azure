@@ -18,7 +18,7 @@ random_suffix_length = 3
 virtual_network_name            = "vnet"
 virtual_network_address_space   = "10.1.0.0/16"
 delegated_subnet_address_prefix = "10.1.1.0/24"
-delegated_subnet_name           = "snet-delegate-oradb"
+delegated_subnet_name           = "sn-oradb"
 
 # AZ Exadata Infrastructure
 exadata_infrastructure_name="real"
@@ -31,7 +31,7 @@ exadata_infrastructure_storage_count=3
 
 # AZ Exadata VM Cluster
 vm_cluster_name                                                  = "vmc"
-vm_cluster_hostname                                              = "dbserver-cug"
+vm_cluster_hostname                                              = "dbsvr"
 vm_cluster_gi_version                                            = "19.0.0.0"
 vm_cluster_cpu_core_count                                        = 4
 vm_cluster_ocpu_count                                            = 2
