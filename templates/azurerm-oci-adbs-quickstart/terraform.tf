@@ -5,7 +5,7 @@ terraform {
     # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 4.9.0"
+      version = ">= 4.18.0"
     }
     # https://registry.terraform.io/providers/oracle/oci/latest/docs
     oci = {

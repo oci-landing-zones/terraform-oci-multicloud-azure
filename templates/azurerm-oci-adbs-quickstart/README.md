@@ -16,7 +16,7 @@ This is a Terraform Template for provisioning Oracle Database@Azure with the fol
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.9.2 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 4.9.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 4.18.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.5.1 |
 | <a name="requirement_oci"></a> [oci](#requirement\_oci) | >= 6.15.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.5 |
