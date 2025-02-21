@@ -6,7 +6,7 @@ output "az_resource_group_name" {
 
 output "az_vnet_id" {
   description = "Resource ID of Azure VNet"
-  value       = module.avm_network.resource_id
+  value       = module.avm_network[*].resource_id
 }
 
 output "az_ora_adbs_resource_id" {
