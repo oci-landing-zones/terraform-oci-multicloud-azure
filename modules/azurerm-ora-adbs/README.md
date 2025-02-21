@@ -40,8 +40,8 @@ No modules.
 | <a name="input_compute_model"></a> [compute\_model](#input\_compute\_model) | The compute model of the Autonomous Database. This is required if using the computeCount parameter. If using cpuCoreCount then it is an error to specify computeModel to a non-null value. ECPU compute model is the recommended model and OCPU compute model is legacy. | `string` | `"ECPU"` | no |
 | <a name="input_customer_contacts"></a> [customer\_contacts](#input\_customer\_contacts) | The email address used by Oracle to send notifications regarding databases and infrastructure. Provide up to 10 unique maintenance contact email addresses. | `list(string)` | `[]` | no |
 | <a name="input_data_storage_size_in_tbs"></a> [data\_storage\_size\_in\_tbs](#input\_data\_storage\_size\_in\_tbs) | The maximum storage that can be allocated for the database, in terabytes. | `number` | `1` | no |
-| <a name="input_db_version"></a> [db\_version](#input\_db\_version) | A valid Oracle Database version for Autonomous Database. | `string` | `"23ai"` | no |
-| <a name="input_db_workload"></a> [db\_workload](#input\_db\_workload) | The Autonomous Database workload type. The following values are valid: OLTP, DW, AJD, APEX | `string` | `"DW"` | no |
+| <a name="input_db_version"></a> [db\_version](#input\_db\_version) | A valid Oracle Database version for Autonomous Database. | `string` | `"19c"` | no |
+| <a name="input_db_workload"></a> [db\_workload](#input\_db\_workload) | The Autonomous Database workload type. The following values are valid: OLTP, DW, AJD, APEX | `string` | `"OLTP"` | no |
 | <a name="input_display_name"></a> [display\_name](#input\_display\_name) | The user-friendly name for the Autonomous Database in OCI. The name does not have to be unique. | `string` | n/a | yes |
 | <a name="input_license_model"></a> [license\_model](#input\_license\_model) | The Oracle license model that applies to the Oracle Autonomous Database. Bring your own license (BYOL) allows you to apply your current on-premises Oracle software licenses to equivalent, highly automated Oracle services in the cloud. License Included allows you to subscribe to new Oracle Database software licenses and the Oracle Database service. Note that when provisioning an Autonomous Database on dedicated Exadata infrastructure, this attribute must be null. It is already set at the Autonomous Exadata Infrastructure level. When provisioning an Autonomous Database Serverless database, if a value is not specified, the system defaults the value to BRING\_YOUR\_OWN\_LICENSE. Bring your own license (BYOL) also allows you to select the DB edition using the optional parameter. | `string` | `"LicenseIncluded"` | no |
 | <a name="input_location"></a> [location](#input\_location) | The Azure Region where the Autonomous Database should exist. Changing this forces a new Autonomous Database to be created | `string` | n/a | yes |
@@ -51,7 +51,7 @@ No modules.
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of Resource Group in Azure | `string` | n/a | yes |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | The ID of the subnet the resource is associated with. | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Resource tags for the Cloud Exadata Infrastructure | `map(string)` | `null` | no |
-| <a name="input_virtual_network_id"></a> [virtual\_network\_id](#input\_virtual\_network\_id) | The ID of the vnet associated with the cloud VM cluster. | `string` | n/a | yes |
+| <a name="input_virtual_network_id"></a> [virtual\_network\_id](#input\_virtual\_network\_id) | The ID of the vnet associated with the autonomous database. | `string` | n/a | yes |
 
 ## Outputs
 

@@ -30,8 +30,8 @@ variable "az_region" {
 
 variable "resource_group" {
   type        = string
-  description = "Resource Group Name"
-  default     = "rg-oradb"
+  description = "Resource Group Name without rg suffix"
+  default     = "oradb"
 }
 
 variable "new_rg" {
@@ -41,6 +41,12 @@ variable "new_rg" {
 }
 
 # Azure VNet
+variable "new_vnet" {
+  type = bool
+  description = "Create new VNet or not"
+  default = "true"
+}
+
 variable "virtual_network_name" {
   description = "The name of the virtual network."
   type        = string
@@ -77,6 +83,7 @@ variable "delegated_subnet_address_prefix" {
 variable "name" {
   description = "The name which should be used for this Autonomous Database."
   type        = string
+  default     = "oraadbs"
 }
 
 variable "display_name" {
@@ -88,7 +95,7 @@ variable "display_name" {
 variable "db_workload" {
   description = "The Autonomous Database workload type. The following values are valid: OLTP, DW, AJD, APEX"
   type        = string
-  default     = "DW"
+  default     = "OLTP"
 }
 
 variable "mtls_connection_required" {
@@ -163,7 +170,7 @@ variable "license_model" {
 variable "db_version" {
   description = "A valid Oracle Database version for Autonomous Database."
   type        = string
-  default     = "23ai"
+  default     = "19c"
 }
 
 variable "customer_contacts" {

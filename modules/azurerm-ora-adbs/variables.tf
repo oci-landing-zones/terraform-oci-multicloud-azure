@@ -26,7 +26,7 @@ variable "display_name" {
 variable "db_workload" {
   description = "The Autonomous Database workload type. The following values are valid: OLTP, DW, AJD, APEX"
   type        = string
-  default     = "DW"
+  default     = "OLTP"
 }
 
 variable "mtls_connection_required" {
@@ -59,7 +59,7 @@ variable "auto_scaling_for_storage_enabled" {
 }
 
 variable "virtual_network_id" {
-  description = "The ID of the vnet associated with the cloud VM cluster."
+  description = "The ID of the vnet associated with the Autonomous Database."
   type        = string
 }
 
@@ -102,7 +102,7 @@ variable "license_model" {
 variable "db_version" {
   description = "A valid Oracle Database version for Autonomous Database."
   type        = string
-  default     = "23ai"
+  default     = "19c"
 }
 
 variable "customer_contacts" {
