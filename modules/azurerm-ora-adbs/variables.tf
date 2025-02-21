@@ -59,7 +59,7 @@ variable "auto_scaling_for_storage_enabled" {
 }
 
 variable "virtual_network_id" {
-  description = "The ID of the vnet associated with the cloud VM cluster."
+  description = "The ID of the vnet associated with the Autonomous Database."
   type        = string
 }
 
