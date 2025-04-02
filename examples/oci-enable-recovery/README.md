@@ -27,7 +27,7 @@
 
 ### Config NSG rules
 - Configure NSG to [allow traffic to port 8005 and 2484 in the backup subnet ](https://docs.oracle.com/en-us/iaas/recovery-service/doc/getting-started-recovery-service.html#GUID-9CD51C49-117B-4449-8A39-68CE8822E63B) from both client and backup subnet
-- [2.subnet_nsg.tf](./2.subnet_nsg.tf) is illustrating the NSG rule creation using Terraform
+- [2.subnet_nsg.tf](./2b.subnet_nsg.tf) is illustrating the NSG rule creation using Terraform
 
 ## 3. Register Recovery Service subnet
 - [Register the backup subnet and the NSG with Recovery Service](https://docs.oracle.com/en-us/iaas/recovery-service/doc/getting-started-recovery-service.html#DBRSU-GUID-78D403AF-D1DF-4229-B051-3B39EA42D6CD)
