@@ -7,8 +7,7 @@ resource "oci_database_database" "exa_cdb" {
   depends_on = [
     oci_recovery_recovery_service_subnet.this,
     module.recovery_service_iam_policies,
-    # oci_core_network_security_group_security_rule.backup_nsg,
-    # oci_core_network_security_group_security_rule.client_nsg
+    oci_core_network_security_group_security_rule.nsg_rules
   ]
 
   provider   = oci.resource

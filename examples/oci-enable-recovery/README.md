@@ -7,16 +7,16 @@
 
 ![](https://docs.oracle.com/en-us/iaas/recovery-service/doc/img/primaryworkflow.png)
 
-## 0. [Ensure your tenancy's resource limits for Recovery Service are adequate
+## 0. Ensure your tenancy's resource limits for Recovery Service are adequate
 
 - Make sure you have enough [resource limit for Recovery Service](https://docs.oracle.com/en-us/iaas/recovery-service/doc/getting-started-recovery-service.html#DBRSU-GUID-9D84AD3B-AB82-4891-B656-A18E9A5C8491) with your ORACLEDBATAZURE subscription.
 - Both "Protected Database Count" and "Space Used for Recovery Window (GB)" should be available in your region.
 - You can also check the available limit via [OCI Console](https://cloud.oracle.com/limits)
-- [0.check_limits.tf]](0.check_limits.tf) is illustrating how you can check the limit with Terraform.
+- [0.check_limits.tf](0.check_limits.tf) is illustrating how you can check the limit with Terraform, which make use of [OCI CLI](./scripts/get_subscription.sh) to enquire the ORACLEDBATAZURE subscription ID.
 
 ## 1. Create IAM policies for Recovery Service 
 - Make sure the [Policy Statements Required for Using Recovery Service](https://docs.oracle.com/en-us/iaas/recovery-service/doc/getting-started-recovery-service.html#GUID-867093E8-DBC2-4FD1-9002-5A5722749F9E__GUID-62E1AACF-1BD2-4038-8503-3E6B186F76C9) are provisioned 
-- [1.iam_policies.tf](./1.iam_policies.tf) is illustrating how you can provision those IAM Policies using Terraform, which make use of [OCI CLI](./scripts/get_subscription.sh) to enquire the ORACLEDBATAZURE subscription ID.
+- [1.iam_policies.tf](./1.iam_policies.tf) is illustrating how you can provision those IAM Policies using Terraform, using OCI Landing Zone IAM module.
 
 ## 2. Configuring Network Resources for Recovery Service
 
@@ -30,7 +30,7 @@
 - [2.subnet_nsg.tf](./2.subnet_nsg.tf) is illustrating the NSG rule creation using Terraform
 
 ## 3. Register Recovery Service subnet
-- [Register the backup subnet and the NSG with Recovery Service)(https://docs.oracle.com/en-us/iaas/recovery-service/doc/getting-started-recovery-service.html#DBRSU-GUID-78D403AF-D1DF-4229-B051-3B39EA42D6CD)
+- [Register the backup subnet and the NSG with Recovery Service](https://docs.oracle.com/en-us/iaas/recovery-service/doc/getting-started-recovery-service.html#DBRSU-GUID-78D403AF-D1DF-4229-B051-3B39EA42D6CD)
 - [3.register_subnet.tf](./3.register_subnet.tf) is illustrating the backup subnet and NSG registration with Recovery Service using Terraform
 ```terraform
 resource "oci_recovery_recovery_service_subnet" "this" {
