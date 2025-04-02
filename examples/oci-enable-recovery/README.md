@@ -39,6 +39,7 @@ resource "oci_recovery_recovery_service_subnet" "this" {
   display_name   = local.cluster_display_name
   vcn_id         = local.vcn_id
   subnets        = [local.backup_subnet_id]
+  nsg_ids        = [local.backup_nsg_id]
 }
 ```
 
