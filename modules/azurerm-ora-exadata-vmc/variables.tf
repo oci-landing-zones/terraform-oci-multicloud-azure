@@ -41,6 +41,11 @@ variable "gi_version" {
   description = "A valid Oracle Grid Infrastructure (GI) software version."
   type        = string
 }
+variable "system_version" {
+  description = "Operating system version of the Exadata image."
+  type        = string
+  default     = null
+}
 variable "ssh_public_keys" {
   description = "The public key portion of one or more key pairs used for SSH access to the Cloud VM Cluster."
   type        = list(string)

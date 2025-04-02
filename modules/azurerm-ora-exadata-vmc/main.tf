@@ -27,6 +27,7 @@ resource "azurerm_oracle_cloud_vm_cluster" "this" {
     time_zone = var.time_zone
     license_model = var.license_model
     gi_version = var.gi_version
+    system_version = var.system_version
     
     ssh_public_keys = var.ssh_public_keys
     db_servers = [for obj in data.azurerm_oracle_db_servers.this.db_servers : obj.ocid]
@@ -68,6 +69,7 @@ resource "azurerm_oracle_cloud_vm_cluster" "this" {
           subnet_id,
           backup_subnet_cidr,
           gi_version,
+          system_version,
 
           # Updatable from OCI
           license_model,

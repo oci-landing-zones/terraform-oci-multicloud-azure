@@ -148,6 +148,12 @@ variable "vm_cluster_gi_version" {
   default     = "19.0.0.0"
 }
 
+variable "vm_cluster_system_version" {
+  description = "Operating system version of the Exadata image."
+  type        = string
+  default     = null
+}
+
 variable "vm_cluster_hostname" {
   description = "The prefix forms the first portion of the Exadata VM Cluster host name. Recommended maximum: 12 characters."
   type        = string

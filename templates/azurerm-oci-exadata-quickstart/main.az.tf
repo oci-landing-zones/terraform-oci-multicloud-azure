@@ -106,6 +106,7 @@ module "azurerm_exadata_vmc" {
   time_zone                       = var.vm_cluster_time_zone
   license_model                   = var.vm_cluster_license_model
   gi_version                      = var.vm_cluster_gi_version
+  system_version                  = var.vm_cluster_system_version
   ssh_public_keys                 = var.vm_cluster_ssh_public_keys
 
   # Networking
