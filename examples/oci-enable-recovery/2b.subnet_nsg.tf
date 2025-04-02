@@ -1,7 +1,7 @@
 # Configuring Recovery Service https://docs.oracle.com/en-us/iaas/recovery-service/doc/getting-started-recovery-service.html
 
 locals {
-  # Ingress Rules for the Recovery Service Private Subnet https://docs.oracle.com/en-us/iaas/recovery-service/doc/getting-started-recovery-service.html#GUID-9CD51C49-117B-4449-8A39-68CE8822E63B
+  # NSG Rules for the Recovery Service Private Subnet https://docs.oracle.com/en-us/iaas/recovery-service/doc/getting-started-recovery-service.html#GUID-9CD51C49-117B-4449-8A39-68CE8822E63B
   nsg_rules = [
     # Allow traffic from client subnet to backup subnet
     { direction = "EGRESS", nsg_id = local.client_nsg_id, cidr = data.oci_core_subnet.backup_subnet.cidr_block, port = 8005 },
