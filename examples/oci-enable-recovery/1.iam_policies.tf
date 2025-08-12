@@ -12,7 +12,7 @@ module "recovery_service_iam_policies" {
     supplied_policies : {
       "ARS-POLICY" : {
         name : "recovery-service-policy-azure"
-        description : "Permissions Required for Oracle Database@Google Cloud to use Recovery Service for backups"
+        description : "Permissions Required for Oracle Database@Azure to use Recovery Service for backups"
         compartment_id : var.oci_tenancy_ocid
         statements : [
           "allow service database to manage recovery-service-family in tenancy",
