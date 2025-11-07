@@ -1,4 +1,5 @@
-# azure-oracle-adbs
+# azure-oracle-adbs (obsolete)
+For AzAPI-based reference implementation, please refer to [Azure Verified Modules - avm-res-oracledatabase-autonomous](https://github.com/Azure/terraform-azurerm-avm-res-oracledatabase-autonomous)
 
 ## Summary
 

@@ -1,4 +1,5 @@
-# azure-vmcluster
+# azure-vmcluster (obsolete)
+For AzAPI-based reference implementation, please refer to [Azure Verified Modules - avm-res-oracledatabase-cloudvmcluster](https://registry.terraform.io/modules/Azure/avm-res-oracledatabase-cloudvmcluster/azurerm/latest)
 
 ## Summary
 

@@ -38,7 +38,9 @@ No modules.
 | <a name="input_maintenance_window"></a> [maintenance\_window](#input\_maintenance\_window) | maintenanceWindow properties | <pre>object({<br/>      patching_mode = string<br/>      preference = string<br/>      lead_time_in_weeks = optional(number)<br/>      months = optional(list(number))<br/>      weeks_of_month = optional(list(number))<br/>      days_of_week =optional(list(number))<br/>      hours_of_day = optional(list(number))<br/>  })</pre> | <pre>{<br/>  "patching_mode": "Rolling",<br/>  "preference": "NoPreference"<br/>}</pre> | no |
 | <a name="input_name"></a> [name](#input\_name) | The name of the Exadata Infrastructure at Azure | `string` | `"odaaz-infra"` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of Resource Group in Azure | `string` | `"rg-oradb"` | no |
-| <a name="input_shape"></a> [shape](#input\_shape) | The shape of the Exadata infrastructure resource. e.g. Exadata.X9M | `string` | `"Exadata.X9M"` | no |
+| <a name="input_shape"></a> [shape](#input\_shape) | The shape of the Exadata infrastructure resource. e.g. Exadata.X11M | `string` | `"Exadata.X11M"` | no |
+| <a name="input_storage_server_type"></a> [storage_server_type](#input\_storage_server_type) | The storage server model type of the cloud Exadata infrastructure resource. Null for X9M. Default to X11M-HC for X11M | `string` | `null` | no |
+| <a name="input_database_server_type"></a> [database_server_type](#input\_database_server_type) | The database server model type of the cloud Exadata infrastructure resource. Null for X9M. Default to X11M for X11M | `string` | `null` | no |
 | <a name="input_storage_count"></a> [storage\_count](#input\_storage\_count) | The number of storage servers for the Exadata infrastructure. | `number` | `3` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Resource tags for the Cloud Exadata Infrastructure | `map(string)` | `null` | no |
 | <a name="input_zone"></a> [zone](#input\_zone) | The availablty zone of the Exadata Infrastructure in Azure | `string` | n/a | yes |

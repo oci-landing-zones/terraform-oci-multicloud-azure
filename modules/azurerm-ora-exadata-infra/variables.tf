@@ -34,9 +34,14 @@ variable "storage_count" {
 }
 
 variable "shape" {
-  description = "The shape of the Exadata infrastructure resource. e.g. Exadata.X9M"
   type        = string
-  default     = "Exadata.X9M"
+  default     = "Exadata.X11M"
+  description = "The shape of the infrastructure. Valid value Exadata.X9M and Exadata.X11M"
+
+  validation {
+    condition     = contains(["Exadata.X9M", "Exadata.X11M"], var.shape)
+    error_message = "Valid value Exadata.X9M and Exadata.X11M"
+  }
 }
 
 # Optional
@@ -67,4 +72,16 @@ variable "tags" {
   description = "Resource tags for the Cloud Exadata Infrastructure"
   type        = map(string)
   default     = null
+}
+
+variable "storage_server_type" {
+  type        = string
+  default     = null
+  description = "The storage server model type of the cloud Exadata infrastructure resource. Null for X9M. Default to X11M-HC for X11M"
+}
+
+variable "database_server_type" {
+  type        = string
+  default     = null
+  description = "The database server model type of the cloud Exadata infrastructure resource. Null for X9M. Default to X11M for X11M"
 }
