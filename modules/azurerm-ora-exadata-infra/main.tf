@@ -8,6 +8,11 @@ terraform {
   }
 }
 
+locals {
+  database_server_type = lower(var.shape) == "exadata.x11m" && var.database_server_type == null ? "X11M" : var.database_server_type
+  storage_server_type  = lower(var.shape) == "exadata.x11m" && var.storage_server_type == null ? "X11M-HC" : var.storage_server_type
+}
+
 resource "azurerm_oracle_exadata_infrastructure" "this" {
   # Required 
   resource_group_name = var.resource_group_name
@@ -20,6 +25,8 @@ resource "azurerm_oracle_exadata_infrastructure" "this" {
   shape         = var.shape
   compute_count = var.compute_count
   storage_count = var.storage_count
+  database_server_type = local.database_server_type
+  storage_server_type = local.storage_server_type
 
   # Optional
   customer_contacts  = var.customer_contacts
