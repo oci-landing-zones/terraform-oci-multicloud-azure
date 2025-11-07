@@ -1,4 +1,5 @@
-# azure-exainfra-vmcluster
+# azure-exainfra-vmcluster (obsolete)
+For AzAPI-based reference implementation, please refer to [Azure Verified Modules - avm-res-oracledatabase-cloudexadatainfrastructure](https://registry.terraform.io/modules/Azure/avm-res-oracledatabase-cloudexadatainfrastructure/azurerm/latest)
 
 ## Summary
 

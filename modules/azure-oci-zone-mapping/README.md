@@ -1,4 +1,4 @@
-# exadata-limits
+# exadata-limits (obsolete)
 Terraform Template to get info for exadata limits raising.
 
 ## Providers

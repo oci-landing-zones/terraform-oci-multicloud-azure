@@ -1,4 +1,4 @@
-# connectivity-validation
+# connectivity-validation (obsolete)
 ## Summary
 
 Terraform module for CDB/PDB connectivity test.
