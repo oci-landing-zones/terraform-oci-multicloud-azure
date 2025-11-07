@@ -1,4 +1,5 @@
-# Quickstart OracleDB@Azure (Autonomous Database) with OCI LZ modules (AzAPI)
+# Quickstart OracleDB@Azure Autonomous Database (AzAPI) - (obsolete)
+For AzAPI-based reference implementation, please refer to [Azure Verified Modules - avm-res-oracledatabase-autonomous](https://github.com/Azure/terraform-azurerm-avm-res-oracledatabase-autonomous)
 
 ## Summary
 This is a Terraform Template for provisioning Oracle Database@Azure with the following resources using AzAPI Terraform provider

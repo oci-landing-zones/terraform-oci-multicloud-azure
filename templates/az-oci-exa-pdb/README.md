@@ -1,4 +1,6 @@
-# Terraform Template for Provisioning Exa on Azure and Validation
+# Terraform Template for Provisioning Exa on Azure and Validation (obsolete)
+
+For AzAPI-based reference implementation, please refer to [Azure Verified Modules - avm-ptn-odaa](https://registry.terraform.io/modules/Azure/avm-ptn-odaa/azurerm/latest)
 
 ## Providers
 
