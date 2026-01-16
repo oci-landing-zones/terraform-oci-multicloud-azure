@@ -9,7 +9,7 @@ variable "common_tags" {
 
 ## Mandatory to randomise namaing for resource group, exadata infra and vmcluster
 variable "random_suffix_length" {
-  type = number
+  type    = number
   default = 3
 }
 
@@ -17,26 +17,26 @@ variable "random_suffix_length" {
 variable "avm_enable_telemetry" {
   description = "This variable controls whether or not telemetry is enabled for the Azure Verified Modules"
   type        = bool
-  default = true
+  default     = true
 }
 
 # Azure Resource Group (azure-resource-grp)
 variable "az_region" {
   description = "The location of the resources on Azure. e.g. useast"
   type        = string
-  default = "useast"
+  default     = "useast"
 }
 
 variable "resource_group" {
   type        = string
   description = "Resource Group Name"
-  default = "rg-oradb"
+  default     = "rg-oradb"
 }
 
 variable "new_rg" {
   type        = bool
   description = "Create new resource group or not"
-  default = true
+  default     = true
 }
 
 # Exadata Infrastructure (azure-exainfra)
@@ -54,37 +54,37 @@ variable "exadata_infrastructure_name" {
 variable "exadata_infrastructure_compute_count" {
   description = "The number of compute servers for the cloud Exadata infrastructure."
   type        = number
-  default = 2
+  default     = 2
 }
 
 variable "exadata_infrastructure_storage_count" {
   description = "The number of storage servers for the Exadata infrastructure."
   type        = number
-  default = 3
+  default     = 3
 }
 
 variable "exadata_infrastructure_shape" {
   description = "The shape of the cloud Exadata infrastructure resource. e.g. Exadata.X9M"
   type        = string
-  default = "Exadata.X9M"
+  default     = "Exadata.X9M"
 }
 
 variable "exadata_infrastructure_maintenance_window_lead_time_in_weeks" {
   description = "Lead time window allows user to set a lead time to prepare for a down time. The lead time is in weeks and valid value is between 1 to 4."
   type        = number
-  default = 1
+  default     = 1
 }
 
 variable "exadata_infrastructure_maintenance_window_preference" {
   description = "The maintenance window scheduling preference.Allowed values are: NO_PREFERENCE, CUSTOM_PREFERENCE."
   type        = string
-  default = "NO_PREFERENCE"
+  default     = "NO_PREFERENCE"
 }
 
 variable "exadata_infrastructure_maintenance_window_patching_mode" {
   description = "Cloud Exadata infrastructure node patching method, either ROLLING or NONROLLING."
   type        = string
-  default = "ROLLING"
+  default     = "ROLLING"
 }
 
 # Azure VNet
@@ -204,7 +204,7 @@ variable "vm_cluster_ssh_public_keys" {
 variable "vm_cluster_backup_subnet_cidr" {
   description = "OCI backup subnet CIDR"
   type        = string
-  default = "192.168.252.0/22"
+  default     = "192.168.252.0/22"
 }
 
 variable "nsg_cidrs" {
@@ -226,28 +226,28 @@ variable "oci_config_file_profile" {
   description = "OCI Config file name"
 }
 
-variable oci_tenancy_ocid {
+variable "oci_tenancy_ocid" {
   type        = string
   description = "OCID of the OCI tenancy"
 }
-variable oci_user_ocid {
+variable "oci_user_ocid" {
   type        = string
   description = "OCID of the OCI user"
 
 }
-variable oci_private_key_path {
+variable "oci_private_key_path" {
   type        = string
   description = "The path (including filename) of the private key"
 
 }
-variable oci_private_key_password {
+variable "oci_private_key_password" {
   type        = string
   description = "Passphrase used for the key, if it's encrypted"
   sensitive   = true
-  default = null
+  default     = null
 }
 
-variable oci_fingerprint {
+variable "oci_fingerprint" {
   type        = string
   description = "Fingerprint for the key pair being used"
 }
@@ -269,8 +269,8 @@ variable "db_home_name" {
 }
 
 variable "enable_database_delete" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Unless enable_database_delete is explicitly set to true, Terraform will not delete the database within the Db Home configuration but rather remove it from the config and state file."
 }
 
@@ -289,5 +289,5 @@ variable "db_admin_password" {
 variable "db_source" {
   type        = string
   description = "The source of the database: Use NONE for creating a new database. Use DB_BACKUP for creating a new database by restoring from a backup. "
-  default = "NONE"
+  default     = "NONE"
 }
