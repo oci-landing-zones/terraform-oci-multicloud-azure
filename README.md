@@ -7,6 +7,10 @@ The [Oracle Cloud Infrastructure (OCI) Quick Start](https://github.com/oracle-qu
 
 This repository is under active development. Building open source software is a community effort. We're excited to engage with the community building this.
 
+>[!IMPORTANT]  
+> From version *v0.1.3*, OCI modules in this repo to manage Oracle Homes (OHs), Container Databases (CDBs), and Pluggable Databases (PDBs) are **discontinued** in favor of [**OCI Exadata Modules**](https://github.com/oci-landing-zones/terraform-oci-modules-exadata). 
+> As Azure, GCP and AWS uses the same OCI provider to manage OHs, CDBs and PDBs, there is no reason to duplicate efforts and have local modules for these resources, but to use a same one for all of them.  
+
 ## Overview
 
 A repository contains a collection of [terraform modules](https://developer.hashicorp.com/terraform/language/modules) and templates that helps an Azure administrator configure an Azure environment for Oracle Database@Azure and provision database related components (Exadata hardware, Virtual Machine (VM) Clusters, and databases) in Azure.
