@@ -1,0 +1,34 @@
+subscription_id       = "00000000-0000-0000-0000-000000000000" # Replace with your subscription.
+location              = "<azure-region>"
+availability_zone     = "<supported-logical-zone>"
+create_resource_group = false
+resource_group_name   = "<existing-workload-resource-group>"
+resource_anchor_id    = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<anchor-resource-group>/providers/Oracle.Database/resourceAnchors/<resource-anchor-name>"
+network_anchor_id     = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<anchor-resource-group>/providers/Oracle.Database/networkAnchors/<network-anchor-name>"
+
+# Confirm shape and paid dedicated capacity before applying.
+infrastructure = {
+  name          = "<exadata-infrastructure-name>"
+  shape         = "<available-exadata-shape>"
+  compute_count = 2
+  storage_count = 3
+}
+# To reuse paid capacity, uncomment and edit; infrastructure settings are then ignored.
+# existing_cloud_exadata_infrastructure_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<infra-resource-group>/providers/Oracle.Database/cloudExadataInfrastructures/<infra-name>"
+
+vm_cluster_name             = "<vm-cluster-name>"
+hostname                    = "<short-hostname-prefix>"
+gi_version                  = "<available-grid-infrastructure-version>"
+ssh_public_keys             = ["<paste-your-openssh-public-key>"] # Public key only.
+cpu_core_count              = 4                                   # Confirm shape-specific allocation and increments.
+memory_size_in_gbs          = 256
+db_node_storage_size_in_gbs = 256
+data_storage_size_in_tbs    = 2
+data_storage_percentage     = 80
+license_model               = "BringYourOwnLicense"
+time_zone                   = "UTC"
+
+# Examples above are placeholders, not a capacity recommendation.
+tags = {
+  workload = "oradb"
+}

@@ -41,6 +41,7 @@ Dependent which cloud resources a module manages, it will use some subset of the
 These module automates the provisioning of components for running Oracle Database@Azure. Each template can run independently and default input values are configured which can be overridden per customer's preferences.
 
 ### Exadata
+- [`templates/azapi-oci-exadata-quickstart`](templates/azapi-oci-exadata-quickstart): Exadata infrastructure and VM cluster using existing Resource and Network Anchors with AzAPI (stable 2026-06-01 API).
 - `templates/azurerm-oci-exadata-quickstart`: Quickstart OracleDB@Azure (Exadata) with OCI LZ modules (AzureRM)
 - `templates/avm-oci-exadata-quickstart`: Quickstart OracleDB@Azure (Exadata) with Azure Verified Modules (AzAPI) and OCI LZ Modules
 

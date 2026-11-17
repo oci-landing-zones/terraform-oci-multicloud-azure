@@ -115,6 +115,8 @@ Outputs are `network_anchor_id`, `resource_anchor_id`, `subnet_id`, and `resourc
 
 ## Use the Network Anchor in a database deployment
 
+For an anchor-based Exadata deployment, use the [AzAPI Exadata quickstart](../azapi-oci-exadata-quickstart). It accepts both anchor IDs and creates Exadata infrastructure and a VM cluster, or reuses existing infrastructure.
+
 ```sh
 terraform output -raw network_anchor_id
 ```
