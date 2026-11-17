@@ -44,6 +44,9 @@ These module automates the provisioning of components for running Oracle Databas
 - `templates/azurerm-oci-exadata-quickstart`: Quickstart OracleDB@Azure (Exadata) with OCI LZ modules (AzureRM)
 - `templates/avm-oci-exadata-quickstart`: Quickstart OracleDB@Azure (Exadata) with Azure Verified Modules (AzAPI) and OCI LZ Modules
 
+### Networking
+- [`templates/azapi-oci-network-anchor-quickstart`](templates/azapi-oci-network-anchor-quickstart): Standalone Oracle Database@Azure Network Anchor and optional Resource Anchor, resource group, and delegated networking using AzAPI.
+
 ### Autonomous Database
 - `templates/azurerm-oci-adbs-quickstart`: Quickstart OracleDB@Azure (Autonomous Database) with OCI LZ modules (AzureRM)
 

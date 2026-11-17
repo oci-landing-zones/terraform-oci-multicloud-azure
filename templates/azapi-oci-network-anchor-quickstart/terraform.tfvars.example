@@ -1,0 +1,25 @@
+subscription_id   = "00000000-0000-0000-0000-000000000000"
+location          = "eastus"
+availability_zone = "1" # Confirm the zone available to your subscription.
+
+resource_group_name  = "rg-oradb-network"
+network_anchor_name  = "oradb-network-anchor"
+resource_anchor_name = "oradb-resource-anchor"
+
+virtual_network_name           = "vnet-oradb"
+virtual_network_address_space  = ["10.20.0.0/16"]
+delegated_subnet_name           = "snet-oradb"
+delegated_subnet_address_prefix = "10.20.1.0/24"
+
+# For Exadata, plan a non-overlapping backup range with sufficient capacity.
+oci_backup_cidr_block = "192.168.252.0/24"
+
+# DNS settings are optional; confirm support for your target database service.
+# dns = {
+#   listening_endpoint_enabled       = true
+#   listening_endpoint_allowed_cidrs = ["10.20.2.0/24"]
+# }
+
+tags = {
+  workload = "oradb"
+}
