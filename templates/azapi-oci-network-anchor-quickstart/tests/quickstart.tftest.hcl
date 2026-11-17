@@ -32,6 +32,14 @@ run "new_foundation" {
     condition     = azurerm_subnet.oracle[0].delegation[0].service_delegation[0].name == "Oracle.Database/networkAttachments"
     error_message = "The subnet must use the Oracle networkAttachments delegation."
   }
+  assert {
+    condition = toset(azurerm_subnet.oracle[0].delegation[0].service_delegation[0].actions) == toset([
+      "Microsoft.Network/networkinterfaces/*",
+      "Microsoft.Network/virtualNetworks/subnets/join/action",
+    ])
+    error_message = "The subnet delegation must include both actions returned by Azure."
+  }
+
 }
 
 run "reuse_foundation_with_dns" {

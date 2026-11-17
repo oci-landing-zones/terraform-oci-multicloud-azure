@@ -50,8 +50,12 @@ resource "azurerm_subnet" "oracle" {
   delegation {
     name = "oracle-database"
     service_delegation {
-      name    = "Oracle.Database/networkAttachments"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+      name = "Oracle.Database/networkAttachments"
+      # Azure returns both actions for this delegation; keep them explicit.
+      actions = [
+        "Microsoft.Network/networkinterfaces/*",
+        "Microsoft.Network/virtualNetworks/subnets/join/action",
+      ]
     }
   }
 }
@@ -69,6 +73,13 @@ resource "azapi_resource" "resource_anchor" {
 }
 
 resource "azapi_resource" "network_anchor" {
+  lifecycle {
+    # The service can return a VNet-derived DNS label instead of the requested
+    # create-time label. Keep the canonical response without perpetual drift.
+    # Explicit input changes still replace the anchor through the trigger below.
+    ignore_changes = [body.properties.ociVcnDnsLabel]
+  }
+
   # These properties are create-only in the Oracle API. Keep mutable backup
   # CIDR and DNS enablement flags out of the replacement triggers.
   replace_triggers_external_values = {

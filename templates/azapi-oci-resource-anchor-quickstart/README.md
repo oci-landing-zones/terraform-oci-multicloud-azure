@@ -34,8 +34,8 @@ cp terraform.tfvars.example terraform.tfvars
 terraform init
 terraform fmt -check
 terraform validate
-terraform plan -out=tfplan
-terraform apply tfplan
+terraform plan -out=deploy.tfplan
+terraform apply deploy.tfplan
 terraform output resource_anchor_id
 ```
 
@@ -84,6 +84,62 @@ existing_resource_anchor_id  = "/subscriptions/00000000-0000-0000-0000-000000000
 ```
 
 Replace the example ID with `resource_anchor_id` from this template. Configure the Network Anchor's networking, capacity and DNS inputs separately. The Network Anchor template references this anchor; its Terraform state does not own it. Keep this Resource Anchor deployed until all dependent Network Anchors and database resources have been removed.
+
+## Step-by-step live test of both templates
+
+`terraform test` runs offline mocks. A live test requires the following deployment steps and creates real resources. Use a dedicated test resource group and address plan that satisfy the prerequisites of both templates. Run these commands from the repository root and replace every `<...>` placeholder with your selected environment value.
+
+1. Check your branch and Azure account, then inspect existing resources before choosing names. These commands only read the environment:
+
+   ```sh
+   git branch --show-current
+   git status --short
+   az account show --query '{subscription:id,name:name,tenant:tenantId}' -o table
+   az resource list --resource-type Oracle.Database/resourceAnchors --query '[].{name:name,group:resourceGroup,location:location}' -o table
+   az resource list --resource-type Oracle.Database/networkAnchors --query '[].{name:name,group:resourceGroup,location:location}' -o table
+   az network vnet list --query '[].{name:name,group:resourceGroup,location:location}' -o table
+   ```
+
+   Select the subscription explicitly with `az account set --subscription "<subscription-id>"` if needed, then repeat the account/resource checks. Inspect a selected existing resource using `az resource show --ids "<resource-id>" --api-version 2025-09-01`. Inspect a candidate subnet using `az network vnet subnet show --ids "<subnet-id>"` to check its delegation, address range and existing allocations.
+
+2. Copy each template's `terraform.tfvars.example` to `terraform.tfvars` **inside that template's directory**. Edit both copies locally. Set the Resource Anchor subscription, resource group, name and resource-group region. Set the Network Anchor's subscription, region, supported availability zone, and network names/CIDRs. Use the same subscription and resource-group name for both. Set the Network Anchor's `create_resource_group = false`; set its `existing_resource_anchor_id` after step 3. Choose `create_network = true` for a dedicated new VNet/subnet, or `false` with a compatible `existing_subnet_id`. Keep real inputs, state and saved plans local or in your approved backend; do not commit them.
+
+3. Deploy the Resource Anchor first, reviewing its plan before applying:
+
+   ```sh
+   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart init
+   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart validate
+   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart plan -out=deploy.tfplan
+   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart apply deploy.tfplan
+   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart output -raw resource_anchor_id
+   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart plan -detailed-exitcode
+   ```
+
+   The final drift check should report no changes (exit code `0`; `2` means changes and `1` means an error). Paste the output ARM ID into the Network Anchor's local `existing_resource_anchor_id` input. Keep the templates in separate directories/backends so their states remain separate.
+
+4. Deploy and verify the Network Anchor:
+
+   ```sh
+   terraform -chdir=templates/azapi-oci-network-anchor-quickstart init
+   terraform -chdir=templates/azapi-oci-network-anchor-quickstart validate
+   terraform -chdir=templates/azapi-oci-network-anchor-quickstart plan -out=deploy.tfplan
+   terraform -chdir=templates/azapi-oci-network-anchor-quickstart apply deploy.tfplan
+   terraform -chdir=templates/azapi-oci-network-anchor-quickstart output
+   terraform -chdir=templates/azapi-oci-network-anchor-quickstart plan -detailed-exitcode
+   ```
+
+   Verify each output ID with `az resource show --ids "<anchor-id>" --api-version 2025-09-01`; confirm `properties.provisioningState` is `Succeeded` and the Network Anchor references the intended Resource Anchor and subnet. Resource Anchors should show location `global`; Network Anchors should show the chosen region and zone. Wait for an active apply to finish before running another state operation. Do not manage either anchor from another state while testing.
+
+5. After removing any dependent databases, destroy the Network Anchor deployment first, then the Resource Anchor deployment:
+
+   ```sh
+   terraform -chdir=templates/azapi-oci-network-anchor-quickstart plan -destroy -out=destroy.tfplan
+   terraform -chdir=templates/azapi-oci-network-anchor-quickstart apply destroy.tfplan
+   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart plan -destroy -out=destroy.tfplan
+   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart apply destroy.tfplan
+   ```
+
+   Review each destroy plan. Reused resources remain in place; a resource group created by the Resource Anchor deployment is deleted only after the Network Anchor deployment and its networking are removed. Re-run the read-only resource listings to confirm cleanup.
 
 ## Inputs and outputs
 

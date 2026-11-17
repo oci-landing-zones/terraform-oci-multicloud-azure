@@ -39,8 +39,8 @@ cp terraform.tfvars.example terraform.tfvars
 terraform init
 terraform fmt -check
 terraform validate
-terraform plan -out=tfplan
-terraform apply tfplan
+terraform plan -out=deploy.tfplan
+terraform apply deploy.tfplan
 terraform output network_anchor_id
 ```
 
@@ -84,7 +84,7 @@ dns = {
 }
 ```
 
-Each forwarding rule sends its domain list as a comma-separated `domainNames` string. The allowed CIDRs similarly become a comma-separated `dnsListeningEndpointAllowedCidrs` string. `oci_vcn_dns_label` defaults to `oradb`; choose a suitable VCN DNS label for your deployment. Set it to null only when supplying a DNS configuration supported by your database service.
+Each forwarding rule sends its domain list as a comma-separated `domainNames` string. The allowed CIDRs similarly become a comma-separated `dnsListeningEndpointAllowedCidrs` string. `oci_vcn_dns_label` defaults to `oradb` and is sent as a create-time request. The service can return a canonical label derived from the VNet name instead; use the provisioned DNS names when configuring clients. The template accepts service changes to this one response field to avoid repeated drift, while an explicit change to the input still triggers anchor replacement. Set the input to null only when supplying a DNS configuration supported by your database service.
 
 DNS listening accepts requests from the configured source ranges; it does not automatically configure your Azure or on-premises resolvers. Configure conditional forwarding for the database domain to the listening endpoint and allow DNS traffic along the route. Forwarding rules need a reachable DNS server/inbound endpoint. This template does not create Azure DNS Private Resolver endpoints, private DNS zones, VNet links, or security/routing rules. Choose either DNS listening or `zone_sync_enabled = true` for OCI-to-Azure private-zone replication according to your resolution design; Oracle documents these as overlapping functions. Refer to [Oracle DNS guidance](https://docs.oracle.com/en-us/iaas/Content/database-at-azure/network-dns.htm).
 
@@ -130,6 +130,8 @@ properties = {
 ```
 
 Keep the database deployment aligned with the anchor's region, zone and network. See the [Oracle Exadata Terraform tutorial](https://docs.oracle.com/en/learn/dbazure-terraform/index.html#next-steps) for the broader database provisioning workflow. The existing `avm-oci-exadata-quickstart` template uses its own networking and older AVM resource interfaces; it does not accept this output directly. Integrating anchors requires a downstream module/API version that exposes the anchor property and adjustment of that deployment's inputs.
+
+For a complete live test with separate Resource Anchor and Network Anchor states, environment inspection, drift checks and ordered cleanup, follow the [step-by-step live test guide](../azapi-oci-resource-anchor-quickstart#step-by-step-live-test-of-both-templates).
 
 ## Cleanup and local checks
 

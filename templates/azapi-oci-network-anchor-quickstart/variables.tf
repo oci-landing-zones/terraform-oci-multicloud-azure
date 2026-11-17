@@ -146,7 +146,7 @@ variable "oci_backup_cidr_block" {
 }
 
 variable "oci_vcn_dns_label" {
-  description = "OCI VCN DNS label. Set null only when supplying a DNS configuration supported by your database service."
+  description = "Requested create-time OCI VCN DNS label; the service can return a canonical VNet-derived label. Set null only when supplying a DNS configuration supported by your database service."
   type        = string
   default     = "oradb"
   validation {
