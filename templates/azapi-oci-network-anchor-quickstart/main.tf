@@ -61,7 +61,7 @@ resource "azapi_resource" "resource_anchor" {
   type      = "Oracle.Database/resourceAnchors@2025-09-01"
   name      = var.resource_anchor_name
   parent_id = local.resource_group_id
-  location  = var.location
+  location  = "global"
   tags      = var.tags
   body = {
     properties = {}

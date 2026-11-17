@@ -70,8 +70,12 @@ variable "existing_resource_anchor_id" {
   default     = null
   validation {
     condition = var.existing_resource_anchor_id == null ? true : !var.create_resource_group && can(regex(
-      "(?i)^/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Oracle\\.Database/resourceAnchors/[a-z0-9-]{3,24}$", var.existing_resource_anchor_id
-    ))
+      "(?i)^/subscriptions/[0-9a-f-]{36}/resourceGroups/[^/]+/providers/Oracle\\.Database/resourceAnchors/[a-z0-9-]{3,24}$", var.existing_resource_anchor_id
+      )) && try(
+      lower(split("/", var.existing_resource_anchor_id)[2]) == lower(var.subscription_id) &&
+      lower(split("/", var.existing_resource_anchor_id)[4]) == lower(var.resource_group_name),
+      false
+    )
     error_message = "existing_resource_anchor_id requires create_resource_group = false and an anchor in the selected subscription and resource group."
   }
 }

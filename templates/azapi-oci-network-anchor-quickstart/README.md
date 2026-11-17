@@ -9,7 +9,7 @@ By default, it creates:
 - An Oracle Database@Azure Resource Anchor (optional), which maps the Azure resource group to an OCI compartment.
 - An Oracle Database@Azure Network Anchor in a selected region and availability zone.
 
-Existing resource groups, Resource Anchors, and delegated subnets can be reused. Oracle resources use AzAPI; the resource group and Azure networking use AzureRM. No OCI credentials or local modules are required. This template does not provision database infrastructure, VM clusters, or databases.
+Existing resource groups, Resource Anchors, and delegated subnets can be reused. To manage the Resource Anchor in a separate deployment, use the companion [Resource Anchor quickstart](../azapi-oci-resource-anchor-quickstart) and pass its output as `existing_resource_anchor_id` with `create_resource_group = false`. Oracle resources use AzAPI; the resource group and Azure networking use AzureRM. No OCI credentials or local modules are required. This template does not provision database infrastructure, VM clusters, or databases.
 
 ## Prerequisites
 

@@ -2,7 +2,7 @@ mock_provider "azapi" {}
 mock_provider "azurerm" {
   mock_data "azurerm_resource_group" {
     defaults = {
-      id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-oradb-network"
+      id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-oradb(prod)"
     }
   }
 }
@@ -17,7 +17,7 @@ run "new_foundation" {
   command = plan
 
   assert {
-    condition     = azapi_resource.network_anchor.type == "Oracle.Database/networkAnchors@2025-09-01" && azapi_resource.resource_anchor[0].type == "Oracle.Database/resourceAnchors@2025-09-01"
+    condition     = azapi_resource.resource_anchor[0].location == "global" && azapi_resource.network_anchor.type == "Oracle.Database/networkAnchors@2025-09-01" && azapi_resource.resource_anchor[0].type == "Oracle.Database/resourceAnchors@2025-09-01"
     error_message = "Anchors must use the stable 2025-09-01 API."
   }
   assert {
@@ -38,10 +38,11 @@ run "reuse_foundation_with_dns" {
   command = plan
 
   variables {
+    resource_group_name         = "rg-oradb(prod)"
     create_resource_group       = false
     create_network              = false
     existing_subnet_id          = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet/subnets/oracle"
-    existing_resource_anchor_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-oradb-network/providers/Oracle.Database/resourceAnchors/resource-anchor"
+    existing_resource_anchor_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-oradb(prod)/providers/Oracle.Database/resourceAnchors/resource-anchor"
     oci_backup_cidr_block       = "192.168.252.0/24"
     dns = {
       listening_endpoint_enabled       = true
