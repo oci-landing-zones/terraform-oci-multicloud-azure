@@ -146,29 +146,29 @@ variable "cpu_core_count" {
   nullable    = false
   validation {
     condition     = var.cpu_core_count > 0 && floor(var.cpu_core_count) == var.cpu_core_count
-    error_message = "cpu_core_count must have a valid positive allocation or supported percentage."
+    error_message = "cpu_core_count must be a positive integer."
   }
 }
 
 variable "memory_size_in_gbs" {
-  description = "VM cluster memory allocation in GB; confirm capacity and per-VM sizing."
+  description = "Total VM cluster memory allocation in GB across selected DB servers; confirm capacity, divisibility and per-VM sizing."
   type        = number
   nullable    = false
   default     = 256
   validation {
     condition     = var.memory_size_in_gbs > 0 && floor(var.memory_size_in_gbs) == var.memory_size_in_gbs
-    error_message = "memory_size_in_gbs must have a valid positive allocation or supported percentage."
+    error_message = "memory_size_in_gbs must be a positive integer number of GB."
   }
 }
 
 variable "db_node_storage_size_in_gbs" {
-  description = "Local DB node storage allocation in GB; confirm capacity and supported increments."
+  description = "Total local DB node storage allocation in GB across selected DB servers; confirm capacity and supported increments."
   type        = number
   nullable    = false
   default     = 256
   validation {
     condition     = var.db_node_storage_size_in_gbs > 0 && floor(var.db_node_storage_size_in_gbs) == var.db_node_storage_size_in_gbs
-    error_message = "db_node_storage_size_in_gbs must have a valid positive allocation or supported percentage."
+    error_message = "db_node_storage_size_in_gbs must be a positive integer number of GB."
   }
 }
 
@@ -179,7 +179,7 @@ variable "data_storage_size_in_tbs" {
   default     = 2
   validation {
     condition     = var.data_storage_size_in_tbs > 0
-    error_message = "data_storage_size_in_tbs must have a valid positive allocation or supported percentage."
+    error_message = "data_storage_size_in_tbs must be greater than zero TB."
   }
 }
 
@@ -190,7 +190,7 @@ variable "data_storage_percentage" {
   default     = 80
   validation {
     condition     = contains([35, 40, 60, 80], var.data_storage_percentage)
-    error_message = "data_storage_percentage must have a valid positive allocation or supported percentage."
+    error_message = "data_storage_percentage must be 35, 40, 60 or 80."
   }
 }
 

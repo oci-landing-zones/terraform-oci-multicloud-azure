@@ -1,13 +1,19 @@
-# Create NEW Exadata infrastructure and its VM cluster using existing anchor ARM IDs.
-# Keep existing_cloud_exadata_infrastructure_id null for this full deployment.
-subscription_id       = "00000000-0000-0000-0000-000000000000" # Replace with your subscription.
-location              = "<azure-region>"
-availability_zone     = "<supported-logical-zone>"
+# Create Exadata infrastructure and a VM cluster using existing anchor ARM IDs.
+
+# Common
+subscription_id   = "00000000-0000-0000-0000-000000000000" # Replace with your subscription.
+location          = "<azure-region>"
+availability_zone = "<supported-logical-zone>"
+
+# Resource Group
 create_resource_group = false
 resource_group_name   = "<existing-workload-resource-group>"
-resource_anchor_id    = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<anchor-resource-group>/providers/Oracle.Database/resourceAnchors/<resource-anchor-name>"
-network_anchor_id     = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<anchor-resource-group>/providers/Oracle.Database/networkAnchors/<network-anchor-name>"
 
+# Anchors
+resource_anchor_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<anchor-resource-group>/providers/Oracle.Database/resourceAnchors/<resource-anchor-name>"
+network_anchor_id  = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<anchor-resource-group>/providers/Oracle.Database/networkAnchors/<network-anchor-name>"
+
+# Exadata Infrastructure
 existing_cloud_exadata_infrastructure_id = null
 
 # Confirm shape and paid dedicated capacity before applying.
@@ -27,6 +33,7 @@ db_server_count = 2
 # Also supply db_servers explicitly; infrastructure settings are then ignored.
 # existing_cloud_exadata_infrastructure_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<infra-resource-group>/providers/Oracle.Database/cloudExadataInfrastructures/<infra-name>"
 
+# VM Cluster
 vm_cluster_name             = "<vm-cluster-name>"
 hostname                    = "<short-hostname-prefix>"
 gi_version                  = "<available-grid-infrastructure-version>"

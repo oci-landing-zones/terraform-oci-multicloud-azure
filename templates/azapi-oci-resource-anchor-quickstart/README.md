@@ -1,177 +1,102 @@
 # Quickstart Oracle Database@Azure Resource Anchor with AzAPI
 
-This standalone Terraform template creates an Oracle Database@Azure Resource Anchor with the AzAPI v2 provider and the stable `2025-09-01` Oracle.Database API. A Resource Anchor maps an Azure resource group to an OCI compartment and can be reused by Network Anchors in that group. Resource Anchors are global resources replicated across regions; the Azure ARM resource uses `location = "global"`. The `location` input selects the region of a new Azure resource group.
+## Summary
 
-The template creates:
+Terraform template for provisioning an Oracle Database@Azure Resource Anchor, which maps an Azure resource group to an OCI compartment. The template creates an Azure resource group or uses an existing group. Resource Anchors use the Azure ARM location `global`; `location` selects the region of a new resource group.
 
-- An Azure resource group, or references an existing one.
-- An Oracle Database@Azure Resource Anchor in that resource group.
+## Requirements
 
-Oracle resources use AzAPI; the optional resource group uses AzureRM. No OCI credentials or local modules are required. For networking, use the companion [Network Anchor quickstart](../azapi-oci-network-anchor-quickstart), which can reuse this template's output.
+| Name | Version |
+| --- | --- |
+| Terraform | >= 1.9, < 2.0 |
+| Azure CLI | Supported version for authentication |
 
-## Prerequisites
+Complete [Oracle Database@Azure onboarding](https://docs.oracle.com/en-us/iaas/Content/database-at-azure/onboard-service.htm), offer acceptance, OCI account linking and consent. The subscription must have `Oracle.Database` registered. Your identity needs permission to manage Resource Anchors and read the selected resource group, plus resource-group creation permission when creating one. Providers do not register resource providers automatically.
 
-1. Terraform `>= 1.9, < 2.0`, Azure CLI, and access to download the `Azure/azapi` 2.x and `hashicorp/azurerm` 4.x providers.
-2. Complete [Oracle Database@Azure onboarding](https://docs.oracle.com/en-us/iaas/Content/database-at-azure/onboard-service.htm), including the applicable offer, OCI account linking, consent, and service permissions. Creating a Resource Anchor does not replace onboarding.
-3. Use an onboarded subscription. Choose the Azure resource group region using the `location` input; the Resource Anchor itself always uses the `global` ARM location. Resource Anchors are not availability-zone scoped and do not require a zone input.
-4. Your identity needs permission to create/read/delete `Oracle.Database/resourceAnchors`, plus resource-group read permission and creation permission if creating a group. Follow your organization's Oracle Database@Azure RBAC requirements. The `Oracle.Database` resource provider must already be registered. Registration requires subscription-level permission; neither provider in this template registers providers automatically.
-5. Check the target resource group for an existing Resource Anchor before creating another. This template manages a new anchor; it does not discover or adopt an existing anchor automatically. Use a separate Terraform state for each independent deployment.
+Check the target resource group for an existing Resource Anchor before creating another. This template creates a new anchor; import an existing anchor before managing it with this configuration. Manage each resource from only one Terraform state.
 
-See Oracle's [anchor design](https://docs.oracle.com/en-us/iaas/Content/database-at-azure/network-anchor-design.htm) and the [Resource Anchor API reference](https://learn.microsoft.com/en-us/azure/templates/oracle.database/2025-09-01/resourceanchors).
+## Providers
 
-## Authenticate and deploy
+| Name | Version | Purpose |
+| --- | --- | --- |
+| Azure/azapi | ~> 2.0 | Resource Anchor |
+| hashicorp/azurerm | ~> 4.0 | Resource group |
 
-Run from this directory, or copy this directory on its own:
+## Resources
 
-```sh
-az login
-az account set --subscription "<subscription-id>"
-az provider show --namespace Oracle.Database --query registrationState -o tsv
-# Ask your subscription administrator if the result is not Registered.
+| Name | Type | Behavior |
+| --- | --- | --- |
+| `azapi_resource.resource_anchor` | Oracle.Database/resourceAnchors@2025-09-01 | Create Resource Anchor |
+| `azurerm_resource_group.this` | Microsoft.Resources/resourceGroups | Optional new resource group |
+| `data.azurerm_resource_group.this` | Resource group data source | Read an existing group |
 
-cp terraform.tfvars.example terraform.tfvars
-# Edit subscription_id, location, resource-group and anchor settings.
-terraform init
-terraform fmt -check
-terraform validate
-terraform plan -out=deploy.tfplan
-terraform apply deploy.tfplan
-terraform output resource_anchor_id
-```
+## Inputs
 
-Both providers use `subscription_id` and support Azure CLI authentication. For unattended deployments, configure supported service principal or workload identity credentials using the providers' `ARM_*` environment variables. Do not put credentials in `.tfvars` files. Refer to [AzAPI authentication](https://registry.terraform.io/providers/Azure/azapi/latest/docs) and [AzureRM authentication](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs).
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `subscription_id` | `string` | Required | Onboarded Azure subscription UUID |
+| `location` | `string` | Required | Azure region for a new resource group |
+| `create_resource_group` | `bool` | `true` | Set false to use the named existing group |
+| `resource_group_name` | `string` | `rg-oradb-anchor` | New or existing Azure resource group |
+| `resource_anchor_name` | `string` | `oradb-resource-anchor` | 3–24 letters, numbers or hyphens |
+| `tags` | `map(string)` | `{}` | Tags for resources created by this template |
 
-Store Terraform state and saved plans securely. Use an access-controlled remote backend for shared/customer deployments and retain the generated dependency lock file for reproducible provider selection.
+## Outputs
 
-## Use an existing resource group
+| Name | Description |
+| --- | --- |
+| `resource_anchor_id` | Resource Anchor Azure ARM ID |
+| `resource_group_id` | Created or reused resource group Azure ARM ID |
 
-Set these values in `terraform.tfvars`:
+## Usage
 
-```hcl
-subscription_id       = "00000000-0000-0000-0000-000000000000"
-location              = "eastus"
-create_resource_group = false
-resource_group_name   = "rg-oradb-existing"
-resource_anchor_name  = "oradb-resource-anchor"
-```
+1. Authenticate and select the onboarded subscription:
 
-Terraform references the group without managing its settings or tags. It creates and manages the Resource Anchor inside the group. If the anchor already exists and you intend to manage it in this configuration, import it into this deployment's state before planning:
+   ```sh
+   az login
+   az account set --subscription "<subscription-id>"
+   az provider show --namespace Oracle.Database --query registrationState -o tsv
+   ```
+
+2. Copy the variable template and edit the values:
+
+   ```sh
+   cp terraform.tfvars.template terraform.tfvars
+   ```
+
+   Set `subscription_id`, `location`, `resource_group_name` and `resource_anchor_name`. Set `create_resource_group = false` to reuse a group. Supply credentials through Azure CLI or provider-supported `ARM_*` environment variables, not variable files.
+
+3. Initialize, review and deploy:
+
+   ```sh
+   terraform init
+   terraform fmt -check
+   terraform validate
+   terraform plan -out=deploy.tfplan
+   terraform apply deploy.tfplan
+   terraform output
+   ```
+
+Use access-controlled Terraform state and plan storage; retain the generated provider lock file for repeatable provider selection. Do not commit private inputs, credentials or state.
+
+To adopt an existing anchor, configure matching inputs and import it before planning:
 
 ```sh
 terraform import azapi_resource.resource_anchor "/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Oracle.Database/resourceAnchors/<anchor-name>?api-version=2025-09-01"
 terraform plan
 ```
 
-Do not manage the same anchor from multiple Terraform states. Confirm that the configuration matches the imported resource before applying changes.
+Use `resource_anchor_id` in the [Network Anchor template](../azapi-oci-network-anchor-quickstart) as `existing_resource_anchor_id`, with the same subscription and group and `create_resource_group = false`. The [Exadata template](../azapi-oci-exadata-quickstart) accepts this ID as `resource_anchor_id` together with the Network Anchor ID.
 
-## Create a Network Anchor using this Resource Anchor
+## Cleanup
 
-Read the resulting ID:
-
-```sh
-terraform output -raw resource_anchor_id
-```
-
-In the [Network Anchor quickstart](../azapi-oci-network-anchor-quickstart), use the same subscription and resource group, and set:
-
-```hcl
-subscription_id              = "00000000-0000-0000-0000-000000000000"
-location                     = "eastus"
-availability_zone            = "1" # Confirm a supported database zone for your subscription.
-create_resource_group        = false
-resource_group_name          = "rg-oradb-anchor"
-existing_resource_anchor_id  = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-oradb-anchor/providers/Oracle.Database/resourceAnchors/oradb-resource-anchor"
-```
-
-Replace the example ID with `resource_anchor_id` from this template. Configure the Network Anchor's networking, capacity and DNS inputs separately. The Network Anchor template references this anchor; its Terraform state does not own it. Keep this Resource Anchor deployed until all dependent Network Anchors and database resources have been removed.
-
-## Step-by-step live test of both templates
-
-`terraform test` runs offline mocks. A live test requires the following deployment steps and creates real resources. Use a dedicated test resource group and address plan that satisfy the prerequisites of both templates. Run these commands from the repository root and replace every `<...>` placeholder with your selected environment value.
-
-1. Check your branch and Azure account, then inspect existing resources before choosing names. These commands only read the environment:
-
-   ```sh
-   git branch --show-current
-   git status --short
-   az account show --query '{subscription:id,name:name,tenant:tenantId}' -o table
-   az resource list --resource-type Oracle.Database/resourceAnchors --query '[].{name:name,group:resourceGroup,location:location}' -o table
-   az resource list --resource-type Oracle.Database/networkAnchors --query '[].{name:name,group:resourceGroup,location:location}' -o table
-   az network vnet list --query '[].{name:name,group:resourceGroup,location:location}' -o table
-   ```
-
-   Select the subscription explicitly with `az account set --subscription "<subscription-id>"` if needed, then repeat the account/resource checks. Inspect a selected existing resource using `az resource show --ids "<resource-id>" --api-version 2025-09-01`. Inspect a candidate subnet using `az network vnet subnet show --ids "<subnet-id>"` to check its delegation, address range and existing allocations.
-
-2. Copy each template's `terraform.tfvars.example` to `terraform.tfvars` **inside that template's directory**. Edit both copies locally. Set the Resource Anchor subscription, resource group, name and resource-group region. Set the Network Anchor's subscription, region, supported availability zone, and network names/CIDRs. Use the same subscription and resource-group name for both. Set the Network Anchor's `create_resource_group = false`; set its `existing_resource_anchor_id` after step 3. Choose `create_network = true` for a dedicated new VNet/subnet, or `false` with a compatible `existing_subnet_id`. Keep real inputs, state and saved plans local or in your approved backend; do not commit them.
-
-3. Deploy the Resource Anchor first, reviewing its plan before applying:
-
-   ```sh
-   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart init
-   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart validate
-   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart plan -out=deploy.tfplan
-   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart apply deploy.tfplan
-   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart output -raw resource_anchor_id
-   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart plan -detailed-exitcode
-   ```
-
-   The final drift check should report no changes (exit code `0`; `2` means changes and `1` means an error). Paste the output ARM ID into the Network Anchor's local `existing_resource_anchor_id` input. Keep the templates in separate directories/backends so their states remain separate.
-
-4. Deploy and verify the Network Anchor:
-
-   ```sh
-   terraform -chdir=templates/azapi-oci-network-anchor-quickstart init
-   terraform -chdir=templates/azapi-oci-network-anchor-quickstart validate
-   terraform -chdir=templates/azapi-oci-network-anchor-quickstart plan -out=deploy.tfplan
-   terraform -chdir=templates/azapi-oci-network-anchor-quickstart apply deploy.tfplan
-   terraform -chdir=templates/azapi-oci-network-anchor-quickstart output
-   terraform -chdir=templates/azapi-oci-network-anchor-quickstart plan -detailed-exitcode
-   ```
-
-   Verify each output ID with `az resource show --ids "<anchor-id>" --api-version 2025-09-01`; confirm `properties.provisioningState` is `Succeeded` and the Network Anchor references the intended Resource Anchor and subnet. Resource Anchors should show location `global`; Network Anchors should show the chosen region and zone. Wait for an active apply to finish before running another state operation. Do not manage either anchor from another state while testing.
-
-5. After removing any dependent databases, destroy the Network Anchor deployment first, then the Resource Anchor deployment:
-
-   ```sh
-   terraform -chdir=templates/azapi-oci-network-anchor-quickstart plan -destroy -out=destroy.tfplan
-   terraform -chdir=templates/azapi-oci-network-anchor-quickstart apply destroy.tfplan
-   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart plan -destroy -out=destroy.tfplan
-   terraform -chdir=templates/azapi-oci-resource-anchor-quickstart apply destroy.tfplan
-   ```
-
-   Review each destroy plan. Reused resources remain in place; a resource group created by the Resource Anchor deployment is deleted only after the Network Anchor deployment and its networking are removed. Re-run the read-only resource listings to confirm cleanup.
-
-## Inputs and outputs
-
-| Input | Default | Purpose |
-| --- | --- | --- |
-| `subscription_id` | Required | Onboarded Azure subscription UUID |
-| `location` | Required | Azure region for a new resource group |
-| `create_resource_group` | `true` | Create or reuse the named group |
-| `resource_group_name` | `rg-oradb-anchor` | Group mapped to the OCI compartment |
-| `resource_anchor_name` | `oradb-resource-anchor` | Name of the Resource Anchor to create |
-| `tags` | `{}` | Tags on the Resource Anchor and any new resource group |
-
-Outputs are `resource_anchor_id` and `resource_group_id`. Both are Azure ARM IDs, not OCI OCIDs. Resource Anchor names contain 3–24 letters, numbers or hyphens.
-
-## Cleanup and local checks
-
-Remove dependent database resources and Network Anchors before deleting this Resource Anchor. Review the destroy plan, including deletion of the resource group if this template created it:
+Remove dependent databases and Network Anchors before deleting the Resource Anchor. Review the destroy plan, including deletion of a resource group created by this template:
 
 ```sh
 terraform plan -destroy -out=destroy.tfplan
 terraform apply destroy.tfplan
 ```
 
-A reused resource group is left in place. A resource group created by this template belongs to this state; review and remove resources managed by other deployments before destroying it.
+An existing resource group is retained. Remove resources managed by other deployments from a newly created group before destroying it.
 
-The mock-provider tests exercise new/existing resource-group plans and invalid inputs without Azure credentials or cloud changes:
-
-```sh
-terraform init -backend=false
-terraform fmt -check
-terraform validate
-terraform test
-```
-
-Mock plans do not verify onboarding, service permissions, existing-anchor conflicts, or a live deployment.
+See [Oracle anchor design](https://docs.oracle.com/en-us/iaas/Content/database-at-azure/network-anchor-design.htm) and the [Resource Anchor API reference](https://learn.microsoft.com/en-us/azure/templates/oracle.database/2025-09-01/resourceanchors).

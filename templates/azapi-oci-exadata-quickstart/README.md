@@ -1,74 +1,45 @@
-# Quickstart Exadata infrastructure and VM cluster with existing anchors
+# Quickstart Oracle Database@Azure Exadata infrastructure and VM cluster with AzAPI
 
-This standalone Terraform template creates Oracle Database@Azure dedicated Exadata infrastructure and a Cloud VM Cluster using existing Resource and Network Anchors. It uses AzAPI v2 with the stable `2026-06-01` API, which exposes Exadata anchor properties. The anchor quickstarts use `2025-09-01`; that older API does not expose the anchor fields needed on these Exadata resources.
+## Summary
 
-Leave `existing_cloud_exadata_infrastructure_id = null` (the default) to create **both new Exadata infrastructure and its VM cluster**. Supply the existing `resource_anchor_id` and `network_anchor_id` from the companion quickstarts; these anchors remain owned by their original deployments. Set an existing infrastructure ID only when you intentionally want to create a VM cluster on existing capacity.
+Terraform template for creating Exadata dedicated infrastructure and a Cloud VM Cluster using existing Resource and Network Anchors. The infrastructure receives the Resource Anchor ID; the VM cluster receives both anchor IDs and the infrastructure ID. Required VNet/subnet IDs are read from the Network Anchor, keeping its network configuration consistent with the cluster.
 
-The infrastructure receives `resourceAnchorId`. The VM cluster receives `resourceAnchorId`, `networkAnchorId` and the infrastructure ID. The infrastructure selects an Azure logical zone through `zones`; the VM cluster uses the selected infrastructure and Network Anchor placement and has no top-level `zones` field. Its optional `zoneId` denotes an OCI DNS zone, so it is not set to an Azure zone number. The VM cluster API also requires `vnetId` and `subnetId`; the template reads both from the selected Network Anchor. It creates no anchors, VNet, subnet, DB home, database, or passwords. Optionally reuse existing infrastructure and create only its VM cluster.
+Leave `existing_cloud_exadata_infrastructure_id = null` to create both infrastructure and VM cluster. Supply an existing infrastructure ARM ID to create only a VM cluster on that capacity. Anchors and networking remain owned by their original deployments. This template does not provision DB homes or databases.
 
-**Applying this template allocates paid dedicated Exadata capacity and database compute.** Confirm availability, quota, sizing, licensing and costs with your organization and Oracle before applying. Infrastructure and cluster provisioning can take hours; operation timeouts are 24 hours. Offline validation does not establish capacity or feature availability. No live Exadata or VM cluster deployment is part of this template's local validation.
+## Requirements
 
-## Prerequisites and deployment chain
+| Name | Version |
+| --- | --- |
+| Terraform | >= 1.9, < 2.0 |
+| Azure CLI | Supported version for authentication |
 
-Deploy in this order, keeping each template's Terraform state separate:
+- Complete Oracle Database@Azure onboarding, offer acceptance, account linking and consent. Register `Oracle.Database` and confirm that Exadata anchor-based provisioning is available for the selected subscription and region. Providers do not register resource providers automatically.
+- Create a [Resource Anchor](../azapi-oci-resource-anchor-quickstart), then a [Network Anchor](../azapi-oci-network-anchor-quickstart) associated with it. Configure sufficient client and backup addressing for Exadata before creating the Network Anchor.
+- Use the same subscription for resources in this template. Cross-subscription anchor references are outside its scope. The Network Anchor and infrastructure must match the region, Azure logical zone and Resource Anchor. The workload resource group can differ from the anchor groups; ensure appropriate cross-group permissions. Resource Anchors have location `global`.
+- Your identity needs permissions to read the anchors, inventory and any existing infrastructure, manage the new Oracle resources, and read or create the workload resource group. Follow your organization's Oracle Database@Azure RBAC requirements.
+- Confirm available dedicated capacity, shape, server counts, GI version, per-server sizing and licensing before applying. **Deployment allocates paid Exadata capacity and compute.** Provisioning can take hours; operation timeouts are 24 hours.
+- Supply RSA public SSH keys of at least 2048 bits in single-line OpenSSH `ssh-rsa` format. Never supply private keys. Select a short hostname prefix and ensure database DNS names resolve from clients.
 
-1. [Resource Anchor quickstart](../azapi-oci-resource-anchor-quickstart): save `resource_anchor_id`.
-2. [Network Anchor quickstart](../azapi-oci-network-anchor-quickstart): reuse that Resource Anchor and save `network_anchor_id`. Configure sufficient client and backup addressing for Exadata before creating this anchor.
-3. This template: create infrastructure, then its VM cluster. Terraform orders these resources automatically. If reusing infrastructure, ensure it is ready and has sufficient unallocated capacity, and explicitly select its DB server OCI OCIDs as described below.
-4. Provision DB homes/databases separately using a supported workflow, such as the [Oracle Exadata Terraform tutorial](https://docs.oracle.com/en/learn/dbazure-terraform/index.html#next-steps). This template outputs the VM cluster OCI OCID for such workflows.
+## Providers
 
-Requirements:
+| Name | Version | Purpose |
+| --- | --- | --- |
+| Azure/azapi | ~> 2.0 | Exadata infrastructure, VM cluster and anchor/inventory reads |
+| hashicorp/azurerm | ~> 4.0 | Resource group |
 
-- Terraform `>= 1.9, < 2.0`, Azure CLI, published `Azure/azapi` 2.x and `hashicorp/azurerm` 4.x providers.
-- Complete Oracle Database@Azure onboarding, offer acceptance, account linking, consent and service permissions. Verify Exadata anchor-based provisioning is available for your subscription and region before applying; an advertised API version alone does not establish this.
-- Register `Oracle.Database` before deployment. Both providers disable automatic registration. Your identity needs read access to the referenced anchors and any existing infrastructure; create/read/update/delete permissions for the new Oracle resources; read access to the workload resource group; and resource-group creation permission if selected. Follow your organization's Oracle Database@Azure RBAC requirements.
-- This quickstart supports a single subscription for all resources; cross-subscription anchor references supported by the service are outside its scope. The Network Anchor must reference your selected Resource Anchor and match the deployment region and Azure logical availability zone. Existing infrastructure must match the Resource Anchor, region and zone. The template checks these associations. Resource Anchors use global location; this template does not require matching their location to the regional workload.
-- Resource-group ownership is explicit: the selected `resource_group_name` owns the new infrastructure and VM cluster, while the anchor IDs retain their original resource groups. The template does not require matching group names. Confirm cross-group access and the service's compartment/placement permissions for your environment. Keep the chosen Resource Anchor consistent across infrastructure and cluster.
-- Select an available shape, Grid Infrastructure version, compute/storage allocation and licensing model. The example numeric allocations are illustrative; limits, increments and availability vary by shape and server layout. Use a supported Oracle time zone. Plan short hostname prefixes and ensure generated DNS names resolve from database clients.
-- Supply an existing **RSA public SSH key** (2048 bits or greater, single-line OpenSSH `ssh-rsa` format). Never supply private key material. The template checks the public-key format; the service validates the actual key and supported length.
+## Resources
 
-## Edit inputs and deploy
+| Name | Type | Behavior |
+| --- | --- | --- |
+| `azapi_resource.infrastructure` | Oracle.Database/cloudExadataInfrastructures@2026-06-01 | Optional new Exadata infrastructure |
+| `azapi_resource.vm_cluster` | Oracle.Database/cloudVmClusters@2026-06-01 | New VM cluster |
+| `azurerm_resource_group.this` | Resource group | Optional new workload group |
+| `data.azurerm_resource_group.this` | Resource group data source | Read existing workload group |
+| `data.azapi_resource.network_anchor` | Network Anchor data source | Read network and anchor association |
+| `data.azapi_resource.infrastructure` | Exadata infrastructure data source | Read existing capacity when reusing |
+| `data.azapi_resource_list.db_servers` | Exadata DB server inventory | Discover OCI DB server IDs |
 
-Run from this directory, or copy the directory on its own:
-
-```sh
-az login
-az account set --subscription "<subscription-id>"
-az account show --query '{subscription:id,name:name,tenant:tenantId}' -o table
-az provider show --namespace Oracle.Database --query registrationState -o tsv
-
-cp terraform.tfvars.example terraform.tfvars
-# Replace ALL <...> placeholders and the zero subscription UUID in the local file.
-# Paste actual ARM IDs from the anchor quickstarts' Terraform outputs.
-terraform init
-terraform fmt -check
-terraform validate
-terraform test  # Offline mocks only; no deployment or Azure credentials needed.
-terraform plan -out=deploy.tfplan
-# Review planned capacity, licensing, anchors, sizing and costs before applying.
-terraform apply deploy.tfplan
-terraform output
-terraform plan -detailed-exitcode
-```
-
-A clean post-apply plan exits `0`; changes exit `2`; errors exit `1`. Wait for each apply to finish before starting another Terraform operation against its state. Keep shared state and saved plans in an access-controlled backend/storage. Inputs (`terraform.tfvars`), JSON variable files, state and `*.tfplan` files are ignored by this repository; do not commit environment identifiers, credentials, or private keys. Retain the generated dependency lock file for reproducible provider selection.
-
-Both providers support Azure CLI authentication. For automation, configure supported workload identity/service principal credentials through provider `ARM_*` environment variables; consult [AzAPI](https://registry.terraform.io/providers/Azure/azapi/latest/docs) and [AzureRM](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs) authentication documentation.
-
-You can inspect resources without changing them:
-
-```sh
-az resource show --ids "<resource-anchor-id>" --api-version 2025-09-01
-az resource show --ids "<network-anchor-id>" --api-version 2025-09-01
-az resource show --ids "<infrastructure-id>" --api-version 2026-06-01
-az resource show --ids "<vm-cluster-id>" --api-version 2026-06-01
-```
-
-Check provisioning state, anchors, region/zone, capacity, and OCI OCIDs after deployment. The template verifies network/infrastructure associations before VM cluster creation; Azure/Oracle still validates permissions, capacity, backup network readiness and feature availability. Do not change deployed cluster sizing/configuration without confirming that the service supports the corresponding update in anchor mode. Create-only input changes (such as anchor, hostname, GI version or placement) trigger replacement; remove dependent databases before applying replacements.
-
-## Placement errors
-
-The template checks that the Network Anchor and infrastructure share the selected region and Azure logical availability zone. Matching those values alone does not guarantee that the service's underlying network and infrastructure placement are compatible. If creation reports that the subnet is linked to a resource in a different availability zone despite matching visible inputs, verify the selected infrastructure, Network Anchor and delegated subnet associations, then resolve placement with Oracle support or select a confirmed compatible infrastructure/anchor pair. Repeatedly retrying the same unchanged request will not resolve a placement conflict. Do not modify shared networking or existing workloads to work around it without assessing their dependencies.
+The stable `2026-06-01` API exposes Exadata anchor properties; `2025-09-01` does not expose them on these two resources. Infrastructure uses Azure `zones`. The VM cluster derives placement from infrastructure and the Network Anchor; its optional `zoneId` is an OCI DNS zone OCID, not an Azure logical zone.
 
 ## Inputs
 
@@ -100,59 +71,75 @@ The template checks that the Network Anchor and infrastructure share the selecte
 
 New infrastructure uses the service's unrestricted maintenance scheduling preference (`NoPreference`) with rolling patching (`Rolling`). This template does not expose custom maintenance schedules, proximity placement, Exascale storage, or advanced cluster options.
 
-## Select DB servers
+## Outputs
 
-VM cluster creation requires `dbServers`: the **OCI OCIDs** of the compute servers on which its VMs run. Azure child resource IDs and server display names are not accepted.
+| Name | Description |
+| --- | --- |
+| `cloud_exadata_infrastructure_id` | Created or reused infrastructure Azure ARM ID |
+| `cloud_exadata_infrastructure_ocid` | Infrastructure OCI OCID |
+| `vm_cluster_id` | VM cluster Azure ARM ID |
+| `vm_cluster_ocid` | VM cluster OCI OCID for subsequent database provisioning |
+| `resource_anchor_id`, `network_anchor_id` | Existing anchor ARM IDs used by this deployment |
+| `resource_group_id` | Workload group Azure ARM ID |
+| `db_server_ocids` | Selected OCI DB server IDs |
 
-For newly created infrastructure, leave `db_servers = null`. After infrastructure provisioning completes, Terraform lists its `/dbServers` inventory and selects the first `db_server_count` OCIDs in sorted order (default **two**, even when the infrastructure has more compute servers). The list read is deferred until the new infrastructure exists, so a combined deployment can discover its server IDs without an extra manual step. If the service has not yet populated the inventory, let it become ready and rerun the plan. This does not prove capacity or readiness; Azure/Oracle validates allocation at creation.
+## Usage
 
-For **existing infrastructure**, `db_servers` is required: choose at least two distinct server OCIDs from that infrastructure after reviewing their current allocations. Inspect the inventory read-only:
+1. Deploy the Resource and Network Anchors, keeping their Terraform states separate. Copy their output ARM IDs into this template's variables.
+2. Authenticate and configure the deployment:
+
+   ```sh
+   az login
+   az account set --subscription "<subscription-id>"
+   cp terraform.tfvars.template terraform.tfvars
+   ```
+
+   Edit the Common, Resource Group, Anchors, Exadata Infrastructure and VM Cluster sections. Replace all placeholders and the zero subscription UUID. Keep `existing_cloud_exadata_infrastructure_id = null` to create both resources. Numeric sample allocations are illustrative; confirm shape-specific limits and increments.
+3. Review and deploy:
+
+   ```sh
+   terraform init
+   terraform fmt -check
+   terraform validate
+   terraform plan -out=deploy.tfplan
+   terraform apply deploy.tfplan
+   terraform output
+   terraform plan -detailed-exitcode
+   ```
+
+A clean post-deployment plan exits `0`, changes exit `2`, and errors exit `1`. Wait for an operation to finish before running another against the same state. Use access-controlled state and plan storage; retain the generated provider lock file. Supply authentication through Azure CLI or provider-supported `ARM_*` environment variables. Do not commit private inputs, credentials or state.
+
+Confirm service support before modifying a deployed cluster's sizing or configuration. Create-only changes, such as anchors, selected DB servers, hostname or GI version, trigger replacement.
+
+### DB server selection
+
+For new infrastructure, Terraform discovers its DB server inventory after provisioning and selects the first `db_server_count` OCI OCIDs in sorted order, defaulting to two. If inventory is not yet ready, allow it to populate before replanning. After creation, pin the `db_server_ocids` output in `db_servers` before expanding hardware; new servers can change the sorted selection.
+
+For existing infrastructure, supply at least two distinct `db_servers` OCI OCIDs explicitly. Read the inventory and review existing allocations:
 
 ```sh
 az rest --method get --url "https://management.azure.com<infrastructure-arm-id>/dbServers?api-version=2026-06-01" --query 'value[].{ocid:properties.ocid,state:properties.lifecycleState,clusters:properties.vmClusterIds,cpuUsed:properties.cpuCoreCount,cpuMax:properties.maxCpuCount,memoryUsed:properties.memorySizeInGbs,memoryMax:properties.maxMemoryInGbs}' -o json
 ```
 
-Follow any returned `nextLink` when inspecting paged results. Then set local inputs, using actual OCIDs from `properties.ocid`:
+Follow any returned `nextLink` for paged results. Use `properties.ocid`, not child Azure ARM IDs or display names. The template verifies membership; the service validates readiness and available CPU, memory, local storage and supported VM counts. `Available` does not mean unoccupied. Memory and local DB node storage inputs are cluster totals distributed across selected servers; confirm per-server minimums/increments and memory divisibility.
 
-```hcl
-db_servers = [
-  "ocid1.dbserver.<realm>.<region>.<server-1-id>",
-  "ocid1.dbserver.<realm>.<region>.<server-2-id>",
-]
-```
+Existing infrastructure must match the selected Resource Anchor, region and zone. It is referenced without being imported or managed by this state. Never manage the same resource from multiple Terraform states.
 
-The template checks membership in the selected infrastructure; it does not automatically reserve capacity or assume that `Available` means unoccupied. Servers can legitimately host multiple clusters, so assess remaining CPU, memory, local storage and supported VM counts before selection. `memory_size_in_gbs` and `db_node_storage_size_in_gbs` are cluster totals distributed across the selected servers; check per-server minimums and increments, and ensure the memory total divides evenly by the server count.
+### Placement and database provisioning
 
-After an automatic deployment, `terraform output db_server_ocids` shows the chosen IDs. Pin those same values in `db_servers` before adding hardware or changing server inventory: lexicographic ordering can change when servers are added. An explicit selection change triggers cluster replacement. Inventory is not filtered by cluster associations during refresh, which keeps this template's own allocated servers selected after creation.
+Matching visible region and logical-zone values alone does not establish underlying infrastructure/network placement compatibility. Resolve service-reported placement conflicts by confirming a compatible infrastructure/Network Anchor pair with Oracle before retrying unchanged inputs.
 
-## Reuse infrastructure
+Create DB homes and databases separately using a supported workflow, such as the [Oracle Exadata Terraform tutorial](https://docs.oracle.com/en/learn/dbazure-terraform/index.html#next-steps), with the resulting VM cluster OCI OCID.
 
-Set `existing_cloud_exadata_infrastructure_id` to its Azure ARM ID. The infrastructure must be in the selected subscription, match the Resource Anchor, region and zone, and have available capacity. Supply an explicit `db_servers` list from its server inventory. The template reads it and creates only the new VM cluster; it does not manage/delete that infrastructure or import it into this state. Do not manage one resource from multiple Terraform states. Existing infrastructure without the selected Resource Anchor association is rejected by this anchored workflow.
+## Cleanup
 
-## Outputs and cleanup
-
-Outputs: `cloud_exadata_infrastructure_id` and `vm_cluster_id` are Azure ARM IDs; `cloud_exadata_infrastructure_ocid` and `vm_cluster_ocid` are OCI OCIDs. `resource_anchor_id` and `network_anchor_id` identify the existing anchors used by the deployment for traceability. `resource_group_id` identifies the workload group. `db_server_ocids` contains the selected OCI DB server IDs.
-
-Remove databases and DB homes created by other workflows before deleting their cluster. Then review and apply this template's destroy plan:
+Remove databases and DB homes before destroying their VM cluster:
 
 ```sh
 terraform plan -destroy -out=destroy.tfplan
 terraform apply destroy.tfplan
 ```
 
-Terraform deletes the VM cluster before infrastructure it created. Reused infrastructure, anchors and networking are left in place. A workload group created by this template is also deleted; remove separately managed resources from it first. Only after these workloads are gone should you destroy the Network Anchor deployment and then the Resource Anchor deployment. See the [anchor live test guide](../azapi-oci-resource-anchor-quickstart#step-by-step-live-test-of-both-templates) for the earlier chain's ordered cleanup.
+Terraform deletes the VM cluster before infrastructure created by this template. Reused infrastructure, anchors and networking are retained. If this template created the workload group, remove other deployments' resources from it before destruction. Delete dependent workloads first, then the Network Anchor deployment, and finally the Resource Anchor deployment.
 
-## Offline checks and API references
-
-```sh
-terraform init -backend=false
-terraform fmt -recursive -check
-terraform validate
-terraform test
-```
-
-Mocks cover new capacity with deterministic server discovery, explicit server selection on reused capacity, anchor-derived networking, association checks and invalid inputs. They do not demonstrate a live paid-resource deployment or successful service updates.
-
-- [Exadata infrastructure stable API](https://learn.microsoft.com/en-us/azure/templates/oracle.database/2026-06-01/cloudexadatainfrastructures)
-- [Cloud VM cluster stable API](https://learn.microsoft.com/en-us/azure/templates/oracle.database/2026-06-01/cloudvmclusters)
-- [Public Oracle.Database REST specification](https://github.com/Azure/azure-rest-api-specs/blob/main/specification/oracle/resource-manager/Oracle.Database/OracleDatabase/stable/2026-06-01/openapi.json)
+See the [Exadata infrastructure API](https://learn.microsoft.com/en-us/azure/templates/oracle.database/2026-06-01/cloudexadatainfrastructures), [VM cluster API](https://learn.microsoft.com/en-us/azure/templates/oracle.database/2026-06-01/cloudvmclusters) and [Oracle Exadata VM cluster guidance](https://docs.oracle.com/en-us/iaas/Content/database-at-azure/azucr-create-exadata-vm-cluster.html).

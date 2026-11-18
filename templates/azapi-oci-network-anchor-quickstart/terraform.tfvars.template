@@ -6,8 +6,8 @@ resource_group_name  = "rg-oradb-network"
 network_anchor_name  = "oradb-network-anchor"
 resource_anchor_name = "oradb-resource-anchor"
 
-virtual_network_name           = "vnet-oradb"
-virtual_network_address_space  = ["10.20.0.0/16"]
+virtual_network_name            = "vnet-oradb"
+virtual_network_address_space   = ["10.20.0.0/16"]
 delegated_subnet_name           = "snet-oradb"
 delegated_subnet_address_prefix = "10.20.1.0/24"
 
