@@ -12,7 +12,7 @@ Deploy in this order, keeping each template's Terraform state separate:
 
 1. [Resource Anchor quickstart](../azapi-oci-resource-anchor-quickstart): save `resource_anchor_id`.
 2. [Network Anchor quickstart](../azapi-oci-network-anchor-quickstart): reuse that Resource Anchor and save `network_anchor_id`. Configure sufficient client and backup addressing for Exadata before creating this anchor.
-3. This template: create infrastructure, then its VM cluster. Terraform orders these resources automatically. If reusing infrastructure, ensure it is ready and has sufficient unallocated capacity.
+3. This template: create infrastructure, then its VM cluster. Terraform orders these resources automatically. If reusing infrastructure, ensure it is ready and has sufficient unallocated capacity, and explicitly select its DB server OCI OCIDs as described below.
 4. Provision DB homes/databases separately using a supported workflow, such as the [Oracle Exadata Terraform tutorial](https://docs.oracle.com/en/learn/dbazure-terraform/index.html#next-steps). This template outputs the VM cluster OCI OCID for such workflows.
 
 Requirements:
@@ -79,6 +79,8 @@ Check provisioning state, anchors, region/zone, capacity, and OCI OCIDs after de
 | `hostname` | Required | Short hostname prefix; letters/digits/hyphens |
 | `gi_version` | Required | Available numeric dotted Grid Infrastructure version |
 | `ssh_public_keys` | Required | One or more RSA OpenSSH public keys |
+| `db_servers` | `null` | Selected OCI DB server OCIDs; required for existing infrastructure |
+| `db_server_count` | `2` | Automatic selection size for newly created infrastructure |
 | `cpu_core_count` | Required | Positive integer cluster CPU allocation |
 | `memory_size_in_gbs` | `256` | Memory allocation; verify capacity/increments |
 | `db_node_storage_size_in_gbs` | `256` | Local DB node storage allocation |
@@ -92,13 +94,38 @@ Check provisioning state, anchors, region/zone, capacity, and OCI OCIDs after de
 
 New infrastructure uses the service's unrestricted maintenance scheduling preference (`NoPreference`) with rolling patching (`Rolling`). This template does not expose custom maintenance schedules, proximity placement, Exascale storage, or advanced cluster options.
 
+## Select DB servers
+
+VM cluster creation requires `dbServers`: the **OCI OCIDs** of the compute servers on which its VMs run. Azure child resource IDs and server display names are not accepted.
+
+For newly created infrastructure, leave `db_servers = null`. After infrastructure provisioning completes, Terraform lists its `/dbServers` inventory and selects the first `db_server_count` OCIDs in sorted order (default **two**, even when the infrastructure has more compute servers). The list read is deferred until the new infrastructure exists, so a combined deployment can discover its server IDs without an extra manual step. If the service has not yet populated the inventory, let it become ready and rerun the plan. This does not prove capacity or readiness; Azure/Oracle validates allocation at creation.
+
+For **existing infrastructure**, `db_servers` is required: choose at least two distinct server OCIDs from that infrastructure after reviewing their current allocations. Inspect the inventory read-only:
+
+```sh
+az rest --method get --url "https://management.azure.com<infrastructure-arm-id>/dbServers?api-version=2026-06-01" --query 'value[].{ocid:properties.ocid,state:properties.lifecycleState,clusters:properties.vmClusterIds,cpuUsed:properties.cpuCoreCount,cpuMax:properties.maxCpuCount,memoryUsed:properties.memorySizeInGbs,memoryMax:properties.maxMemoryInGbs}' -o json
+```
+
+Follow any returned `nextLink` when inspecting paged results. Then set local inputs, using actual OCIDs from `properties.ocid`:
+
+```hcl
+db_servers = [
+  "ocid1.dbserver.<realm>.<region>.<server-1-id>",
+  "ocid1.dbserver.<realm>.<region>.<server-2-id>",
+]
+```
+
+The template checks membership in the selected infrastructure; it does not automatically reserve capacity or assume that `Available` means unoccupied. Servers can legitimately host multiple clusters, so assess remaining CPU, memory, local storage and supported VM counts before selection. `memory_size_in_gbs` and `db_node_storage_size_in_gbs` are cluster totals distributed across the selected servers; check per-server minimums and increments, and ensure the memory total divides evenly by the server count.
+
+After an automatic deployment, `terraform output db_server_ocids` shows the chosen IDs. Pin those same values in `db_servers` before adding hardware or changing server inventory: lexicographic ordering can change when servers are added. An explicit selection change triggers cluster replacement. Inventory is not filtered by cluster associations during refresh, which keeps this template's own allocated servers selected after creation.
+
 ## Reuse infrastructure
 
-Set `existing_cloud_exadata_infrastructure_id` to its Azure ARM ID. The infrastructure must be in the selected subscription, match the Resource Anchor, region and zone, and have available capacity. The template reads it and creates only the new VM cluster; it does not manage/delete that infrastructure or import it into this state. Do not manage one resource from multiple Terraform states. Existing infrastructure without the selected Resource Anchor association is rejected by this anchored workflow.
+Set `existing_cloud_exadata_infrastructure_id` to its Azure ARM ID. The infrastructure must be in the selected subscription, match the Resource Anchor, region and zone, and have available capacity. Supply an explicit `db_servers` list from its server inventory. The template reads it and creates only the new VM cluster; it does not manage/delete that infrastructure or import it into this state. Do not manage one resource from multiple Terraform states. Existing infrastructure without the selected Resource Anchor association is rejected by this anchored workflow.
 
 ## Outputs and cleanup
 
-Outputs: `cloud_exadata_infrastructure_id` and `vm_cluster_id` are Azure ARM IDs; `cloud_exadata_infrastructure_ocid` and `vm_cluster_ocid` are OCI OCIDs. `resource_group_id` identifies the workload group.
+Outputs: `cloud_exadata_infrastructure_id` and `vm_cluster_id` are Azure ARM IDs; `cloud_exadata_infrastructure_ocid` and `vm_cluster_ocid` are OCI OCIDs. `resource_group_id` identifies the workload group. `db_server_ocids` contains the selected OCI DB server IDs.
 
 Remove databases and DB homes created by other workflows before deleting their cluster. Then review and apply this template's destroy plan:
 
@@ -118,7 +145,7 @@ terraform validate
 terraform test
 ```
 
-Mocks cover new capacity, reused capacity, anchor-derived networking, association checks and invalid inputs. They do not demonstrate a live paid-resource deployment or successful service updates.
+Mocks cover new capacity with deterministic server discovery, explicit server selection on reused capacity, anchor-derived networking, association checks and invalid inputs. They do not demonstrate a live paid-resource deployment or successful service updates.
 
 - [Exadata infrastructure stable API](https://learn.microsoft.com/en-us/azure/templates/oracle.database/2026-06-01/cloudexadatainfrastructures)
 - [Cloud VM cluster stable API](https://learn.microsoft.com/en-us/azure/templates/oracle.database/2026-06-01/cloudvmclusters)

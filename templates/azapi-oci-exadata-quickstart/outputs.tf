@@ -22,3 +22,8 @@ output "resource_group_id" {
   description = "Created or reused workload resource group ARM ID."
   value       = local.resource_group_id
 }
+
+output "db_server_ocids" {
+  description = "OCI DB server OCIDs selected for this VM cluster. Pin these in db_servers before expanding infrastructure when using automatic selection."
+  value       = local.selected_db_servers
+}

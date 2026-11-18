@@ -3,6 +3,11 @@ locals {
   infrastructure_id = var.existing_cloud_exadata_infrastructure_id == null ? azapi_resource.infrastructure[0].id : var.existing_cloud_exadata_infrastructure_id
   # The VM cluster API still requires both IDs even when networkAnchorId is set.
   # Read them from the selected anchor so there is a single network source of truth.
+  # Discover OCI DB server IDs, not their Azure child resource IDs. Automatic
+  # selection is limited to new dedicated infrastructure created by this state.
+  discovered_db_servers = sort([for server in data.azapi_resource_list.db_servers.output.value : server.properties.ocid])
+  selected_db_servers   = var.db_servers != null ? sort(var.db_servers) : slice(local.discovered_db_servers, 0, min(var.db_server_count, length(local.discovered_db_servers)))
+
   subnet_id = data.azapi_resource.network_anchor.output.properties.subnetId
   vnet_id   = data.azapi_resource.network_anchor.output.properties.vnetId
 }
@@ -30,6 +35,12 @@ data "azapi_resource" "infrastructure" {
   type                   = "Oracle.Database/cloudExadataInfrastructures@2026-06-01"
   resource_id            = var.existing_cloud_exadata_infrastructure_id
   response_export_values = ["properties", "zones"]
+}
+
+data "azapi_resource_list" "db_servers" {
+  type                   = "Oracle.Database/cloudExadataInfrastructures/dbServers@2026-06-01"
+  parent_id              = local.infrastructure_id
+  response_export_values = ["value"]
 }
 
 resource "azapi_resource" "infrastructure" {
@@ -78,6 +89,7 @@ resource "azapi_resource" "vm_cluster" {
     subnet_id          = local.subnet_id
     vnet_id            = local.vnet_id
     infrastructure_id  = local.infrastructure_id
+    db_servers         = local.selected_db_servers
     hostname           = var.hostname
     gi_version         = var.gi_version
     zone               = var.availability_zone
@@ -94,6 +106,7 @@ resource "azapi_resource" "vm_cluster" {
       vnetId                       = local.vnet_id
       subnetId                     = local.subnet_id
       displayName                  = var.vm_cluster_name
+      dbServers                    = local.selected_db_servers
       hostname                     = var.hostname
       giVersion                    = var.gi_version
       sshPublicKeys                = var.ssh_public_keys
@@ -120,6 +133,14 @@ resource "azapi_resource" "vm_cluster" {
     delete = "24h"
   }
   lifecycle {
+    precondition {
+      condition     = var.db_servers != null || length(local.selected_db_servers) == var.db_server_count
+      error_message = "New infrastructure must expose at least db_server_count DB servers before cluster creation. Retry after its server inventory is ready, or supply explicit db_servers."
+    }
+    precondition {
+      condition     = alltrue([for id in local.selected_db_servers : contains(local.discovered_db_servers, id)])
+      error_message = "Every db_servers OCI OCID must belong to the selected Exadata infrastructure."
+    }
     precondition {
       condition     = lower(data.azapi_resource.network_anchor.output.properties.resourceAnchorId) == lower(var.resource_anchor_id)
       error_message = "The Network Anchor must be associated with the selected Resource Anchor."

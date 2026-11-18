@@ -13,6 +13,12 @@ infrastructure = {
   compute_count = 2
   storage_count = 3
 }
+# New infrastructure: automatically select two discovered OCI DB servers.
+db_server_count = 2
+# Existing infrastructure: REQUIRED explicit selection from its /dbServers inventory.
+# Use OCI OCIDs, not Azure ARM child resource IDs. Verify remaining server capacity.
+# db_servers = ["ocid1.dbserver.<realm>.<region>.<server-1-id>", "ocid1.dbserver.<realm>.<region>.<server-2-id>"]
+# Pin the discovered db_server_ocids output before adding hardware.
 # To reuse paid capacity, uncomment and edit; infrastructure settings are then ignored.
 # existing_cloud_exadata_infrastructure_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<infra-resource-group>/providers/Oracle.Database/cloudExadataInfrastructures/<infra-name>"
 

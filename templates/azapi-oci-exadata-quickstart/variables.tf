@@ -240,3 +240,27 @@ variable "data_collection_options" {
   default  = {}
   nullable = false
 }
+
+variable "db_servers" {
+  description = "Explicit DB server OCI OCIDs for VM placement (not Azure ARM IDs). Required when reusing infrastructure. Null discovers servers only for new dedicated infrastructure."
+  type        = list(string)
+  default     = null
+  validation {
+    condition = var.db_servers == null ? var.existing_cloud_exadata_infrastructure_id == null : (
+      length(var.db_servers) >= 2 && length(distinct(var.db_servers)) == length(var.db_servers) &&
+      alltrue([for id in var.db_servers : can(regex("^ocid1\\.dbserver\\.[a-zA-Z0-9._-]+$", id))])
+    )
+    error_message = "db_servers must contain at least two distinct DB server OCI OCIDs; explicit selection is required for existing infrastructure."
+  }
+}
+
+variable "db_server_count" {
+  description = "Number of DB servers selected automatically for new infrastructure; ignored when db_servers is supplied."
+  type        = number
+  default     = 2
+  nullable    = false
+  validation {
+    condition     = var.db_server_count >= 2 && floor(var.db_server_count) == var.db_server_count && (var.db_servers != null || var.db_server_count <= var.infrastructure.compute_count)
+    error_message = "db_server_count must be an integer of at least two and cannot exceed the new infrastructure compute_count when selecting automatically."
+  }
+}
