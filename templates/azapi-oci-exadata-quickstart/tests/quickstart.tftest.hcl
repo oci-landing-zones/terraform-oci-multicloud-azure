@@ -65,6 +65,10 @@ run "new_infrastructure_and_cluster" {
     error_message = "Both resources must use the stable API with Exadata anchor support."
   }
   assert {
+    condition     = output.resource_anchor_id == azapi_resource.infrastructure[0].body.properties.resourceAnchorId && output.resource_anchor_id == azapi_resource.vm_cluster.body.properties.resourceAnchorId && output.network_anchor_id == azapi_resource.vm_cluster.body.properties.networkAnchorId
+    error_message = "Anchor outputs must identify the anchors actually wired into the infrastructure and VM cluster."
+  }
+  assert {
     condition     = azapi_resource.infrastructure[0].body.properties.resourceAnchorId == var.resource_anchor_id && azapi_resource.vm_cluster.body.properties.resourceAnchorId == var.resource_anchor_id && azapi_resource.vm_cluster.body.properties.networkAnchorId == var.network_anchor_id
     error_message = "Both resources must use the selected Resource Anchor, with the Network Anchor on the VM cluster."
   }

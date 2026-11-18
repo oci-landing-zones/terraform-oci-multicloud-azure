@@ -27,3 +27,13 @@ output "db_server_ocids" {
   description = "OCI DB server OCIDs selected for this VM cluster. Pin these in db_servers before expanding infrastructure when using automatic selection."
   value       = local.selected_db_servers
 }
+
+output "resource_anchor_id" {
+  description = "Existing Resource Anchor ARM ID used by the Exadata infrastructure and VM cluster."
+  value       = var.resource_anchor_id
+}
+
+output "network_anchor_id" {
+  description = "Existing Network Anchor ARM ID used by the VM cluster."
+  value       = var.network_anchor_id
+}

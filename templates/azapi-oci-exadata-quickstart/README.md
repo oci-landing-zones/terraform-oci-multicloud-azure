@@ -2,6 +2,8 @@
 
 This standalone Terraform template creates Oracle Database@Azure dedicated Exadata infrastructure and a Cloud VM Cluster using existing Resource and Network Anchors. It uses AzAPI v2 with the stable `2026-06-01` API, which exposes Exadata anchor properties. The anchor quickstarts use `2025-09-01`; that older API does not expose the anchor fields needed on these Exadata resources.
 
+Leave `existing_cloud_exadata_infrastructure_id = null` (the default) to create **both new Exadata infrastructure and its VM cluster**. Supply the existing `resource_anchor_id` and `network_anchor_id` from the companion quickstarts; these anchors remain owned by their original deployments. Set an existing infrastructure ID only when you intentionally want to create a VM cluster on existing capacity.
+
 The infrastructure receives `resourceAnchorId`. The VM cluster receives `resourceAnchorId`, `networkAnchorId` and the infrastructure ID. The infrastructure selects an Azure logical zone through `zones`; the VM cluster uses the selected infrastructure and Network Anchor placement and has no top-level `zones` field. Its optional `zoneId` denotes an OCI DNS zone, so it is not set to an Azure zone number. The VM cluster API also requires `vnetId` and `subnetId`; the template reads both from the selected Network Anchor. It creates no anchors, VNet, subnet, DB home, database, or passwords. Optionally reuse existing infrastructure and create only its VM cluster.
 
 **Applying this template allocates paid dedicated Exadata capacity and database compute.** Confirm availability, quota, sizing, licensing and costs with your organization and Oracle before applying. Infrastructure and cluster provisioning can take hours; operation timeouts are 24 hours. Offline validation does not establish capacity or feature availability. No live Exadata or VM cluster deployment is part of this template's local validation.
@@ -64,6 +66,10 @@ az resource show --ids "<vm-cluster-id>" --api-version 2026-06-01
 
 Check provisioning state, anchors, region/zone, capacity, and OCI OCIDs after deployment. The template verifies network/infrastructure associations before VM cluster creation; Azure/Oracle still validates permissions, capacity, backup network readiness and feature availability. Do not change deployed cluster sizing/configuration without confirming that the service supports the corresponding update in anchor mode. Create-only input changes (such as anchor, hostname, GI version or placement) trigger replacement; remove dependent databases before applying replacements.
 
+## Placement errors
+
+The template checks that the Network Anchor and infrastructure share the selected region and Azure logical availability zone. Matching those values alone does not guarantee that the service's underlying network and infrastructure placement are compatible. If creation reports that the subnet is linked to a resource in a different availability zone despite matching visible inputs, verify the selected infrastructure, Network Anchor and delegated subnet associations, then resolve placement with Oracle support or select a confirmed compatible infrastructure/anchor pair. Repeatedly retrying the same unchanged request will not resolve a placement conflict. Do not modify shared networking or existing workloads to work around it without assessing their dependencies.
+
 ## Inputs
 
 | Input | Default | Purpose |
@@ -125,7 +131,7 @@ Set `existing_cloud_exadata_infrastructure_id` to its Azure ARM ID. The infrastr
 
 ## Outputs and cleanup
 
-Outputs: `cloud_exadata_infrastructure_id` and `vm_cluster_id` are Azure ARM IDs; `cloud_exadata_infrastructure_ocid` and `vm_cluster_ocid` are OCI OCIDs. `resource_group_id` identifies the workload group. `db_server_ocids` contains the selected OCI DB server IDs.
+Outputs: `cloud_exadata_infrastructure_id` and `vm_cluster_id` are Azure ARM IDs; `cloud_exadata_infrastructure_ocid` and `vm_cluster_ocid` are OCI OCIDs. `resource_anchor_id` and `network_anchor_id` identify the existing anchors used by the deployment for traceability. `resource_group_id` identifies the workload group. `db_server_ocids` contains the selected OCI DB server IDs.
 
 Remove databases and DB homes created by other workflows before deleting their cluster. Then review and apply this template's destroy plan:
 
