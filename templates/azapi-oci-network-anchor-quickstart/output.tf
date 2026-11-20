@@ -1,6 +1,6 @@
 output "network_anchor_id" {
   description = "Network Anchor ARM ID for the networkAnchorId property of a supported downstream Oracle.Database resource."
-  value       = azapi_resource.network_anchor.id
+  value       = module.network_anchor.id
 }
 
 output "resource_anchor_id" {

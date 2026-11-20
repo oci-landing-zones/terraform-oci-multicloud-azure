@@ -22,11 +22,19 @@ Check the target resource group for an existing Resource Anchor before creating 
 | Azure/azapi | ~> 2.0 | Resource Anchor |
 | hashicorp/azurerm | ~> 4.0 | Resource group |
 
+## Modules
+
+This quickstart composes the reusable modules below. Run it from the repository checkout, or copy its module directories while preserving the `../../modules/` layout. If adapting the template to your own project, update the module `source` paths or use a pinned Git module source. Copying the template directory alone is insufficient.
+
+| Module | Source |
+| --- | --- |
+| `resource_anchor` | [azapi-ora-resource-anchor](../../modules/azapi-ora-resource-anchor) |
+
 ## Resources
 
 | Name | Type | Behavior |
 | --- | --- | --- |
-| `azapi_resource.resource_anchor` | Oracle.Database/resourceAnchors@2025-09-01 | Create Resource Anchor |
+| `module.resource_anchor.azapi_resource.this` | Oracle.Database/resourceAnchors@2025-09-01 | Create Resource Anchor |
 | `azurerm_resource_group.this` | Microsoft.Resources/resourceGroups | Optional new resource group |
 | `data.azurerm_resource_group.this` | Resource group data source | Read an existing group |
 
@@ -82,7 +90,7 @@ Use access-controlled Terraform state and plan storage; retain the generated pro
 To adopt an existing anchor, configure matching inputs and import it before planning:
 
 ```sh
-terraform import azapi_resource.resource_anchor "/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Oracle.Database/resourceAnchors/<anchor-name>?api-version=2025-09-01"
+terraform import module.resource_anchor.azapi_resource.this "/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Oracle.Database/resourceAnchors/<anchor-name>?api-version=2025-09-01"
 terraform plan
 ```
 

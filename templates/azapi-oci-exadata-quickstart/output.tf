@@ -5,17 +5,17 @@ output "cloud_exadata_infrastructure_id" {
 
 output "cloud_exadata_infrastructure_ocid" {
   description = "Exadata infrastructure OCI OCID returned by the API."
-  value       = var.existing_cloud_exadata_infrastructure_id == null ? azapi_resource.infrastructure[0].output.properties.ocid : data.azapi_resource.infrastructure[0].output.properties.ocid
+  value       = var.existing_cloud_exadata_infrastructure_id == null ? module.infrastructure[0].ocid : module.vm_cluster.infrastructure_ocid
 }
 
 output "vm_cluster_id" {
   description = "Cloud VM cluster Azure ARM ID."
-  value       = azapi_resource.vm_cluster.id
+  value       = module.vm_cluster.id
 }
 
 output "vm_cluster_ocid" {
   description = "Cloud VM cluster OCI OCID for subsequent OCI database provisioning."
-  value       = azapi_resource.vm_cluster.output.properties.ocid
+  value       = module.vm_cluster.ocid
 }
 
 output "resource_group_id" {
@@ -25,7 +25,7 @@ output "resource_group_id" {
 
 output "db_server_ocids" {
   description = "OCI DB server OCIDs selected for this VM cluster. Pin these in db_servers before expanding infrastructure when using automatic selection."
-  value       = local.selected_db_servers
+  value       = module.vm_cluster.db_server_ocids
 }
 
 output "resource_anchor_id" {

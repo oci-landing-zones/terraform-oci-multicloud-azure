@@ -2,21 +2,7 @@ locals {
   resource_group_id   = var.create_resource_group ? azurerm_resource_group.this[0].id : data.azurerm_resource_group.this[0].id
   resource_group_name = var.create_resource_group ? azurerm_resource_group.this[0].name : data.azurerm_resource_group.this[0].name
   subnet_id           = var.create_network ? azurerm_subnet.oracle[0].id : var.existing_subnet_id
-  resource_anchor_id  = var.existing_resource_anchor_id == null ? azapi_resource.resource_anchor[0].id : var.existing_resource_anchor_id
-
-  # AzAPI v2 takes HCL objects. Omit unset optional properties rather than sending null.
-  network_anchor_optional_properties = {
-    ociVcnDnsLabel                       = var.oci_vcn_dns_label
-    ociBackupCidrBlock                   = var.oci_backup_cidr_block
-    isOracleToAzureDnsZoneSyncEnabled    = var.dns.zone_sync_enabled
-    isOracleDnsListeningEndpointEnabled  = var.dns.listening_endpoint_enabled
-    isOracleDnsForwardingEndpointEnabled = var.dns.forwarding_endpoint_enabled
-    dnsListeningEndpointAllowedCidrs     = length(var.dns.listening_endpoint_allowed_cidrs) > 0 ? join(",", var.dns.listening_endpoint_allowed_cidrs) : null
-    dnsForwardingRules = length(var.dns.forwarding_rules) > 0 ? [for rule in var.dns.forwarding_rules : {
-      domainNames         = join(",", rule.domain_names)
-      forwardingIpAddress = rule.forwarding_ip_address
-    }] : null
-  }
+  resource_anchor_id  = var.existing_resource_anchor_id == null ? module.resource_anchor[0].id : var.existing_resource_anchor_id
 }
 
 resource "azurerm_resource_group" "this" {
@@ -60,48 +46,24 @@ resource "azurerm_subnet" "oracle" {
   }
 }
 
-resource "azapi_resource" "resource_anchor" {
-  count     = var.existing_resource_anchor_id == null ? 1 : 0
-  type      = "Oracle.Database/resourceAnchors@2025-09-01"
-  name      = var.resource_anchor_name
-  parent_id = local.resource_group_id
-  location  = "global"
-  tags      = var.tags
-  body = {
-    properties = {}
-  }
+module "resource_anchor" {
+  count             = var.existing_resource_anchor_id == null ? 1 : 0
+  source            = "../../modules/azapi-ora-resource-anchor"
+  resource_group_id = local.resource_group_id
+  name              = var.resource_anchor_name
+  tags              = var.tags
 }
 
-resource "azapi_resource" "network_anchor" {
-  lifecycle {
-    # The service can return a VNet-derived DNS label instead of the requested
-    # create-time label. Keep the canonical response without perpetual drift.
-    # Explicit input changes still replace the anchor through the trigger below.
-    ignore_changes = [body.properties.ociVcnDnsLabel]
-  }
-
-  # These properties are create-only in the Oracle API. Keep mutable backup
-  # CIDR and DNS enablement flags out of the replacement triggers.
-  replace_triggers_external_values = {
-    zone               = var.availability_zone
-    resource_anchor_id = local.resource_anchor_id
-    subnet_id          = local.subnet_id
-    vcn_dns_label      = var.oci_vcn_dns_label
-    forwarding_rules   = var.dns.forwarding_rules
-    listening_cidrs    = var.dns.listening_endpoint_allowed_cidrs
-  }
-
-  type      = "Oracle.Database/networkAnchors@2025-09-01"
-  name      = var.network_anchor_name
-  parent_id = local.resource_group_id
-  location  = var.location
-  tags      = var.tags
-
-  body = {
-    zones = [var.availability_zone]
-    properties = merge({
-      resourceAnchorId = local.resource_anchor_id
-      subnetId         = local.subnet_id
-    }, { for key, value in local.network_anchor_optional_properties : key => value if value != null })
-  }
+module "network_anchor" {
+  source                = "../../modules/azapi-ora-network-anchor"
+  resource_group_id     = local.resource_group_id
+  resource_anchor_id    = local.resource_anchor_id
+  subnet_id             = local.subnet_id
+  name                  = var.network_anchor_name
+  location              = var.location
+  availability_zone     = var.availability_zone
+  oci_vcn_dns_label     = var.oci_vcn_dns_label
+  oci_backup_cidr_block = var.oci_backup_cidr_block
+  dns                   = var.dns
+  tags                  = var.tags
 }

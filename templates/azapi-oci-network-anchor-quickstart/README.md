@@ -26,12 +26,21 @@ For separate deployments, create the [Resource Anchor](../azapi-oci-resource-anc
 | Azure/azapi | ~> 2.0 | Network Anchor and optional Resource Anchor |
 | hashicorp/azurerm | ~> 4.0 | Resource group and Azure networking |
 
+## Modules
+
+This quickstart composes the reusable modules below. Run it from the repository checkout, or copy its module directories while preserving the `../../modules/` layout. If adapting the template to your own project, update the module `source` paths or use a pinned Git module source. Copying the template directory alone is insufficient.
+
+| Module | Source |
+| --- | --- |
+| `resource_anchor` | [azapi-ora-resource-anchor](../../modules/azapi-ora-resource-anchor) |
+| `network_anchor` | [azapi-ora-network-anchor](../../modules/azapi-ora-network-anchor) |
+
 ## Resources
 
 | Name | Type | Behavior |
 | --- | --- | --- |
-| `azapi_resource.network_anchor` | Oracle.Database/networkAnchors@2025-09-01 | Create Network Anchor |
-| `azapi_resource.resource_anchor` | Oracle.Database/resourceAnchors@2025-09-01 | Optional Resource Anchor at location `global` |
+| `module.network_anchor.azapi_resource.this` | Oracle.Database/networkAnchors@2025-09-01 | Create Network Anchor |
+| `module.resource_anchor[0].azapi_resource.this` | Oracle.Database/resourceAnchors@2025-09-01 | Optional Resource Anchor at location `global` |
 | `azurerm_resource_group.this` | Resource group | Optional new resource group |
 | `azurerm_virtual_network.this` | Virtual network | Optional new VNet |
 | `azurerm_subnet.oracle` | Subnet | Optional subnet with Oracle delegation |

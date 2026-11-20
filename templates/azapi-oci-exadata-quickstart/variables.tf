@@ -86,10 +86,12 @@ variable "existing_cloud_exadata_infrastructure_id" {
 variable "infrastructure" {
   description = "New Exadata dedicated infrastructure settings; ignored when reusing existing infrastructure. Confirm shape and capacity availability with Oracle."
   type = object({
-    name          = string
-    shape         = string
-    compute_count = optional(number, 2)
-    storage_count = optional(number, 3)
+    name                 = string
+    shape                = string
+    compute_count        = optional(number, 2)
+    storage_count        = optional(number, 3)
+    database_server_type = optional(string)
+    storage_server_type  = optional(string)
   })
   default  = { name = "oradb-infra", shape = "Exadata.X9M" }
   nullable = false

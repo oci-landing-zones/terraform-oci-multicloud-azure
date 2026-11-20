@@ -1,6 +1,6 @@
 subscription_id   = "00000000-0000-0000-0000-000000000000"
-location          = "eastus"
-availability_zone = "1" # Confirm the zone available to your subscription.
+location          = "<azure-region>"
+availability_zone = "<supported-logical-zone>"
 
 resource_group_name  = "rg-oradb-network"
 network_anchor_name  = "oradb-network-anchor"

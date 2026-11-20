@@ -14,13 +14,9 @@ data "azurerm_resource_group" "this" {
   name  = var.resource_group_name
 }
 
-resource "azapi_resource" "resource_anchor" {
-  type      = "Oracle.Database/resourceAnchors@2025-09-01"
-  name      = var.resource_anchor_name
-  parent_id = local.resource_group_id
-  location  = "global"
-  tags      = var.tags
-  body = {
-    properties = {}
-  }
+module "resource_anchor" {
+  source            = "../../modules/azapi-ora-resource-anchor"
+  resource_group_id = local.resource_group_id
+  name              = var.resource_anchor_name
+  tags              = var.tags
 }

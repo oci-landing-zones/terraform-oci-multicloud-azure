@@ -27,17 +27,26 @@ Leave `existing_cloud_exadata_infrastructure_id = null` to create both infrastru
 | Azure/azapi | ~> 2.0 | Exadata infrastructure, VM cluster and anchor/inventory reads |
 | hashicorp/azurerm | ~> 4.0 | Resource group |
 
+## Modules
+
+This quickstart composes the reusable modules below. Run it from the repository checkout, or copy its module directories while preserving the `../../modules/` layout. If adapting the template to your own project, update the module `source` paths or use a pinned Git module source. Copying the template directory alone is insufficient.
+
+| Module | Source |
+| --- | --- |
+| `infrastructure` | [azapi-ora-exadata-infra](../../modules/azapi-ora-exadata-infra) |
+| `vm_cluster` | [azapi-ora-exadata-vmc](../../modules/azapi-ora-exadata-vmc) |
+
 ## Resources
 
 | Name | Type | Behavior |
 | --- | --- | --- |
-| `azapi_resource.infrastructure` | Oracle.Database/cloudExadataInfrastructures@2026-06-01 | Optional new Exadata infrastructure |
-| `azapi_resource.vm_cluster` | Oracle.Database/cloudVmClusters@2026-06-01 | New VM cluster |
+| `module.infrastructure[0].azapi_resource.this` | Oracle.Database/cloudExadataInfrastructures@2026-06-01 | Optional new Exadata infrastructure |
+| `module.vm_cluster.azapi_resource.this` | Oracle.Database/cloudVmClusters@2026-06-01 | New VM cluster |
 | `azurerm_resource_group.this` | Resource group | Optional new workload group |
 | `data.azurerm_resource_group.this` | Resource group data source | Read existing workload group |
-| `data.azapi_resource.network_anchor` | Network Anchor data source | Read network and anchor association |
-| `data.azapi_resource.infrastructure` | Exadata infrastructure data source | Read existing capacity when reusing |
-| `data.azapi_resource_list.db_servers` | Exadata DB server inventory | Discover OCI DB server IDs |
+| `module.vm_cluster.data.azapi_resource.network_anchor` | Network Anchor data source | Read network and anchor association |
+| `module.vm_cluster.data.azapi_resource.infrastructure` | Exadata infrastructure data source | Read selected new or existing capacity |
+| `module.vm_cluster.data.azapi_resource_list.db_servers` | Exadata DB server inventory | Discover OCI DB server IDs |
 
 The stable `2026-06-01` API exposes Exadata anchor properties; `2025-09-01` does not expose them on these two resources. Infrastructure uses Azure `zones`. The VM cluster derives placement from infrastructure and the Network Anchor; its optional `zoneId` is an OCI DNS zone OCID, not an Azure logical zone.
 
@@ -143,3 +152,11 @@ terraform apply destroy.tfplan
 Terraform deletes the VM cluster before infrastructure created by this template. Reused infrastructure, anchors and networking are retained. If this template created the workload group, remove other deployments' resources from it before destruction. Delete dependent workloads first, then the Network Anchor deployment, and finally the Resource Anchor deployment.
 
 See the [Exadata infrastructure API](https://learn.microsoft.com/en-us/azure/templates/oracle.database/2026-06-01/cloudexadatainfrastructures), [VM cluster API](https://learn.microsoft.com/en-us/azure/templates/oracle.database/2026-06-01/cloudvmclusters) and [Oracle Exadata VM cluster guidance](https://docs.oracle.com/en-us/iaas/Content/database-at-azure/azucr-create-exadata-vm-cluster.html).
+
+### X11M server types
+
+When creating `Exadata.X11M` or `Exadata.X11MV`, set both `infrastructure.database_server_type` and `infrastructure.storage_server_type`. Obtain the supported names for the target subscription and region from the `Oracle.Database/locations/flexComponents` API, filtering by shape. Server-type availability varies by environment; do not infer the names from the shape. Leave both unset for older shapes. Changing server types replaces infrastructure.
+
+```bash
+az rest --method get --url "https://management.azure.com/subscriptions/<subscription-id>/providers/Oracle.Database/locations/<region>/flexComponents?api-version=2026-06-01&shape=Exadata.X11M"
+```
