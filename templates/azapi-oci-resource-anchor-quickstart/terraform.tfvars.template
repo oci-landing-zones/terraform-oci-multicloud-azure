@@ -1,0 +1,10 @@
+subscription_id = "00000000-0000-0000-0000-000000000000"
+location        = "eastus"
+
+create_resource_group = true # Set false to reuse the named resource group.
+resource_group_name   = "rg-oradb-anchor"
+resource_anchor_name  = "oradb-resource-anchor"
+
+tags = {
+  workload = "oradb"
+}

@@ -41,8 +41,14 @@ Dependent which cloud resources a module manages, it will use some subset of the
 These module automates the provisioning of components for running Oracle Database@Azure. Each template can run independently and default input values are configured which can be overridden per customer's preferences.
 
 ### Exadata
+- [`templates/azapi-oci-exadata-anchored-quickstart`](templates/azapi-oci-exadata-anchored-quickstart): Single-state Resource Anchor → Network Anchor → Exadata infrastructure → VM cluster deployment, with optional existing-anchor lookup by name and group.
+- [`templates/azapi-oci-exadata-quickstart`](templates/azapi-oci-exadata-quickstart): Exadata infrastructure and VM cluster with separately managed Resource and Network Anchor IDs using AzAPI (stable 2026-06-01 API).
 - `templates/azurerm-oci-exadata-quickstart`: Quickstart OracleDB@Azure (Exadata) with OCI LZ modules (AzureRM)
 - `templates/avm-oci-exadata-quickstart`: Quickstart OracleDB@Azure (Exadata) with Azure Verified Modules (AzAPI) and OCI LZ Modules
+
+### Networking
+- [`templates/azapi-oci-resource-anchor-quickstart`](templates/azapi-oci-resource-anchor-quickstart): Oracle Database@Azure Resource Anchor with an optional resource group using AzAPI. Its output can be reused by the Network Anchor quickstart.
+- [`templates/azapi-oci-network-anchor-quickstart`](templates/azapi-oci-network-anchor-quickstart): Oracle Database@Azure Network Anchor and optional Resource Anchor, resource group, and delegated networking using AzAPI.
 
 ### Autonomous Database
 - `templates/azurerm-oci-adbs-quickstart`: Quickstart OracleDB@Azure (Autonomous Database) with OCI LZ modules (AzureRM)
@@ -54,6 +60,17 @@ These module automates the provisioning of components for running Oracle Databas
 - `templates/az-oci-exa-pdb`: Provisions Oracle database infrastructure including networks, Exadata Infrastructure, VM Cluster, and database.
 
 *Please read the individual template documentation for more details*.
+
+## Reusable AzAPI modules
+
+These modules inherit provider configuration from the calling root. The AzAPI quickstarts above compose them while managing optional resource groups and Azure networking at the root.
+
+| Module | Purpose |
+| --- | --- |
+| [azapi-ora-resource-anchor](modules/azapi-ora-resource-anchor) | Global Resource Anchor |
+| [azapi-ora-network-anchor](modules/azapi-ora-network-anchor) | Zonal Network Anchor with DNS options |
+| [azapi-ora-exadata-infra](modules/azapi-ora-exadata-infra) | Anchored dedicated Exadata infrastructure |
+| [azapi-ora-exadata-vmc](modules/azapi-ora-exadata-vmc) | Anchored VM cluster with network and DB-server discovery |
 
 ## Authentication
 

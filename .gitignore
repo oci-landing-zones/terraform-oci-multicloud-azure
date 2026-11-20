@@ -6,12 +6,17 @@
 *.tfstate.*
 *.zip*
 *.tfvars
+*.tfvars.json
+*.tfplan
 
 # Local .terraform lock files
 *.lock.*
 
 # modified env var example
 packer/env_vars.sh
+
+# Local IDE configuration
+.idea/
 
 # General
 .DS_Store
