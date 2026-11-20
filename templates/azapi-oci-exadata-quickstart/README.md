@@ -122,7 +122,7 @@ Confirm service support before modifying a deployed cluster's sizing or configur
 
 ### DB server selection
 
-For new infrastructure, Terraform discovers its DB server inventory after provisioning and selects the first `db_server_count` OCI OCIDs in sorted order, defaulting to two. If inventory is not yet ready, allow it to populate before replanning. After creation, pin the `db_server_ocids` output in `db_servers` before expanding hardware; new servers can change the sorted selection.
+For new infrastructure, Terraform discovers its DB server inventory after provisioning and selects the first `db_server_count` OCI OCIDs in sorted order, defaulting to two. If inventory is not yet ready, allow it to populate before replanning. Immediately after the first apply, persist the `db_server_ocids` output as the `db_servers` input before any infrastructure edit, including tags. Such edits can defer inventory reads and produce a cluster replacement plan while automatic selection remains enabled; adding servers can also change the sorted selection.
 
 For existing infrastructure, supply at least two distinct `db_servers` OCI OCIDs explicitly. Read the inventory and review existing allocations:
 
