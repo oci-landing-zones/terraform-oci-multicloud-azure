@@ -103,14 +103,29 @@ variable "compute_count" {
   }
 }
 
+# Customers can configure either dataStorageSizeInTbs or dataStorageSizeInGbs,
+# but must supply exactly one. The default is 1 TB. Example tfvars choices:
+#   data_storage_size_in_tbs = 1
+# Or, to use GB instead (disable the default TB value):
+#   data_storage_size_in_tbs = null
+#   data_storage_size_in_gbs = 32
 variable "data_storage_size_in_tbs" {
-  description = "Allocated database storage in TB; confirm service limits and pricing before applying."
+  description = "Allocated database storage in TB; set to null when using data_storage_size_in_gbs. Confirm service limits and pricing before applying."
   type        = number
   default     = 1
-  nullable    = false
   validation {
-    condition     = var.data_storage_size_in_tbs >= 1 && floor(var.data_storage_size_in_tbs) == var.data_storage_size_in_tbs
-    error_message = "data_storage_size_in_tbs must be a positive integer."
+    condition     = var.data_storage_size_in_tbs == null ? true : var.data_storage_size_in_tbs >= 1 && floor(var.data_storage_size_in_tbs) == var.data_storage_size_in_tbs
+    error_message = "data_storage_size_in_tbs must be null or a positive integer."
+  }
+}
+
+variable "data_storage_size_in_gbs" {
+  description = "Allocated database storage in GB; requires data_storage_size_in_tbs = null. Confirm service limits and pricing before applying."
+  type        = number
+  default     = null
+  validation {
+    condition     = var.data_storage_size_in_gbs == null ? true : var.data_storage_size_in_gbs >= 1 && floor(var.data_storage_size_in_gbs) == var.data_storage_size_in_gbs
+    error_message = "data_storage_size_in_gbs must be null or a positive integer."
   }
 }
 
@@ -193,7 +208,7 @@ resource "azapi_resource" "ajd" {
   tags      = var.tags
 
   body = {
-    properties = {
+    properties = merge({
       dataBaseType                   = "Regular"
       dbWorkload                     = "AJD"
       displayName                    = var.name_prefix
@@ -201,13 +216,22 @@ resource "azapi_resource" "ajd" {
       dbVersion                      = var.db_version
       computeModel                   = "ECPU"
       computeCount                   = var.compute_count
-      dataStorageSizeInTbs           = var.data_storage_size_in_tbs
       licenseModel                   = var.license_model
       isAutoScalingEnabled           = false
       isAutoScalingForStorageEnabled = false
       isMtlsConnectionRequired       = true
       vnetId                         = azurerm_virtual_network.this.id
       subnetId                       = azurerm_subnet.oracle.id
+      }, var.data_storage_size_in_gbs != null ? {
+      dataStorageSizeInGbs = var.data_storage_size_in_gbs
+      } : {
+      dataStorageSizeInTbs = var.data_storage_size_in_tbs
+    })
+  }
+  lifecycle {
+    precondition {
+      condition     = (var.data_storage_size_in_tbs != null) != (var.data_storage_size_in_gbs != null)
+      error_message = "Set exactly one of data_storage_size_in_tbs or data_storage_size_in_gbs. To use GB, set data_storage_size_in_tbs = null."
     }
   }
   response_export_values = ["properties.ocid", "properties.lifecycleState"]
