@@ -5,12 +5,12 @@ terraform {
     # https://registry.terraform.io/providers/Azure/azapi/latest/docs
     azapi = {
       source  = "azure/azapi"
-      version = "~> 1.14.0"
+      version = "~> 2.0"
     }
     # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.74"
+      version = ">= 4.0"
     }
     # https://registry.terraform.io/providers/hashicorp/local/latest/docs
     local = {
